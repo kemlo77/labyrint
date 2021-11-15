@@ -21,7 +21,7 @@ export class View {
         grid.forEach( row => {
             let tempstr: string ='';
             row.forEach( cell => {
-                tempstr+=' ' + cell.visited?1:0;
+                tempstr+=' ' + (cell.visited?'1':'0');
             });
             totalString+= tempstr + '\n';
         });

@@ -14,6 +14,18 @@ export class Cell {
         return this.neighbouringCells;
     }
 
+    get unvisitedNeighbours(): Cell[] {
+        return this.neighbouringCells.filter(cell => cell.visited == false);
+    }
+
+    get hasNoUnvisitedNeighbours(): boolean {
+        return this.unvisitedNeighbours.length == 0;
+    }
+
+    get randomUnvisitedNeighbour(): Cell {
+        return this.unvisitedNeighbours[Math.floor(Math.random()* this.unvisitedNeighbours.length)];
+    }
+
     addNeighbour(cell: Cell): void {
         this.neighbouringCells.push(cell);
     }
@@ -24,6 +36,14 @@ export class Cell {
 
     set visited(visited: boolean) {
         this.hasBeenVisited = visited;
+    }
+
+    get x(): number{
+        return this.xCoordinate;
+    }
+
+    get y(): number {
+        return this.yCoordinate;
     }
 
 }

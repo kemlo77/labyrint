@@ -4,14 +4,15 @@ export class RectangularGrid {
 
     private width: number;
     private height: number;
+    private distancing: number;
     private _grid: Cell[][];
     private _startCell: Cell;
 
-    constructor(width: number, height: number) {
+    constructor(width: number, height: number, distancing: number) {
         this.width = width;
         this.height = height;
+        this.distancing = distancing;
         this._grid = this.createGrid();
-        this.interconnectGrid(this._grid);
         this._startCell = this._grid[0][0];
         this.startCell.visited = true;
     }
@@ -40,42 +41,52 @@ export class RectangularGrid {
 
     private createGrid(): Cell[][] {
         const grid: Cell[][] = [];
-        for (let i: number = 0; i < this.width; i++) {
+        for (let x: number = 0; x < this.width; x++) {
             const row: Cell[] = [];
-            for (let j: number = 0; j < this.height; j++) {
-                row.push(new Cell(i, j));
+            for (let y: number = 0; y < this.height; y++) {
+                row.push(new Cell(this.distancing +x* this.distancing, this.distancing + y* this.distancing));
             }
             grid.push(row);
         }
+        this.interconnectGrid(grid);
         return grid;
     }
 
     private interconnectGrid(grid: Cell[][]): void {
-        //add a neighbours to the east
-        for (let i: number = 0; i < grid.length; i++) {
-            for (let j: number = 0; j < grid[i].length - 1; j++) {
-                grid[i][j].addNeighbour(grid[j][j + 1]);
+        this.connectNeighboursToTheSouth(grid);
+        this.connectNeighboursToTheNorth(grid);
+        this.connectNeighboursToTheWest(grid);
+        this.connectNeighboursToTheEast(grid);
+    }
+
+    private connectNeighboursToTheSouth(grid: Cell[][]): void {
+        for (let x: number = 0; x < grid.length; x++) {
+            for (let y: number = 0; y < grid[x].length - 1; y++) {
+                grid[x][y].addNeighbour(grid[x][y + 1]);
             }
         }
+    }
 
-        //add a neighbours to the west
-        for (let i: number = 0; i < grid.length; i++) {
-            for (let j: number = 1; j < grid[i].length; j++) {
-                grid[i][j].addNeighbour(grid[i][j - 1]);
+    private connectNeighboursToTheNorth(grid: Cell[][]): void {
+        for (let x: number = 0; x < grid.length; x++) {
+            for (let y: number = 1; y < grid[x].length; y++) {
+                grid[x][y].addNeighbour(grid[x][y - 1]);
             }
         }
+    }
 
-        //add neightbours to the north
-        for (let i: number = 1; i < grid.length; i++) {
-            for (let j: number = 0; j < grid[i].length; j++) {
-                grid[i][j].addNeighbour(grid[i - 1][j]);
+    private connectNeighboursToTheWest(grid: Cell[][]): void {
+        for (let x: number = 1; x < grid.length; x++) {
+            for (let y: number = 0; y < grid[x].length; y++) {
+                grid[x][y].addNeighbour(grid[x - 1][y]);
             }
         }
+    }
 
-        //add neightbours to the south
-        for (let i: number = 0; i < grid.length - 1; i++) {
-            for (let j: number = 0; j < grid[i].length; j++) {
-                grid[i][j].addNeighbour(grid[i + 1][j]);
+    private connectNeighboursToTheEast(grid: Cell[][]): void {
+        for (let x: number = 0; x < grid.length - 1; x++) {
+            for (let y: number = 0; y < grid[x].length; y++) {
+                grid[x][y].addNeighbour(grid[x + 1][y]);
             }
         }
     }

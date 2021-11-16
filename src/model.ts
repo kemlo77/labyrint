@@ -15,10 +15,6 @@ export class Model {
     }   
 
     public generateLabyrinth(): void {
-        this.view.plotNumberOfNeighbours(this.grid.grid);
-        this.view.plotTheVisitCount(this.grid.grid);
-
-
         let numberOfVisitedCells: number = this.grid.numberOfVisitedCells;
         while(this.grid.totalNumberOfCells > numberOfVisitedCells) {
             while (this.currentCell().hasNoUnvisitedNeighbours && this.visitedStackIsNotEmpty()) {
@@ -27,13 +23,12 @@ export class Model {
             this.stepToUnvisitedNeighbour();
             numberOfVisitedCells++;
         }
-
-        this.view.plotTheVisitCount(this.grid.grid);
     }
 
     private stepToUnvisitedNeighbour(): void {
         const nextCell: Cell = this.currentCell().randomUnvisitedNeighbour;
         nextCell.visited = true;
+        this.view.drawConnection(this.currentCell().x, this.currentCell().y, nextCell.x,nextCell.y, 8);
         this.stackOfVisitedCells.push(nextCell);
     }
 

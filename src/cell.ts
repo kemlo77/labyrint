@@ -23,7 +23,8 @@ export class Cell {
     }
 
     get randomUnvisitedNeighbour(): Cell {
-        return this.unvisitedNeighbours[Math.floor(Math.random()* this.unvisitedNeighbours.length)];
+        const randomIndex: number = Math.floor(Math.random()* this.unvisitedNeighbours.length);
+        return this.unvisitedNeighbours[randomIndex];
     }
 
     addNeighbour(cell: Cell): void {

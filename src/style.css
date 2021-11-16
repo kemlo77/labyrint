@@ -1,1 +1,5 @@
 body {background-color: powderblue;}
+canvas {
+    margin-top: 10px;
+    background-color: black;    
+}

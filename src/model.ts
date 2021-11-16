@@ -15,6 +15,8 @@ export class Model {
     }   
 
     public generateLabyrinth(): void {
+        this.view.clearTheCanvas();
+        this.grid.resetVisited();
         let numberOfVisitedCells: number = this.grid.numberOfVisitedCells;
         while(this.grid.totalNumberOfCells > numberOfVisitedCells) {
             while (this.currentCell().hasNoUnvisitedNeighbours && this.visitedStackIsNotEmpty()) {

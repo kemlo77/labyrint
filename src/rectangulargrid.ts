@@ -29,6 +29,14 @@ export class RectangularGrid {
         return this._startCell;
     }
 
+    public resetVisited(): void {
+        this.grid.forEach(row => {
+            row.forEach(cell => {
+                cell.visited = false;
+            });
+        });
+    }
+
     get numberOfVisitedCells(): number {
         let total:number = 0;
         this._grid.forEach(row => {

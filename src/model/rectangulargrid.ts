@@ -1,6 +1,7 @@
 import {Cell} from './cell';
+import { Grid } from './grid';
 
-export class RectangularGrid {
+export class RectangularGrid extends Grid{
 
     private width: number;
     private height: number;
@@ -9,6 +10,7 @@ export class RectangularGrid {
     private _startCell: Cell;
 
     constructor(width: number, height: number, distancing: number) {
+        super();
         this.width = width;
         this.height = height;
         this.distancing = distancing;
@@ -17,7 +19,7 @@ export class RectangularGrid {
         this.startCell.visited = true;
     }
 
-    get grid(): Cell[][]  {
+    get grid(): Cell[][] {
         return this._grid;
     }
 
@@ -30,7 +32,7 @@ export class RectangularGrid {
     }
 
     public resetVisited(): void {
-        this.grid.forEach(row => {
+        this._grid.forEach(row => {
             row.forEach(cell => {
                 cell.visited = false;
             });

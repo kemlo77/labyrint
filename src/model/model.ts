@@ -1,14 +1,15 @@
 import { Cell } from './cell';
-import { RectangularGrid } from './rectangulargrid';
-import { View } from './view';
+import { Grid } from './grid';
+
+import { View } from '../view/view';
 
 export class Model {
 
-    private grid: RectangularGrid;
+    private grid: Grid;
     private view: View;
     private stackOfVisitedCells: Cell[]= [];
 
-    constructor(grid: RectangularGrid, view: View) {
+    constructor(grid: Grid, view: View) {
         this.grid = grid;
         this.view = view;
         this.stackOfVisitedCells.push(grid.startCell);
@@ -32,6 +33,7 @@ export class Model {
         nextCell.visited = true;
         this.view.drawConnection(this.currentCell().x, this.currentCell().y, nextCell.x,nextCell.y, 8);
         this.stackOfVisitedCells.push(nextCell);
+        //this.view.paintCellCenter(nextCell.x, nextCell.y);
     }
 
     private stepBackwards(): void {

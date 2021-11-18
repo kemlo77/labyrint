@@ -1,12 +1,7 @@
-export class View {
+import { View } from './view';
 
-    private canvasElement: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
-    private canvasCtx: CanvasRenderingContext2D = this.canvasElement.getContext('2d');
-
-    clearTheCanvas(): void {
-        this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-    }
-
+export class RoundedView extends View {
+    
     drawConnection(x1: number, y1: number, x2:number, y2: number, width: number): void {
         this.canvasCtx.strokeStyle = 'rgba(255,255,255,1)';
         this.canvasCtx.lineWidth = width;

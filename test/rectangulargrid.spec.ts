@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { RectangularGrid } from '../src/rectangulargrid';
-import { Cell } from '../src/cell';
+import { RectangularGrid } from '../src/model/rectangulargrid';
+import { Cell } from '../src/model/cell';
 
 describe('RectangularGrid', () => {
 

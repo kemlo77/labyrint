@@ -16,7 +16,7 @@ export class HexagonalGrid extends Grid{
         super();
         this.width = width;
         this.height = height;
-        this.heightDistancing = size;
+        this.heightDistancing = size * 0.75;
         this.widthDistancing = Math.sqrt(3) * size / 2;
         this.rowOffset = this.widthDistancing/2;
         this._grid = this.createGrid();
@@ -77,7 +77,7 @@ export class HexagonalGrid extends Grid{
         this.connectNeighboursToTheNorth(grid);
         this.connectNeighboursToTheWest(grid);
         this.connectNeighboursToTheEast(grid);
-        //this.printGrid(grid);
+        this.printGrid(grid);
 
     }
 
@@ -88,7 +88,7 @@ export class HexagonalGrid extends Grid{
                 .reduce((prev,curr) => {return (prev + ' ' + curr);});
             overallString += values + '\n';
         });
-        console.log(overallString);
+        //console.log(overallString);
     }
 
     private connectNeighboursToTheSouth(grid: Cell[][]): void {
@@ -97,8 +97,8 @@ export class HexagonalGrid extends Grid{
             for (let x: number = 0; x < transposedGrid[y].length; x++) {
                 const currentCell: Cell = transposedGrid[y][x];
                 transposedGrid[y+1]
-                    .filter(cell => { return (cell.x > (currentCell.x - this.heightDistancing * 0.55)); })
-                    .filter(cell => { return (cell.x < (currentCell.x + this.heightDistancing * 0.55)); })
+                    .filter(cell => { return (cell.x > (currentCell.x - this.widthDistancing * 0.55)); })
+                    .filter(cell => { return (cell.x < (currentCell.x + this.widthDistancing * 0.55)); })
                     .forEach(cell => currentCell.addNeighbour(cell));
             }
         }

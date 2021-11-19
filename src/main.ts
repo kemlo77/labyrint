@@ -11,7 +11,7 @@ import { BoxedView } from './view/boxedview';
 const view: View = new RoundedView();
 //const view: View = new BoxedView();
 //const grid: Grid = new RectangularGrid(50,50,10);
-const grid: Grid = new HexagonalGrid(5,4,40);
+const grid: Grid = new HexagonalGrid(5,5,40);
 const model: Model = new Model(grid, view);
 const controller: Controller = new Controller(model);
 

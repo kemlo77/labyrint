@@ -2,13 +2,30 @@ import { Cell } from './cell';
 
 export abstract class Grid {
 
-    abstract grid: Cell[][];
+    protected _grid: Cell[][];
 
-    abstract totalNumberOfCells: number;
+    protected _totalNumberOfCells: number;
 
-    abstract startCell: Cell;
+    protected _startCell: Cell;
 
-    public abstract resetVisited(): void;
+    get startCell(): Cell {
+        return this._startCell;
+    }
 
-    abstract numberOfVisitedCells: number;
+    get grid(): Cell[][] {
+        return this._grid;
+    }
+
+    get totalNumberOfCells(): number {
+        return this._totalNumberOfCells;
+    }
+
+    public resetVisited(): void {
+        this._grid.flat().forEach(cell => cell.visited = false);
+        this.startCell.visited = true;
+    }
+
+    get numberOfVisitedCells(): number {
+        return this._grid.flat().filter(cell => cell.visited).length;
+    }
 }

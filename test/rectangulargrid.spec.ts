@@ -50,5 +50,10 @@ describe('RectangularGrid', () => {
         expect(centerCell.y).to.equal(20);
     });
 
+    it('totalNumberOfCells', () => {
+        const rectGrid: RectangularGrid = new RectangularGrid(3,3,10);
+        expect(rectGrid.totalNumberOfCells).to.equal(9);
+    });
+
 
 });

@@ -1,4 +1,3 @@
-import { over } from '../../node_modules/cypress/types/lodash/index';
 import {Cell} from './cell';
 import { Grid } from './grid';
 
@@ -9,40 +8,18 @@ export class HexagonalGrid extends Grid{
     private heightDistancing: number;
     private widthDistancing: number;
     private rowOffset: number;
-    private _grid: Cell[][];
-    private _startCell: Cell;
 
     constructor(width: number, height: number, size: number) {
         super();
         this.width = width;
         this.height = height;
+        this._totalNumberOfCells = width * height;
         this.heightDistancing = size * 0.75;
         this.widthDistancing = Math.sqrt(3) * size / 2;
         this.rowOffset = this.widthDistancing/2;
         this._grid = this.createGrid();
         this._startCell = this._grid[0][0];
-        this.startCell.visited = true;
-    }
-
-    get grid(): Cell[][] {
-        return this._grid;
-    }
-
-    get totalNumberOfCells(): number {
-        return this.width * this.height;
-    }
-
-    get startCell(): Cell {
-        return this._startCell;
-    }
-
-    public resetVisited(): void {
-        this._grid.flat().forEach(cell => cell.visited = false);
-        this.startCell.visited = true;
-    }
-
-    get numberOfVisitedCells(): number {
-        return this._grid.flat().filter(cell => cell.visited).length;
+        this._startCell.visited = true;
     }
 
     private createGrid(): Cell[][] {

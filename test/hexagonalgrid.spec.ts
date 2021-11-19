@@ -17,5 +17,10 @@ describe('HexagonalGrid', () => {
         expect(rectGrid.numberOfVisitedCells).to.equal(1);
     });
 
+    it('totalNumberOfCells', () => {
+        const rectGrid: HexagonalGrid = new HexagonalGrid(5,5,10);
+        expect(rectGrid.totalNumberOfCells).to.equal(25);
+    });
+
 
 });

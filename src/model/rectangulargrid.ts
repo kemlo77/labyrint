@@ -6,38 +6,16 @@ export class RectangularGrid extends Grid{
     private width: number;
     private height: number;
     private distancing: number;
-    private _grid: Cell[][];
-    private _startCell: Cell;
 
     constructor(width: number, height: number, distancing: number) {
         super();
         this.width = width;
         this.height = height;
+        this._totalNumberOfCells = width * height;
         this.distancing = distancing;
         this._grid = this.createGrid();
         this._startCell = this._grid[0][0];
-        this.startCell.visited = true;
-    }
-
-    get grid(): Cell[][] {
-        return this._grid;
-    }
-
-    get totalNumberOfCells(): number {
-        return this.width * this.height;
-    }
-
-    get startCell(): Cell {
-        return this._startCell;
-    }
-
-    public resetVisited(): void {
-        this._grid.flat().forEach(cell => cell.visited = false);
-        this.startCell.visited = true;
-    }
-
-    get numberOfVisitedCells(): number {
-        return this._grid.flat().filter(cell => cell.visited).length;
+        this._startCell.visited = true;
     }
 
     private createGrid(): Cell[][] {

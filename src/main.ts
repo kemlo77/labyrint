@@ -8,10 +8,11 @@ import { Grid } from './model/grid';
 import { HexagonalGrid } from './model/hexagonalgrid';
 import { BoxedView } from './view/boxedview';
 
-const view: View = new RoundedView();
+
 //const view: View = new BoxedView();
 //const grid: Grid = new RectangularGrid(50,50,10);
-const grid: Grid = new HexagonalGrid(5,5,40);
+const view: View = new RoundedView();
+const grid: Grid = new HexagonalGrid(40,47,14);
 const model: Model = new Model(grid, view);
 const controller: Controller = new Controller(model);
 

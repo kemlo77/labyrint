@@ -12,12 +12,16 @@ export class Model {
     constructor(grid: Grid, view: View) {
         this.grid = grid;
         this.view = view;
-        this.stackOfVisitedCells.push(grid.startCell);
     }   
 
-    public generateLabyrinth(): void {
+    public initialize(): void {
         this.view.clearTheCanvas();
         this.grid.resetVisited();
+        this.stackOfVisitedCells = [this.grid.startCell];
+    }
+
+    public generateLabyrinth(): void {
+        this.initialize();
         let numberOfVisitedCells: number = this.grid.numberOfVisitedCells;
         while(this.grid.totalNumberOfCells > numberOfVisitedCells) {
             while (this.currentCell().hasNoUnvisitedNeighbours && this.visitedStackIsNotEmpty()) {

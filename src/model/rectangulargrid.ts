@@ -32,21 +32,12 @@ export class RectangularGrid extends Grid{
     }
 
     public resetVisited(): void {
-        this._grid.forEach(row => {
-            row.forEach(cell => {
-                cell.visited = false;
-            });
-        });
+        this._grid.flat().forEach(cell => cell.visited = false);
+        this.startCell.visited = true;
     }
 
     get numberOfVisitedCells(): number {
-        let total:number = 0;
-        this._grid.forEach(row => {
-            row.forEach(cell =>{
-                total += (cell.visited?1:0);
-            });
-        });
-        return total;
+        return this._grid.flat().filter(cell => cell.visited).length;
     }
 
     private createGrid(): Cell[][] {

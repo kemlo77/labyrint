@@ -12,7 +12,10 @@ describe('HexagonalGrid', () => {
         expect(rectGrid.grid[4].map(cell => cell.neighbours.length)).to.deep.equal([2,5,3,5,2]);
     });
 
-    it
+    it('numberOfVisitedCells', ()=> {
+        const rectGrid: HexagonalGrid = new HexagonalGrid(5,5,10);
+        expect(rectGrid.numberOfVisitedCells).to.equal(1);
+    });
 
 
 });

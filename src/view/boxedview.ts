@@ -1,10 +1,17 @@
 import { View } from './view';
 
 export class BoxedView extends View {
+
+    private width: number;
+
+    constructor(width: number) {
+        super();
+        this.width = width;
+    }
     
-    drawConnection(x1: number, y1: number, x2:number, y2: number, width: number): void {
+    drawConnection(x1: number, y1: number, x2:number, y2: number): void {
         this.canvasCtx.strokeStyle = 'rgba(255,255,255,1)';
-        this.canvasCtx.lineWidth = width;
+        this.canvasCtx.lineWidth = this.width;
         this.canvasCtx.lineCap = 'square';
         this.canvasCtx.beginPath();
         this.canvasCtx.moveTo(x1, y1);

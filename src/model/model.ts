@@ -35,7 +35,7 @@ export class Model {
     private stepToUnvisitedNeighbour(): void {
         const nextCell: Cell = this.currentCell().randomUnvisitedNeighbour;
         nextCell.visited = true;
-        this.view.drawConnection(this.currentCell().x, this.currentCell().y, nextCell.x,nextCell.y, 8);
+        this.view.drawConnection(this.currentCell().x, this.currentCell().y, nextCell.x,nextCell.y);
         this.stackOfVisitedCells.push(nextCell);
         //this.view.paintCellCenter(nextCell.x, nextCell.y);
     }

@@ -28,7 +28,7 @@ export class HexagonalGrid extends Grid{
             const row: Cell[] = [];
             for (let y: number = 0; y < this.height; y++) {
                 let newX: number = this.widthDistancing + x * this.widthDistancing;
-                if (y%2==0) {
+                if (y%2==1) {
                     newX+= this.rowOffset;
                 }
                 const newY: number = this.heightDistancing + y * this.heightDistancing;

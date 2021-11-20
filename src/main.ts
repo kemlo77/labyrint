@@ -9,10 +9,10 @@ import { HexagonalGrid } from './model/hexagonalgrid';
 import { BoxedView } from './view/boxedview';
 
 
-//const view: View = new BoxedView();
-//const grid: Grid = new RectangularGrid(50,50,10);
-const view: View = new RoundedView();
-const grid: Grid = new HexagonalGrid(40,47,14);
+const view: View = new BoxedView();
+const grid: Grid = new RectangularGrid(52,51,10);
+//const view: View = new RoundedView();
+//const grid: Grid = new HexagonalGrid(42,48,14);
 const model: Model = new Model(grid, view);
 const controller: Controller = new Controller(model);
 

@@ -1,3 +1,4 @@
+import { Coordinate } from '../model/coordinate';
 import { View } from './view';
 
 export class RoundedView extends View {
@@ -9,13 +10,13 @@ export class RoundedView extends View {
         this.width = width;
     }
     
-    drawConnection(x1: number, y1: number, x2:number, y2: number): void {
+    drawConnection(startPoint: Coordinate, endPoint: Coordinate): void {
         this.canvasCtx.strokeStyle = 'rgba(255,255,255,1)';
         this.canvasCtx.lineWidth = this.width;
         this.canvasCtx.lineCap = 'round';
         this.canvasCtx.beginPath();
-        this.canvasCtx.moveTo(x1, y1);
-        this.canvasCtx.lineTo(x2, y2);
+        this.canvasCtx.moveTo(startPoint.x, startPoint.y);
+        this.canvasCtx.lineTo(endPoint.x, endPoint.y);
         this.canvasCtx.stroke();
     }
 

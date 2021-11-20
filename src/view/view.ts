@@ -1,3 +1,5 @@
+import { Coordinate } from '../model/coordinate';
+
 export abstract class View {
 
     private canvasElement: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
@@ -7,12 +9,12 @@ export abstract class View {
         this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
     }
 
-    abstract drawConnection(x1: number, y1: number, x2:number, y2: number): void;
+    abstract drawConnection(startPoint: Coordinate, endPoint: Coordinate): void;
 
-    paintCellCenter(x: number, y: number): void {
+    paintCellCenter(centerPoint: Coordinate): void {
         this.canvasCtx.fillStyle = 'rgba(255,0,0,1)';
         this.canvasCtx.beginPath();
-        this.canvasCtx.arc(x, y, 3, 0, 2 * Math.PI);
+        this.canvasCtx.arc(centerPoint.x, centerPoint.y, 3, 0, 2 * Math.PI);
         this.canvasCtx.fill();
     }
 

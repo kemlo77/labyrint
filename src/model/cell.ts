@@ -1,3 +1,5 @@
+import { Coordinate } from './coordinate';
+
 export class Cell {
 
     private xCoordinate: number;
@@ -45,6 +47,10 @@ export class Cell {
 
     get y(): number {
         return this.yCoordinate;
+    }
+
+    get coordinate(): Coordinate {
+        return {x: this.xCoordinate, y: this.yCoordinate};
     }
 
 }

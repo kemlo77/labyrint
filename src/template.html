@@ -7,9 +7,19 @@
 </head>
 
 <body>
-    <button type="button" id="mazeButton">A-maze me!</button>
-    <button type="button" id="slowMazeButton">Slo-maze me!</button><br>
-    <canvas id="myCanvas" width="506" height="506"></canvas><br>
+    <label>
+        <input name="mazeType" type="radio" value="square-maze" checked />
+        <span>square maze</span>
+    </label>
+
+    <label>
+        <input name="mazeType" type="radio" value="hexagonal-maze"/>
+        <span>hexagonal maze</span>
+    </label>
+    
+    <br>
+    <button type="button" id="mazeButton">A-maze me!</button><br>
+    <canvas id="myCanvas" width="508" height="506"></canvas><br>
     <button type="button" id="unsolveButton">Unsolve it</button>
 </body>
 

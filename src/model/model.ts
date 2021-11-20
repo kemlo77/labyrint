@@ -5,14 +5,17 @@ import { View } from '../view/view';
 
 export class Model {
 
-    private grid: Grid;
-    private view: View;
+    private _grid: Grid;
+    private _view: View;
     private stackOfVisitedCells: Cell[]= [];
 
-    constructor(grid: Grid, view: View) {
-        this.grid = grid;
-        this.view = view;
-    }   
+    set grid(grid: Grid) {
+        this._grid = grid;
+    }
+
+    set view(view: View) {
+        this._view = view;
+    }
 
     private get visitedStackIsNotEmpty(): boolean {
         return this.stackOfVisitedCells.length != 0;
@@ -23,15 +26,15 @@ export class Model {
     }
 
     public initialize(): void {
-        this.view.clearTheCanvas();
-        this.grid.resetVisitedStatusOnCells();
-        this.stackOfVisitedCells = [this.grid.startCell];
+        this._view.clearTheCanvas();
+        this._grid.resetVisitedStatusOnCells();
+        this.stackOfVisitedCells = [this._grid.startCell];
     }
 
     public generateLabyrinth(): void {
         this.initialize();
-        let numberOfVisitedCells: number = this.grid.numberOfVisitedCells;
-        while(this.grid.totalNumberOfCells > numberOfVisitedCells) {
+        let numberOfVisitedCells: number = this._grid.numberOfVisitedCells;
+        while(this._grid.totalNumberOfCells > numberOfVisitedCells) {
             while (this.currentCell.hasNoUnvisitedNeighbours && this.visitedStackIsNotEmpty) {
                 this.stepBackwards();
             }
@@ -43,7 +46,7 @@ export class Model {
     private stepToUnvisitedNeighbour(): void {
         const nextCell: Cell = this.currentCell.randomUnvisitedNeighbour;
         nextCell.visited = true;
-        this.view.drawConnection(this.currentCell.centerCoordinate, nextCell.centerCoordinate);
+        this._view.drawConnection(this.currentCell.centerCoordinate, nextCell.centerCoordinate);
         this.stackOfVisitedCells.push(nextCell);
     }
 

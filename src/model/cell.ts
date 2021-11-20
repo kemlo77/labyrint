@@ -49,7 +49,7 @@ export class Cell {
         return this.yCoordinate;
     }
 
-    get coordinate(): Coordinate {
+    get centerCoordinate(): Coordinate {
         return {x: this.xCoordinate, y: this.yCoordinate};
     }
 

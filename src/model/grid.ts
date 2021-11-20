@@ -20,7 +20,7 @@ export abstract class Grid {
         return this._totalNumberOfCells;
     }
 
-    public resetVisited(): void {
+    public resetVisitedStatusOnCells(): void {
         this._grid.flat().forEach(cell => cell.visited = false);
         this.startCell.visited = true;
     }

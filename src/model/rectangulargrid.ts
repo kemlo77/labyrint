@@ -3,15 +3,15 @@ import { Grid } from './grid';
 
 export class RectangularGrid extends Grid{
 
-    private width: number;
-    private height: number;
+    private columns: number;
+    private rows: number;
     private distancing: number;
 
-    constructor(width: number, height: number, distancing: number) {
+    constructor(columns: number, rows: number, distancing: number) {
         super();
-        this.width = width;
-        this.height = height;
-        this._totalNumberOfCells = width * height;
+        this.columns = columns;
+        this.rows = rows;
+        this._totalNumberOfCells = columns * rows;
         this.distancing = distancing;
         this._grid = this.createGrid();
         this._startCell = this._grid[0][0];
@@ -20,9 +20,9 @@ export class RectangularGrid extends Grid{
 
     private createGrid(): Cell[][] {
         const grid: Cell[][] = [];
-        for (let x: number = 0; x < this.width; x++) {
+        for (let x: number = 0; x < this.columns; x++) {
             const row: Cell[] = [];
-            for (let y: number = 0; y < this.height; y++) {
+            for (let y: number = 0; y < this.rows; y++) {
                 row.push(new Cell(this.distancing +x* this.distancing, this.distancing + y* this.distancing));
             }
             grid.push(row);

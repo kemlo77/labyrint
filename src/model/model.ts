@@ -14,9 +14,17 @@ export class Model {
         this.view = view;
     }   
 
+    private get visitedStackIsNotEmpty(): boolean {
+        return this.stackOfVisitedCells.length != 0;
+    }
+
+    private get currentCell(): Cell {
+        return this.stackOfVisitedCells[this.stackOfVisitedCells.length-1];
+    }
+
     public initialize(): void {
         this.view.clearTheCanvas();
-        this.grid.resetVisited();
+        this.grid.resetVisitedStatusOnCells();
         this.stackOfVisitedCells = [this.grid.startCell];
     }
 
@@ -24,7 +32,7 @@ export class Model {
         this.initialize();
         let numberOfVisitedCells: number = this.grid.numberOfVisitedCells;
         while(this.grid.totalNumberOfCells > numberOfVisitedCells) {
-            while (this.currentCell().hasNoUnvisitedNeighbours && this.visitedStackIsNotEmpty()) {
+            while (this.currentCell.hasNoUnvisitedNeighbours && this.visitedStackIsNotEmpty) {
                 this.stepBackwards();
             }
             this.stepToUnvisitedNeighbour();
@@ -33,9 +41,9 @@ export class Model {
     }
 
     private stepToUnvisitedNeighbour(): void {
-        const nextCell: Cell = this.currentCell().randomUnvisitedNeighbour;
+        const nextCell: Cell = this.currentCell.randomUnvisitedNeighbour;
         nextCell.visited = true;
-        this.view.drawConnection(this.currentCell().coordinate, nextCell.coordinate);
+        this.view.drawConnection(this.currentCell.centerCoordinate, nextCell.centerCoordinate);
         this.stackOfVisitedCells.push(nextCell);
     }
 
@@ -43,11 +51,5 @@ export class Model {
         this.stackOfVisitedCells.pop();
     }
 
-    private visitedStackIsNotEmpty(): boolean {
-        return this.stackOfVisitedCells.length != 0;
-    }
 
-    private currentCell(): Cell {
-        return this.stackOfVisitedCells[this.stackOfVisitedCells.length-1];
-    }
 }

@@ -3,19 +3,19 @@ import { Grid } from './grid';
 
 export class HexagonalGrid extends Grid{
 
-    private width: number;
-    private height: number;
+    private columns: number;
+    private rows: number;
     private heightDistancing: number;
     private widthDistancing: number;
     private rowOffset: number;
 
-    constructor(width: number, height: number, size: number) {
+    constructor(columns: number, rows: number, cellWidth: number) {
         super();
-        this.width = width;
-        this.height = height;
-        this._totalNumberOfCells = width * height;
-        this.heightDistancing = size * 0.75;
-        this.widthDistancing = Math.sqrt(3) * size / 2;
+        this.columns = columns;
+        this.rows = rows;
+        this._totalNumberOfCells = columns * rows;
+        this.heightDistancing = cellWidth * 3 / ( 2 * Math.sqrt(3));
+        this.widthDistancing = cellWidth;
         this.rowOffset = this.widthDistancing/2;
         this._grid = this.createGrid();
         this._startCell = this._grid[0][0];
@@ -24,9 +24,9 @@ export class HexagonalGrid extends Grid{
 
     private createGrid(): Cell[][] {
         const grid: Cell[][] = [];
-        for (let x: number = 0; x < this.width; x++) {
+        for (let x: number = 0; x < this.columns; x++) {
             const row: Cell[] = [];
-            for (let y: number = 0; y < this.height; y++) {
+            for (let y: number = 0; y < this.rows; y++) {
                 let newX: number = this.widthDistancing + x * this.widthDistancing;
                 if (y%2==1) {
                     newX+= this.rowOffset;
@@ -45,18 +45,6 @@ export class HexagonalGrid extends Grid{
         this.connectNeighboursToTheNorth(grid);
         this.connectNeighboursToTheWest(grid);
         this.connectNeighboursToTheEast(grid);
-        this.printGrid(grid);
-
-    }
-
-    private printGrid(givenGrid: Cell[][]): void {
-        let overallString: string = '';
-        this.transposeArrayOfArrays(givenGrid).forEach(x => {
-            const values: string = x.map(cell => cell.neighbours.length + '')
-                .reduce((prev,curr) => {return (prev + ' ' + curr);});
-            overallString += values + '\n';
-        });
-        //console.log(overallString);
     }
 
     private connectNeighboursToTheSouth(grid: Cell[][]): void {

@@ -3,38 +3,38 @@ import { Grid } from './grid';
 
 export class HexagonalGrid extends Grid{
 
-    private columns: number;
-    private rows: number;
-    private heightDistancing: number;
-    private widthDistancing: number;
-    private rowOffset: number;
-
-    constructor(columns: number, rows: number, cellWidth: number) {
-        super();
-        this.columns = columns;
-        this.rows = rows;
-        this._totalNumberOfCells = columns * rows;
-        this.heightDistancing = cellWidth * 3 / ( 2 * Math.sqrt(3));
-        this.widthDistancing = cellWidth;
-        this.rowOffset = this.widthDistancing/2;
-        this._grid = this.createGrid();
-        this._startCell = this._grid[0][0];
-        this._startCell.visited = true;
+    constructor(numberOfColumns: number, numberOfRows: number, cellWidth: number) {
+        super(numberOfColumns, numberOfRows, cellWidth);
+        this.cellMatrix = this.createMatrixOfInterconnectedHexagonalCells();
+        this.startCell = this.cellMatrix[0][0];
+        this.startCell.visited = true;
     }
 
-    private createGrid(): Cell[][] {
+    private get heightDistancing(): number {
+        return this.cellWidth * 3 / ( 2 * Math.sqrt(3));
+    }
+
+    private get widthDistancing(): number {
+        return this.cellWidth;
+    }
+
+    private get rowOffset(): number {
+        return this.cellWidth/2;
+    }
+
+    private createMatrixOfInterconnectedHexagonalCells(): Cell[][] {
         const grid: Cell[][] = [];
-        for (let x: number = 0; x < this.columns; x++) {
-            const row: Cell[] = [];
-            for (let y: number = 0; y < this.rows; y++) {
-                let newX: number = this.widthDistancing + x * this.widthDistancing;
-                if (y%2==1) {
-                    newX+= this.rowOffset;
+        for (let columnIndex: number = 0; columnIndex < this.numberOfColumns; columnIndex++) {
+            const rowOfCells: Cell[] = [];
+            for (let rowIndex: number = 0; rowIndex < this.numberOfRows; rowIndex++) {
+                let xCoordinate: number = this.widthDistancing + columnIndex * this.widthDistancing;
+                if (rowIndex%2==1) {
+                    xCoordinate+= this.rowOffset;
                 }
-                const newY: number = this.heightDistancing + y * this.heightDistancing;
-                row.push(new Cell(newX, newY));
+                const yCoordinate: number = this.heightDistancing + rowIndex * this.heightDistancing;
+                rowOfCells.push(new Cell(xCoordinate, yCoordinate));
             }
-            grid.push(row);
+            grid.push(rowOfCells);
         }
         this.interconnectGrid(grid);
         return grid;
@@ -49,12 +49,12 @@ export class HexagonalGrid extends Grid{
 
     private connectNeighboursToTheSouth(grid: Cell[][]): void {
         const transposedGrid: Cell[][] = this.transposeArrayOfArrays(grid);
-        for (let y: number = 0; y < transposedGrid.length-1; y++) {
-            for (let x: number = 0; x < transposedGrid[y].length; x++) {
-                const currentCell: Cell = transposedGrid[y][x];
-                transposedGrid[y+1]
-                    .filter(cell => { return (cell.x > (currentCell.x - this.widthDistancing * 0.55)); })
-                    .filter(cell => { return (cell.x < (currentCell.x + this.widthDistancing * 0.55)); })
+        for (let rowIndex: number = 0; rowIndex < transposedGrid.length-1; rowIndex++) {
+            for (let columnIndex: number = 0; columnIndex < transposedGrid[rowIndex].length; columnIndex++) {
+                const currentCell: Cell = transposedGrid[rowIndex][columnIndex];
+                const highestAcceptedDistance: number = this.widthDistancing * 0.55;
+                transposedGrid[rowIndex+1]
+                    .filter(cell => (highestAcceptedDistance > Math.abs(currentCell.x - cell.x)))
                     .forEach(cell => currentCell.addNeighbour(cell));
             }
         }
@@ -62,12 +62,12 @@ export class HexagonalGrid extends Grid{
 
     private connectNeighboursToTheNorth(grid: Cell[][]): void {
         const transposedGrid: Cell[][] = this.transposeArrayOfArrays(grid);
-        for (let y: number = 1; y < transposedGrid.length; y++) {
-            for (let x: number = 0; x < transposedGrid[y].length; x++) {
-                const currentCell: Cell = transposedGrid[y][x];
-                transposedGrid[y-1]
-                    .filter(cell => { return (cell.x > (currentCell.x - this.widthDistancing * 0.55)); })
-                    .filter(cell => { return (cell.x < (currentCell.x + this.widthDistancing * 0.55)); })
+        for (let rowIndex: number = 1; rowIndex < transposedGrid.length; rowIndex++) {
+            for (let columnIndex: number = 0; columnIndex < transposedGrid[rowIndex].length; columnIndex++) {
+                const currentCell: Cell = transposedGrid[rowIndex][columnIndex];
+                const highestAcceptedDistance: number = this.widthDistancing * 0.55;
+                transposedGrid[rowIndex-1]
+                    .filter(cell => (highestAcceptedDistance > Math.abs(currentCell.x - cell.x)))
                     .forEach(cell => {currentCell.addNeighbour(cell);});
             }
         }
@@ -86,17 +86,17 @@ export class HexagonalGrid extends Grid{
     }
 
     private connectNeighboursToTheWest(grid: Cell[][]): void {
-        for (let x: number = 1; x < grid.length; x++) {
-            for (let y: number = 0; y < grid[x].length; y++) {
-                grid[x][y].addNeighbour(grid[x - 1][y]);
+        for (let columnIndex: number = 1; columnIndex < grid.length; columnIndex++) {
+            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
+                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex - 1][rowIndex]);
             }
         }
     }
 
     private connectNeighboursToTheEast(grid: Cell[][]): void {
-        for (let x: number = 0; x < grid.length - 1; x++) {
-            for (let y: number = 0; y < grid[x].length; y++) {
-                grid[x][y].addNeighbour(grid[x + 1][y]);
+        for (let columnIndex: number = 0; columnIndex < grid.length - 1; columnIndex++) {
+            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
+                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex + 1][rowIndex]);
             }
         }
     }

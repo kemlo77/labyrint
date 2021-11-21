@@ -2,30 +2,56 @@ import { Cell } from './cell';
 
 export abstract class Grid {
 
-    protected _grid: Cell[][];
+    private _numberOfColumns: number;
+    private _numberOfRows: number;
+    private _cellWidth: number;
+    private _cellMatrix: Cell[][];
+    private _startCell: Cell;
 
-    protected _totalNumberOfCells: number;
+    constructor(numberOfColumns: number, numberOfRows: number, cellWidth: number) {
+        this._numberOfColumns = numberOfColumns;
+        this._numberOfRows = numberOfRows;
+        this._cellWidth = cellWidth;
+    }
 
-    protected _startCell: Cell;
+    get numberOfColumns(): number {
+        return this._numberOfColumns;
+    }
+
+    get numberOfRows(): number {
+        return this._numberOfRows;
+    }
+
+    get cellWidth(): number {
+        return this._cellWidth;
+    }
 
     get startCell(): Cell {
         return this._startCell;
     }
 
-    get grid(): Cell[][] {
-        return this._grid;
+    protected set startCell(cell: Cell) {
+        this._startCell = cell;
+    }
+
+    get cellMatrix(): Cell[][] {
+        return this._cellMatrix;
+    }
+
+    protected set cellMatrix(cellMatrix: Cell[][]) {
+        this._cellMatrix = cellMatrix;
     }
 
     get totalNumberOfCells(): number {
-        return this._totalNumberOfCells;
+        return this._numberOfColumns * this._numberOfRows;
     }
 
     public resetVisitedStatusOnCells(): void {
-        this._grid.flat().forEach(cell => cell.visited = false);
+        this._cellMatrix.flat().forEach(cell => cell.visited = false);
         this.startCell.visited = true;
     }
 
     get numberOfVisitedCells(): number {
-        return this._grid.flat().filter(cell => cell.visited).length;
+        return this._cellMatrix.flat().filter(cell => cell.visited).length;
     }
 }

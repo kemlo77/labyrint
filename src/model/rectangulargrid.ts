@@ -3,29 +3,23 @@ import { Grid } from './grid';
 
 export class RectangularGrid extends Grid{
 
-    private columns: number;
-    private rows: number;
-    private distancing: number;
-
-    constructor(columns: number, rows: number, distancing: number) {
-        super();
-        this.columns = columns;
-        this.rows = rows;
-        this._totalNumberOfCells = columns * rows;
-        this.distancing = distancing;
-        this._grid = this.createGrid();
-        this._startCell = this._grid[0][0];
-        this._startCell.visited = true;
+    constructor(numberOfColumns: number, numberOfRows: number, cellWidth: number) {
+        super(numberOfColumns, numberOfRows, cellWidth);
+        this.cellMatrix = this.createMatrixOfInterconnectedSquareCells();
+        this.startCell = this.cellMatrix[0][0];
+        this.startCell.visited = true;
     }
 
-    private createGrid(): Cell[][] {
+    private createMatrixOfInterconnectedSquareCells(): Cell[][] {
         const grid: Cell[][] = [];
-        for (let x: number = 0; x < this.columns; x++) {
-            const row: Cell[] = [];
-            for (let y: number = 0; y < this.rows; y++) {
-                row.push(new Cell(this.distancing +x* this.distancing, this.distancing + y* this.distancing));
+        for (let columnIndex: number = 0; columnIndex < this.numberOfColumns; columnIndex++) {
+            const rowOfCells: Cell[] = [];
+            for (let rowIndex: number = 0; rowIndex < this.numberOfRows; rowIndex++) {
+                const xCoordinate: number = this.cellWidth + columnIndex * this.cellWidth;
+                const yCoordinate: number = this.cellWidth + rowIndex * this.cellWidth;
+                rowOfCells.push(new Cell(xCoordinate, yCoordinate));
             }
-            grid.push(row);
+            grid.push(rowOfCells);
         }
         this.interconnectGrid(grid);
         return grid;
@@ -39,33 +33,33 @@ export class RectangularGrid extends Grid{
     }
 
     private connectNeighboursToTheSouth(grid: Cell[][]): void {
-        for (let x: number = 0; x < grid.length; x++) {
-            for (let y: number = 0; y < grid[x].length - 1; y++) {
-                grid[x][y].addNeighbour(grid[x][y + 1]);
+        for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
+            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
+                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex + 1]);
             }
         }
     }
 
     private connectNeighboursToTheNorth(grid: Cell[][]): void {
-        for (let x: number = 0; x < grid.length; x++) {
-            for (let y: number = 1; y < grid[x].length; y++) {
-                grid[x][y].addNeighbour(grid[x][y - 1]);
+        for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
+            for (let rowIndex: number = 1; rowIndex < grid[columnIndex].length; rowIndex++) {
+                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex - 1]);
             }
         }
     }
 
     private connectNeighboursToTheWest(grid: Cell[][]): void {
-        for (let x: number = 1; x < grid.length; x++) {
-            for (let y: number = 0; y < grid[x].length; y++) {
-                grid[x][y].addNeighbour(grid[x - 1][y]);
+        for (let columnIndex: number = 1; columnIndex < grid.length; columnIndex++) {
+            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
+                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex - 1][rowIndex]);
             }
         }
     }
 
     private connectNeighboursToTheEast(grid: Cell[][]): void {
-        for (let x: number = 0; x < grid.length - 1; x++) {
-            for (let y: number = 0; y < grid[x].length; y++) {
-                grid[x][y].addNeighbour(grid[x + 1][y]);
+        for (let columnIndex: number = 0; columnIndex < grid.length - 1; columnIndex++) {
+            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
+                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex + 1][rowIndex]);
             }
         }
     }

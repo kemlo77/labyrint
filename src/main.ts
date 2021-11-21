@@ -7,24 +7,19 @@ import { HexagonalGrid } from './model/hexagonalgrid';
 import { BoxedView } from './view/boxedview';
 
 const model: Model = new Model();
-setGridAndViewInModel('square-maze');
 const controller: Controller = new Controller(model);
 
-document.getElementById('mazeButton').addEventListener('click', () => controller.aMazeMe());
+document.getElementById('squareMazeButton').addEventListener('click', () => createSquareMaze());
+document.getElementById('hexagonalMazeButton').addEventListener('click', () => createHexagonalMaze());
 
-document.querySelectorAll('input[name="mazeType"]').forEach((elem) => {
-    elem.addEventListener('change', (event) => {
-        const item: string = (event.target as HTMLInputElement).value;
-        setGridAndViewInModel(item);
-    });
-});
+function createSquareMaze(): void {
+    model.grid = new RectangularGrid(45,45,11);
+    model.view = new BoxedView(10);
+    controller.aMazeMe();
+}
 
-function setGridAndViewInModel(type: string): void {
-    if( type == 'square-maze') {
-        model.grid = new RectangularGrid(45,45,11);
-        model.view = new BoxedView(10);
-    } else {
-        model.grid = new HexagonalGrid(38,44,13);
-        model.view = new RoundedView(10);
-    }
+function createHexagonalMaze(): void {
+    model.grid = new HexagonalGrid(38,44,13);
+    model.view = new RoundedView(10);
+    controller.aMazeMe();
 }

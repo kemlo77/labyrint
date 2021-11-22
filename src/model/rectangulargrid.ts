@@ -8,6 +8,7 @@ export class RectangularGrid extends Grid{
         this.cellMatrix = this.createMatrixOfInterconnectedSquareCells();
         this.startCell = this.cellMatrix[0][0];
         this.startCell.visited = true;
+        this.endCell = this.cellMatrix[this.numberOfColumns-1][this.numberOfRows-1];
     }
 
     private createMatrixOfInterconnectedSquareCells(): Cell[][] {

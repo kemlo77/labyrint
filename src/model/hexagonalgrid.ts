@@ -8,6 +8,7 @@ export class HexagonalGrid extends Grid{
         this.cellMatrix = this.createMatrixOfInterconnectedHexagonalCells();
         this.startCell = this.cellMatrix[0][0];
         this.startCell.visited = true;
+        this.endCell = this.cellMatrix[this.numberOfColumns-1][this.numberOfRows-1];
     }
 
     private get heightDistancing(): number {

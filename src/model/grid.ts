@@ -7,6 +7,7 @@ export abstract class Grid {
     private _cellWidth: number;
     private _cellMatrix: Cell[][];
     private _startCell: Cell;
+    private _endCell: Cell;
 
     constructor(numberOfColumns: number, numberOfRows: number, cellWidth: number) {
         this._numberOfColumns = numberOfColumns;
@@ -32,6 +33,14 @@ export abstract class Grid {
 
     protected set startCell(cell: Cell) {
         this._startCell = cell;
+    }
+
+    get endCell(): Cell {
+        return this._endCell;
+    }
+
+    protected set endCell(cell: Cell) {
+        this._endCell = cell;
     }
 
     get cellMatrix(): Cell[][] {

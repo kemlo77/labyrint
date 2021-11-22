@@ -18,4 +18,14 @@ export abstract class View {
         this.canvasCtx.fill();
     }
 
+    drawTrail(startPoint: Coordinate, endPoint: Coordinate): void {
+        this.canvasCtx.strokeStyle = 'rgba(0,0,255,1)';
+        this.canvasCtx.lineWidth = 2;
+        this.canvasCtx.lineCap = 'round';
+        this.canvasCtx.beginPath();
+        this.canvasCtx.moveTo(startPoint.x, startPoint.y);
+        this.canvasCtx.lineTo(endPoint.x, endPoint.y);
+        this.canvasCtx.stroke();
+    }
+
 }

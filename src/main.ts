@@ -11,6 +11,8 @@ const controller: Controller = new Controller(model);
 
 document.getElementById('squareMazeButton').addEventListener('click', () => createSquareMaze());
 document.getElementById('hexagonalMazeButton').addEventListener('click', () => createHexagonalMaze());
+document.getElementById('showTrailButton').addEventListener('click', () => model.showSolution());
+
 
 function createSquareMaze(): void {
     model.grid = new RectangularGrid(45,45,11);

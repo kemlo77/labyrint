@@ -3,21 +3,19 @@ import { View } from './view';
 
 export class RoundedView extends View {
 
-    private width: number;
-
-    constructor(width: number) {
+    constructor(private width: number) {
         super();
-        this.width = width;
     }
     
     drawConnection(startPoint: Coordinate, endPoint: Coordinate): void {
-        this.canvasCtx.strokeStyle = 'rgba(255,255,255,1)';
-        this.canvasCtx.lineWidth = this.width;
-        this.canvasCtx.lineCap = 'round';
+        this.drawLine(startPoint, endPoint, this.width, this.mazeColor);
+    }
+
+    fillCell(center: Coordinate): void {
+        this.canvasCtx.fillStyle = 'rgba(0,0,0,1)';
         this.canvasCtx.beginPath();
-        this.canvasCtx.moveTo(startPoint.x, startPoint.y);
-        this.canvasCtx.lineTo(endPoint.x, endPoint.y);
-        this.canvasCtx.stroke();
+        this.canvasCtx.arc(center.x, center.y, (this.width+3)/2, 0, 2 * Math.PI);
+        this.canvasCtx.fill();
     }
 
 }

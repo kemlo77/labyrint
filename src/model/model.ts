@@ -29,6 +29,7 @@ export class Model {
     public initialize(): void {
         this._view.clearTheCanvas();
         this._grid.resetVisitedStatusOnCells();
+        this._grid.removeEstablishedConnectionsInCells();
         this._sequenceOfVisitedCells = [this._grid.startCell];
         this._solutionSequence = [];
     }
@@ -48,6 +49,7 @@ export class Model {
     private stepToUnvisitedNeighbour(): void {
         const nextCell: Cell = this.currentCell.randomUnvisitedNeighbour;
         nextCell.visited = true;
+        this.currentCell.interconnectToCell(nextCell);
         this._view.drawConnection(this.currentCell.centerCoordinate, nextCell.centerCoordinate);
         this._sequenceOfVisitedCells.push(nextCell);
         if ( nextCell === this._grid.endCell) {
@@ -65,7 +67,25 @@ export class Model {
             const nextCell: Cell = this._solutionSequence[index + 1];
             this._view.drawTrail(currentCell.centerCoordinate, nextCell.centerCoordinate);    
         }
-        
+    }
+
+    public hideSolution(): void {
+        for (let index: number = 0; index < this._solutionSequence.length - 1; index++) {
+            const currentCell: Cell = this._solutionSequence[index];
+            const nextCell: Cell = this._solutionSequence[index + 1];
+            this._view.concealTrail(currentCell.centerCoordinate, nextCell.centerCoordinate);    
+        }
+    }
+
+    public unSolveIt(): void {
+        this._grid.cellMatrix.flat()
+            .filter(cell => cell.connectedNeighbouringCells.length ==1)
+            .filter(cell => cell != this._grid.startCell)
+            .filter(cell => cell != this._grid.endCell)
+            .forEach(cell => {
+                cell.removeInterConnectionsToCell();
+                this._view.fillCell(cell.centerCoordinate);
+            });
     }
 
 

@@ -6,6 +6,7 @@ export class Cell {
     private yCoordinate: number;
     private hasBeenVisited: boolean = false;
     private neighbouringCells: Cell[] = [];
+    private _connectedNeighbouringCells: Cell[] = [];
 
     constructor(x: number, y: number) {
         this.xCoordinate = x;
@@ -39,6 +40,38 @@ export class Cell {
 
     set visited(visited: boolean) {
         this.hasBeenVisited = visited;
+    }
+
+    get connectedNeighbouringCells(): Cell[]  {
+        return this._connectedNeighbouringCells;
+    }
+
+    removeEstablishedConnections(): void {
+        this._connectedNeighbouringCells = [];
+    }
+
+    private addConnection(toCell: Cell): void {
+        this._connectedNeighbouringCells.push(toCell);
+    }
+
+    private removeConnection(toCell: Cell): void {
+        const index: number = this._connectedNeighbouringCells.indexOf(toCell);
+        if (index > -1) {
+            this._connectedNeighbouringCells.splice(index, 1);
+        }
+    }
+
+    interconnectToCell(cell: Cell): void {
+        this.addConnection(cell);
+        cell.addConnection(this);
+    }
+
+    removeInterConnectionsToCell(): void{
+        const interConnectedCells: Cell[] = [...this.connectedNeighbouringCells];
+        interConnectedCells.forEach(otherCell => {
+            this.removeConnection(otherCell);
+            otherCell.removeConnection(this);
+        });
     }
 
     get x(): number{

@@ -2,17 +2,15 @@ import { Cell } from './cell';
 
 export abstract class Grid {
 
-    private _numberOfColumns: number;
-    private _numberOfRows: number;
-    private _cellWidth: number;
     private _cellMatrix: Cell[][];
     private _startCell: Cell;
     private _endCell: Cell;
 
-    constructor(numberOfColumns: number, numberOfRows: number, cellWidth: number) {
-        this._numberOfColumns = numberOfColumns;
-        this._numberOfRows = numberOfRows;
-        this._cellWidth = cellWidth;
+    constructor(
+        private _numberOfColumns: number,
+        private _numberOfRows: number,
+        private _cellWidth: number) {
+        //
     }
 
     get numberOfColumns(): number {
@@ -58,6 +56,10 @@ export abstract class Grid {
     public resetVisitedStatusOnCells(): void {
         this._cellMatrix.flat().forEach(cell => cell.visited = false);
         this.startCell.visited = true;
+    }
+
+    public removeEstablishedConnectionsInCells(): void {
+        this._cellMatrix.flat().forEach(cell => cell.removeEstablishedConnections());
     }
 
     get numberOfVisitedCells(): number {

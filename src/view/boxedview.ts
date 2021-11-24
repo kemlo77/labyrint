@@ -3,11 +3,8 @@ import { View } from './view';
 
 export class BoxedView extends View {
 
-    private width: number;
-
-    constructor(width: number) {
+    constructor(private width: number) {
         super();
-        this.width = width;
     }
     
     drawConnection(startPoint: Coordinate, endPoint: Coordinate): void {
@@ -18,6 +15,13 @@ export class BoxedView extends View {
         this.canvasCtx.moveTo(startPoint.x, startPoint.y);
         this.canvasCtx.lineTo(endPoint.x, endPoint.y);
         this.canvasCtx.stroke();
+    }
+
+    fillCell(center: Coordinate): void {
+        this.canvasCtx.fillStyle= 'rgba(0,0,0,1)';
+        const squareWidth: number = this.width+1;
+        this.canvasCtx.rect(center.x-squareWidth/2,center.y-squareWidth/2, squareWidth, squareWidth);
+        this.canvasCtx.fill();
     }
 
 }

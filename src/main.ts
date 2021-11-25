@@ -14,24 +14,24 @@ document.getElementById('squareMazeButton').addEventListener('click', () => crea
 document.getElementById('roundedMazeButton').addEventListener('click', () => createRoundedMaze());
 document.getElementById('hexagonalMazeButton').addEventListener('click', () => createHexagonalMaze());
 
-document.getElementById('unsolveButton').addEventListener('click', () => model.unSolveIt());
+document.getElementById('simplifyButton').addEventListener('click', () => model.reduceSomeComplexity());
 document.getElementById('showTrailButton').addEventListener('click', () => model.showSolution());
 document.getElementById('hideTrailButton').addEventListener('click', () => model.hideSolution());
 
 function createSquareMaze(): void {
-    model.grid = new RectangularGrid(45,45,11);
-    model.view = new BoxedView(10);
-    controller.aMazeMe();
+    model.grid = new RectangularGrid(69,43,15);
+    model.view = new BoxedView(14);
+    controller.generateLabyrinth();
 }
 
 function createRoundedMaze(): void {
-    model.grid = new HexagonalGrid(24,28,20);
+    model.grid = new HexagonalGrid(51,37,20);
     model.view = new RoundedView(16);
-    controller.aMazeMe();
+    controller.generateLabyrinth();
 }
 
 function createHexagonalMaze(): void {
-    model.grid = new HexagonalGrid(24,28,20);
+    model.grid = new HexagonalGrid(51,37,20);
     model.view = new HoneycombView(18);
-    controller.aMazeMe();
+    controller.generateLabyrinth();
 }

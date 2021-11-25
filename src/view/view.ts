@@ -33,7 +33,7 @@ export abstract class View {
 
     concealTrail(startPoint: Coordinate, endPoint: Coordinate): void {
         this.canvasCtx.strokeStyle = this.mazeColor;
-        this.canvasCtx.lineWidth = 3;
+        this.canvasCtx.lineWidth = 4;
         this.canvasCtx.lineCap = 'round';
         this.canvasCtx.beginPath();
         this.canvasCtx.moveTo(startPoint.x, startPoint.y);

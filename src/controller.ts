@@ -8,7 +8,7 @@ export class Controller {
         this.model = model;
     }
 
-    public aMazeMe(): void {        
+    public generateLabyrinth(): void {        
         this.model.generateLabyrinth();
     }
 }

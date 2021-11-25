@@ -77,7 +77,10 @@ export class Model {
         }
     }
 
-    public unSolveIt(): void {
+    public reduceSomeComplexity(): void {
+        if(!this._grid) {
+            return;
+        }
         this._grid.cellMatrix.flat()
             .filter(cell => cell.connectedNeighbouringCells.length ==1)
             .filter(cell => cell != this._grid.startCell)

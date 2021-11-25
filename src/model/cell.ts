@@ -13,12 +13,12 @@ export class Cell {
         this.yCoordinate = y;
     }
 
-    get neighbours(): Cell[]  {
+    get neighbours(): Cell[] {
         return this.neighbouringCells;
     }
 
     get unvisitedNeighbours(): Cell[] {
-        return this.neighbouringCells.filter(cell => cell.visited == false);
+        return this.neighbouringCells.filter(cell => !cell.visited);
     }
 
     get hasNoUnvisitedNeighbours(): boolean {
@@ -26,7 +26,7 @@ export class Cell {
     }
 
     get randomUnvisitedNeighbour(): Cell {
-        const randomIndex: number = Math.floor(Math.random()* this.unvisitedNeighbours.length);
+        const randomIndex: number = Math.floor(Math.random() * this.unvisitedNeighbours.length);
         return this.unvisitedNeighbours[randomIndex];
     }
 
@@ -42,7 +42,7 @@ export class Cell {
         this.hasBeenVisited = visited;
     }
 
-    get connectedNeighbouringCells(): Cell[]  {
+    get connectedNeighbouringCells(): Cell[] {
         return this._connectedNeighbouringCells;
     }
 
@@ -66,7 +66,7 @@ export class Cell {
         cell.addConnection(this);
     }
 
-    removeInterConnectionsToCell(): void{
+    removeInterConnectionsToCell(): void {
         const interConnectedCells: Cell[] = [...this.connectedNeighbouringCells];
         interConnectedCells.forEach(otherCell => {
             this.removeConnection(otherCell);
@@ -74,7 +74,7 @@ export class Cell {
         });
     }
 
-    get x(): number{
+    get x(): number {
         return this.xCoordinate;
     }
 
@@ -83,7 +83,7 @@ export class Cell {
     }
 
     get centerCoordinate(): Coordinate {
-        return {x: this.xCoordinate, y: this.yCoordinate};
+        return { x: this.xCoordinate, y: this.yCoordinate };
     }
 
 }

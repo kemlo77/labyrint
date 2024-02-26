@@ -4,13 +4,13 @@ export class Cell {
 
     private xCoordinate: number;
     private yCoordinate: number;
+    private _center: Coordinate;
     private hasBeenVisited: boolean = false;
     private neighbouringCells: Cell[] = [];
     private _connectedNeighbouringCells: Cell[] = [];
 
-    constructor(x: number, y: number) {
-        this.xCoordinate = x;
-        this.yCoordinate = y;
+    constructor(center: Coordinate) {
+        this._center = center;
     }
 
     get neighbours(): Cell[] {
@@ -74,16 +74,8 @@ export class Cell {
         });
     }
 
-    get x(): number {
-        return this.xCoordinate;
-    }
-
-    get y(): number {
-        return this.yCoordinate;
-    }
-
-    get centerCoordinate(): Coordinate {
-        return { x: this.xCoordinate, y: this.yCoordinate };
+    get center(): Coordinate {
+        return this._center;
     }
 
 }

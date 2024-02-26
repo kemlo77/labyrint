@@ -1,14 +1,15 @@
-import {Cell} from './cell';
+import { Cell } from './cell';
 import { Grid } from './grid';
+import { Coordinate } from './coordinate';
 
-export class RectangularGrid extends Grid{
+export class RectangularGrid extends Grid {
 
     constructor(numberOfColumns: number, numberOfRows: number, cellWidth: number) {
         super(numberOfColumns, numberOfRows, cellWidth);
         this.cellMatrix = this.createMatrixOfInterconnectedSquareCells();
         this.startCell = this.cellMatrix[0][0];
         this.startCell.visited = true;
-        this.endCell = this.cellMatrix[this.numberOfColumns-1][this.numberOfRows-1];
+        this.endCell = this.cellMatrix[this.numberOfColumns - 1][this.numberOfRows - 1];
     }
 
     private createMatrixOfInterconnectedSquareCells(): Cell[][] {
@@ -18,7 +19,8 @@ export class RectangularGrid extends Grid{
             for (let rowIndex: number = 0; rowIndex < this.numberOfRows; rowIndex++) {
                 const xCoordinate: number = this.cellWidth + columnIndex * this.cellWidth;
                 const yCoordinate: number = this.cellWidth + rowIndex * this.cellWidth;
-                rowOfCells.push(new Cell(xCoordinate, yCoordinate));
+                const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
+                rowOfCells.push(new Cell(center));
             }
             grid.push(rowOfCells);
         }

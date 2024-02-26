@@ -23,7 +23,7 @@ export class Model {
     }
 
     private get currentCell(): Cell {
-        return this._sequenceOfVisitedCells[this._sequenceOfVisitedCells.length-1];
+        return this._sequenceOfVisitedCells[this._sequenceOfVisitedCells.length - 1];
     }
 
     public initialize(): void {
@@ -37,7 +37,7 @@ export class Model {
     public generateLabyrinth(): void {
         this.initialize();
         let numberOfVisitedCells: number = this._grid.numberOfVisitedCells;
-        while(this._grid.totalNumberOfCells > numberOfVisitedCells) {
+        while (this._grid.totalNumberOfCells > numberOfVisitedCells) {
             while (this.currentCell.hasNoUnvisitedNeighbours && this.visitedStackIsNotEmpty) {
                 this.stepBackwards();
             }
@@ -50,9 +50,9 @@ export class Model {
         const nextCell: Cell = this.currentCell.randomUnvisitedNeighbour;
         nextCell.visited = true;
         this.currentCell.interconnectToCell(nextCell);
-        this._view.drawConnection(this.currentCell.centerCoordinate, nextCell.centerCoordinate);
+        this._view.drawConnection(this.currentCell.center, nextCell.center);
         this._sequenceOfVisitedCells.push(nextCell);
-        if ( nextCell === this._grid.endCell) {
+        if (nextCell === this._grid.endCell) {
             this._solutionSequence = [...this._sequenceOfVisitedCells];
         }
     }
@@ -65,7 +65,7 @@ export class Model {
         for (let index: number = 0; index < this._solutionSequence.length - 1; index++) {
             const currentCell: Cell = this._solutionSequence[index];
             const nextCell: Cell = this._solutionSequence[index + 1];
-            this._view.drawTrail(currentCell.centerCoordinate, nextCell.centerCoordinate);    
+            this._view.drawTrail(currentCell.center, nextCell.center);
         }
     }
 
@@ -73,21 +73,21 @@ export class Model {
         for (let index: number = 0; index < this._solutionSequence.length - 1; index++) {
             const currentCell: Cell = this._solutionSequence[index];
             const nextCell: Cell = this._solutionSequence[index + 1];
-            this._view.concealTrail(currentCell.centerCoordinate, nextCell.centerCoordinate);    
+            this._view.concealTrail(currentCell.center, nextCell.center);
         }
     }
 
     public reduceSomeComplexity(): void {
-        if(!this._grid) {
+        if (!this._grid) {
             return;
         }
         this._grid.cellMatrix.flat()
-            .filter(cell => cell.connectedNeighbouringCells.length ==1)
+            .filter(cell => cell.connectedNeighbouringCells.length == 1)
             .filter(cell => cell != this._grid.startCell)
             .filter(cell => cell != this._grid.endCell)
             .forEach(cell => {
                 cell.removeInterConnectionsToCell();
-                this._view.fillCell(cell.centerCoordinate);
+                this._view.fillCell(cell.center);
             });
     }
 

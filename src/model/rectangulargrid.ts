@@ -17,8 +17,8 @@ export class RectangularGrid extends Grid {
         for (let columnIndex: number = 0; columnIndex < this.numberOfColumns; columnIndex++) {
             const rowOfCells: Cell[] = [];
             for (let rowIndex: number = 0; rowIndex < this.numberOfRows; rowIndex++) {
-                const xCoordinate: number = this.cellWidth + columnIndex * this.cellWidth;
-                const yCoordinate: number = this.cellWidth + rowIndex * this.cellWidth;
+                const xCoordinate: number = this.cellWidth * (columnIndex + 1);
+                const yCoordinate: number = this.cellWidth * (rowIndex + 1);
                 const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
                 rowOfCells.push(new Cell(center));
             }

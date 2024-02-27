@@ -12,12 +12,8 @@ export class HexagonalGrid extends Grid {
         this.endCell = this.cellMatrix[this.numberOfColumns - 1][this.numberOfRows - 1];
     }
 
-    private get heightDistancing(): number {
-        return this.cellWidth * 3 / (2 * Math.sqrt(3));
-    }
-
-    private get widthDistancing(): number {
-        return this.cellWidth;
+    private get cellHeight(): number {
+        return this.cellWidth * Math.sqrt(3) / 2;
     }
 
     private get rowOffset(): number {
@@ -29,11 +25,11 @@ export class HexagonalGrid extends Grid {
         for (let columnIndex: number = 0; columnIndex < this.numberOfColumns; columnIndex++) {
             const rowOfCells: Cell[] = [];
             for (let rowIndex: number = 0; rowIndex < this.numberOfRows; rowIndex++) {
-                let xCoordinate: number = this.widthDistancing + columnIndex * this.widthDistancing;
+                let xCoordinate: number = this.cellWidth * (columnIndex + 1);
                 if (rowIndex % 2 == 1) {
                     xCoordinate += this.rowOffset;
                 }
-                const yCoordinate: number = this.heightDistancing + rowIndex * this.heightDistancing;
+                const yCoordinate: number = this.cellHeight * (rowIndex + 1);
                 const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
                 rowOfCells.push(new Cell(center));
             }
@@ -55,7 +51,7 @@ export class HexagonalGrid extends Grid {
         for (let rowIndex: number = 0; rowIndex < transposedGrid.length - 1; rowIndex++) {
             for (let columnIndex: number = 0; columnIndex < transposedGrid[rowIndex].length; columnIndex++) {
                 const currentCell: Cell = transposedGrid[rowIndex][columnIndex];
-                const highestAcceptedDistance: number = this.widthDistancing * 0.55;
+                const highestAcceptedDistance: number = this.cellWidth * 0.55;
                 transposedGrid[rowIndex + 1]
                     .filter(cell => (highestAcceptedDistance > Math.abs(currentCell.center.x - cell.center.x)))
                     .forEach(cell => currentCell.addNeighbour(cell));
@@ -68,7 +64,7 @@ export class HexagonalGrid extends Grid {
         for (let rowIndex: number = 1; rowIndex < transposedGrid.length; rowIndex++) {
             for (let columnIndex: number = 0; columnIndex < transposedGrid[rowIndex].length; columnIndex++) {
                 const currentCell: Cell = transposedGrid[rowIndex][columnIndex];
-                const highestAcceptedDistance: number = this.widthDistancing * 0.55;
+                const highestAcceptedDistance: number = this.cellWidth * 0.55;
                 transposedGrid[rowIndex - 1]
                     .filter(cell => (highestAcceptedDistance > Math.abs(currentCell.center.x - cell.center.x)))
                     .forEach(cell => { currentCell.addNeighbour(cell); });

@@ -1,28 +1,16 @@
 import { Cell } from './cell';
 
-export abstract class Grid {
+export class Grid {
 
     private _cellMatrix: Cell[][];
     private _startCell: Cell;
     private _endCell: Cell;
 
-    constructor(
-        private _numberOfColumns: number,
-        private _numberOfRows: number,
-        private _cellWidth: number) {
-        //
-    }
-
-    get numberOfColumns(): number {
-        return this._numberOfColumns;
-    }
-
-    get numberOfRows(): number {
-        return this._numberOfRows;
-    }
-
-    get cellWidth(): number {
-        return this._cellWidth;
+    constructor(interconnectedCells: Cell[][], startCell: Cell, endCell: Cell) {
+        this._cellMatrix = interconnectedCells;
+        this._startCell = startCell;
+        this._startCell.visited = true;
+        this._endCell = endCell;
     }
 
     get startCell(): Cell {
@@ -41,28 +29,25 @@ export abstract class Grid {
         this._endCell = cell;
     }
 
-    get cellMatrix(): Cell[][] {
-        return this._cellMatrix;
-    }
-
-    protected set cellMatrix(cellMatrix: Cell[][]) {
-        this._cellMatrix = cellMatrix;
+    get allCells(): Cell[] {
+        return this._cellMatrix.flat();
     }
 
     get totalNumberOfCells(): number {
-        return this._numberOfColumns * this._numberOfRows;
+        return this._cellMatrix.flat().length;
+    }
+
+    get numberOfVisitedCells(): number {
+        return this.allCells.filter(cell => cell.visited).length;
     }
 
     public resetVisitedStatusOnCells(): void {
-        this._cellMatrix.flat().forEach(cell => cell.visited = false);
+        this.allCells.forEach(cell => cell.visited = false);
         this.startCell.visited = true;
     }
 
     public removeEstablishedConnectionsInCells(): void {
-        this._cellMatrix.flat().forEach(cell => cell.removeEstablishedConnections());
+        this.allCells.forEach(cell => cell.removeEstablishedConnections());
     }
 
-    get numberOfVisitedCells(): number {
-        return this._cellMatrix.flat().filter(cell => cell.visited).length;
-    }
 }

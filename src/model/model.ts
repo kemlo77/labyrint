@@ -81,7 +81,7 @@ export class Model {
         if (!this._grid) {
             return;
         }
-        this._grid.cellMatrix.flat()
+        this._grid.allCells
             .filter(cell => cell.connectedNeighbouringCells.length == 1)
             .filter(cell => cell != this._grid.startCell)
             .filter(cell => cell != this._grid.endCell)

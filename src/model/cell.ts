@@ -2,15 +2,23 @@ import { Coordinate } from './coordinate';
 
 export class Cell {
 
-    private xCoordinate: number;
-    private yCoordinate: number;
     private _center: Coordinate;
+    private _width: number;
     private hasBeenVisited: boolean = false;
     private neighbouringCells: Cell[] = [];
     private _connectedNeighbouringCells: Cell[] = [];
 
-    constructor(center: Coordinate) {
+    constructor(center: Coordinate, width: number) {
         this._center = center;
+        this._width = width;
+    }
+
+    get center(): Coordinate {
+        return this._center;
+    }
+
+    get width(): number {
+        return this._width;
     }
 
     get neighbours(): Cell[] {
@@ -72,10 +80,6 @@ export class Cell {
             this.removeConnection(otherCell);
             otherCell.removeConnection(this);
         });
-    }
-
-    get center(): Coordinate {
-        return this._center;
     }
 
 }

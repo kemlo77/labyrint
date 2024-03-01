@@ -1,8 +1,8 @@
 import './style.css';
 import { Controller } from './controller';
 import { Model } from './model/model';
-import { RectangularGrid } from './model/rectangulargrid';
-import { HexagonalGrid } from './model/hexagonalgrid';
+import { RectangularGridCreator } from './model/rectangulargridcreator';
+import { HexagonalGridCreator } from './model/hexagonalgridcreator';
 import { RoundedView } from './view/roundedview';
 import { BoxedView } from './view/boxedview';
 import { HoneycombView } from './view/honeycombview';
@@ -19,19 +19,19 @@ document.getElementById('showTrailButton').addEventListener('click', () => model
 document.getElementById('hideTrailButton').addEventListener('click', () => model.hideSolution());
 
 function createSquareMaze(): void {
-    model.grid = new RectangularGrid(69,43,15);
+    model.grid = RectangularGridCreator.createGrid(69, 43, 15);
     model.view = new BoxedView(14);
     controller.generateLabyrinth();
 }
 
 function createRoundedMaze(): void {
-    model.grid = new HexagonalGrid(51,37,20);
+    model.grid = HexagonalGridCreator.createGrid(51, 37, 20);
     model.view = new RoundedView(16);
     controller.generateLabyrinth();
 }
 
 function createHexagonalMaze(): void {
-    model.grid = new HexagonalGrid(51,37,20);
+    model.grid = HexagonalGridCreator.createGrid(51, 37, 20);
     model.view = new HoneycombView(18);
     controller.generateLabyrinth();
 }

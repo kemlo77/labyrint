@@ -33,6 +33,11 @@ export class Grid {
         return this._cellMatrix.flat();
     }
 
+    get cellMatrix(): Cell[][] {
+        return this._cellMatrix;
+    }
+   
+
     get totalNumberOfCells(): number {
         return this._cellMatrix.flat().length;
     }

@@ -49,7 +49,7 @@ export class Model {
     private stepToUnvisitedNeighbour(): void {
         const nextCell: Cell = this.currentCell.randomUnvisitedNeighbour;
         nextCell.visited = true;
-        this.currentCell.interconnectToCell(nextCell);
+        this.currentCell.establishConnectionTo(nextCell);
         this._view.drawConnection(this.currentCell.center, nextCell.center);
         this._sequenceOfVisitedCells.push(nextCell);
         if (nextCell === this._grid.endCell) {
@@ -82,11 +82,11 @@ export class Model {
             return;
         }
         this._grid.allCells
-            .filter(cell => cell.connectedNeighbouringCells.length == 1)
+            .filter(cell => cell.connectedNeighbours.length == 1)
             .filter(cell => cell != this._grid.startCell)
             .filter(cell => cell != this._grid.endCell)
             .forEach(cell => {
-                cell.removeInterConnectionsToCell();
+                cell.removeConnectionsToCell();
                 this._view.fillCell(cell.center);
             });
     }

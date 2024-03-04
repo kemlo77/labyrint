@@ -3,7 +3,7 @@ import { RectangularGridCreator } from '../src/model/rectangulargridcreator';
 import { Cell } from '../src/model/cell';
 import { Grid } from '../src/model/grid';
 
-describe('RectangularGrid', () => {
+describe('RectangularGridCreator', () => {
 
     it('verifying neighbours', () => {
         const rectGrid: Grid = RectangularGridCreator.createGrid(3, 3, 10);

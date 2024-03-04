@@ -3,7 +3,7 @@ import { HexagonalGridCreator } from '../src/model/hexagonalgridcreator';
 import { Coordinate } from '../src/model/coordinate';
 import { Grid } from '../src/model/grid';
 
-describe('HexagonalGrid', () => {
+describe('HexagonalGridCreator', () => {
 
     it('verifying neighbour count', () => {
         const rectGrid: Grid = 

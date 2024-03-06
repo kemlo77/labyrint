@@ -44,13 +44,16 @@ export class Model {
             this.stepToUnvisitedNeighbour();
             numberOfVisitedCells++;
         }
+        //TODO: ganska mycket i den här klassen som borde ligga i en controller-klass
+        //eller via Observer-pattern förmedlas till View-klassen
+        this._view.drawCellBorders(this._grid.allCells);
     }
 
     private stepToUnvisitedNeighbour(): void {
         const nextCell: Cell = this.currentCell.randomUnvisitedNeighbour;
         nextCell.visited = true;
         this.currentCell.establishConnectionTo(nextCell);
-        this._view.drawConnection(this.currentCell.center, nextCell.center);
+        //this._view.drawConnection(this.currentCell.center, nextCell.center);
         this._sequenceOfVisitedCells.push(nextCell);
         if (nextCell === this._grid.endCell) {
             this._solutionSequence = [...this._sequenceOfVisitedCells];
@@ -87,7 +90,7 @@ export class Model {
             .filter(cell => cell != this._grid.endCell)
             .forEach(cell => {
                 cell.removeConnectionsToCell();
-                this._view.fillCell(cell.center);
+                this._view.fillCell(cell);
             });
     }
 

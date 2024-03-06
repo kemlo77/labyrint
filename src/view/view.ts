@@ -1,3 +1,4 @@
+import { Cell } from '../model/cell';
 import { Coordinate } from '../model/coordinate';
 
 export abstract class View {
@@ -12,7 +13,8 @@ export abstract class View {
     }
 
     abstract drawConnection(startPoint: Coordinate, endPoint: Coordinate): void;
-    abstract fillCell(center: Coordinate): void;
+    abstract fillCell(cell: Cell): void;
+    abstract drawCellBorders(cells: Cell[]): void;
 
     paintCellCenter(centerPoint: Coordinate): void {
         this.canvasCtx.fillStyle = this.mazeColor;

@@ -1,6 +1,7 @@
 import { Cell } from './cell';
 import { Coordinate } from './coordinate';
 import { Grid } from './grid';
+import { HexagonalCell } from './hexagonalcell';
 
 export class HexagonalGridCreator {
 
@@ -32,7 +33,7 @@ export class HexagonalGridCreator {
                 }
                 const yCoordinate: number = cellHeight * (rowIndex + 1);
                 const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                rowOfCells.push(new Cell(center, cellWidth));
+                rowOfCells.push(new HexagonalCell(center, cellWidth));
             }
             grid.push(rowOfCells);
         }

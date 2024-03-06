@@ -1,16 +1,17 @@
 import { Coordinate } from './coordinate';
 import { Cell } from './cell';
 import { Grid } from './grid';
+import { SquareCell } from './squarecell';
 
-export class RectangularGridCreator {
+export class SquareGridCreator {
 
     private constructor() {
         //
     }
 
     static createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
-        const cellGrid: Cell[][] = RectangularGridCreator.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
-        RectangularGridCreator.interconnectCellsInGrid(cellGrid);
+        const cellGrid: Cell[][] = SquareGridCreator.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
+        SquareGridCreator.interconnectCellsInGrid(cellGrid);
         const startCell: Cell = cellGrid[0][0];
         const endCell: Cell = cellGrid[numberOfColumns - 1][numberOfRows - 1];
         return new Grid(cellGrid, startCell, endCell);
@@ -24,7 +25,7 @@ export class RectangularGridCreator {
                 const xCoordinate: number = cellWidth * (columnIndex + 1);
                 const yCoordinate: number = cellWidth * (rowIndex + 1);
                 const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                rowOfCells.push(new Cell(center, cellWidth));
+                rowOfCells.push(new SquareCell(center, cellWidth));
             }
             cellGrid.push(rowOfCells);
         }
@@ -32,10 +33,10 @@ export class RectangularGridCreator {
     }
 
     private static interconnectCellsInGrid(grid: Cell[][]): void {
-        RectangularGridCreator.connectNeighboursToTheSouth(grid);
-        RectangularGridCreator.connectNeighboursToTheNorth(grid);
-        RectangularGridCreator.connectNeighboursToTheWest(grid);
-        RectangularGridCreator.connectNeighboursToTheEast(grid);
+        SquareGridCreator.connectNeighboursToTheSouth(grid);
+        SquareGridCreator.connectNeighboursToTheNorth(grid);
+        SquareGridCreator.connectNeighboursToTheWest(grid);
+        SquareGridCreator.connectNeighboursToTheEast(grid);
     }
 
     private static connectNeighboursToTheSouth(grid: Cell[][]): void {

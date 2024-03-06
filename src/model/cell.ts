@@ -1,6 +1,7 @@
+import { BorderSegment } from './bordersegment';
 import { Coordinate } from './coordinate';
 
-export class Cell {
+export abstract class Cell {
 
     private _center: Coordinate;
     private _width: number;
@@ -81,5 +82,9 @@ export class Cell {
             this._connectedNeighbours.splice(index, 1);
         }
     }
+
+    abstract get closedBorders(): BorderSegment[];
+
+    abstract get corners(): Coordinate[];
 
 }

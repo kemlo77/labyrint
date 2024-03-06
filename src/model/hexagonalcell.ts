@@ -58,14 +58,68 @@ export class HexagonalCell extends Cell {
     }
     get closedBorders(): BorderSegment[] {
         //TODO returnera dom borders som inte har en connected neighbour
-        return [
-            this.upperRightBorder,
-            this.upperLeftBorder,
-            this.centerRightBorder,
-            this.centerLeftBorder,
-            this.lowerRightBorder,
-            this.lowerLeftBorder
-        ]
+        const closedBorderSegments: BorderSegment[] = [];
+        let hasNoCenterRightNeighbour: boolean = true;
+        let hasNoCenterLeftNeighbour: boolean = true;
+        let hasNoUpperRightNeighbour: boolean = true;
+        let hasNoUpperLeftNeighbour: boolean = true;
+        let hasNoLowerRightNeighbour: boolean = true;
+        let hasNoLowerLeftNeighbour: boolean = true;
+
+        this.connectedNeighbours.forEach(neighbour => {
+            const xDiff: number = neighbour.center.x - this.center.x;
+            const yDiff: number = neighbour.center.y - this.center.y;
+            
+
+            if (yDiff > 0) {
+                if (xDiff>0){
+                    hasNoUpperRightNeighbour = false;
+                }
+                if (xDiff<0){
+                    hasNoUpperLeftNeighbour = false;
+                }
+
+            }
+            if (yDiff == 0) {
+                if(xDiff>0) {
+                    hasNoCenterRightNeighbour = false;
+                }
+                if (xDiff<0){
+                    hasNoCenterLeftNeighbour = false;
+                }
+
+            }
+            if (yDiff <0) {
+                if(xDiff>0){
+                    hasNoLowerRightNeighbour = false;
+                }
+                if(xDiff<0){
+                    hasNoLowerLeftNeighbour = false;
+                }
+
+            }
+        });
+        if (hasNoUpperRightNeighbour){
+            closedBorderSegments.push(this.upperRightBorder);
+        }
+        if (hasNoCenterRightNeighbour) {
+            closedBorderSegments.push(this.centerRightBorder);
+        }
+        if (hasNoLowerRightNeighbour) {
+            closedBorderSegments.push(this.lowerRightBorder);
+        }
+        if (hasNoUpperLeftNeighbour){
+            closedBorderSegments.push(this.upperLeftBorder);
+        }
+        if (hasNoCenterLeftNeighbour) {
+            closedBorderSegments.push(this.centerLeftBorder);
+        }
+        if (hasNoLowerLeftNeighbour) {
+            closedBorderSegments.push(this.lowerLeftBorder);
+        }
+
+
+        return closedBorderSegments;
     }
 
     

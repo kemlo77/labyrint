@@ -5,7 +5,6 @@ import { SquareGridCreator } from './model/squaregridcreator';
 import { HexagonalGridCreator } from './model/hexagonalgridcreator';
 import { RoundedView } from './view/roundedview';
 import { BoxedView } from './view/boxedview';
-import { HoneycombView } from './view/honeycombview';
 
 const model: Model = new Model();
 const controller: Controller = new Controller(model);
@@ -32,7 +31,6 @@ function createRoundedMaze(): void {
 
 function createHexagonalMaze(): void {
     model.grid = HexagonalGridCreator.createGrid(51, 37, 20);
-    //model.view = new HoneycombView(18);
     model.view = new BoxedView(18);
     controller.generateLabyrinth();
 }

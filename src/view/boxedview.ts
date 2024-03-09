@@ -2,12 +2,13 @@ import { Cell } from '../model/cell';
 import { Coordinate } from '../model/coordinate';
 import { View } from './view';
 
+//TODO: byt namn på den här klassen till något som bättre beskriver vad den gör
 export class BoxedView extends View {
 
     constructor(private width: number) {
         super();
     }
-    
+
     drawConnection(startPoint: Coordinate, endPoint: Coordinate): void {
         this.canvasCtx.strokeStyle = 'rgba(255,255,255,1)';
         this.canvasCtx.lineWidth = this.width;
@@ -22,8 +23,8 @@ export class BoxedView extends View {
     //I den här klassen borde det vara på en annan abstraktionsnivå
     fillCell(cell: Cell): void {
         const corners: Coordinate[] = cell.corners;
-        this.canvasCtx.fillStyle= 'rgba(0,0,0,1)';
-        this.canvasCtx.strokeStyle= 'rgba(0,0,0,1)';
+        this.canvasCtx.fillStyle = 'rgba(0,0,0,1)';
+        this.canvasCtx.strokeStyle = 'rgba(0,0,0,1)';
         this.canvasCtx.lineWidth = 1;
         this.canvasCtx.beginPath();
         const firstCorner: Coordinate = corners.shift();

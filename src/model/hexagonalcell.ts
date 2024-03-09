@@ -18,7 +18,7 @@ export class HexagonalCell extends Cell {
     private lowerRightBorder: BorderSegment;
     private lowerLeftBorder: BorderSegment;
 
-    constructor(center: Coordinate, width :number) {
+    constructor(center: Coordinate, width: number) {
         super(center, width);
         this.createCorners();
         this.createBorders();
@@ -48,11 +48,11 @@ export class HexagonalCell extends Cell {
 
     get corners(): Coordinate[] {
         return [
-            this.upperCenterCorner, 
-            this.upperRightCorner, 
-            this.lowerRightCorner, 
-            this.lowerCenterCorner, 
-            this.lowerLeftCorner, 
+            this.upperCenterCorner,
+            this.upperRightCorner,
+            this.lowerRightCorner,
+            this.lowerCenterCorner,
+            this.lowerLeftCorner,
             this.upperLeftCorner
         ];
     }
@@ -69,37 +69,37 @@ export class HexagonalCell extends Cell {
         this.connectedNeighbours.forEach(neighbour => {
             const xDiff: number = neighbour.center.x - this.center.x;
             const yDiff: number = neighbour.center.y - this.center.y;
-            
+
 
             if (yDiff > 0) {
-                if (xDiff>0){
+                if (xDiff > 0) {
                     hasNoUpperRightNeighbour = false;
                 }
-                if (xDiff<0){
+                if (xDiff < 0) {
                     hasNoUpperLeftNeighbour = false;
                 }
 
             }
             if (yDiff == 0) {
-                if(xDiff>0) {
+                if (xDiff > 0) {
                     hasNoCenterRightNeighbour = false;
                 }
-                if (xDiff<0){
+                if (xDiff < 0) {
                     hasNoCenterLeftNeighbour = false;
                 }
 
             }
-            if (yDiff <0) {
-                if(xDiff>0){
+            if (yDiff < 0) {
+                if (xDiff > 0) {
                     hasNoLowerRightNeighbour = false;
                 }
-                if(xDiff<0){
+                if (xDiff < 0) {
                     hasNoLowerLeftNeighbour = false;
                 }
 
             }
         });
-        if (hasNoUpperRightNeighbour){
+        if (hasNoUpperRightNeighbour) {
             closedBorderSegments.push(this.upperRightBorder);
         }
         if (hasNoCenterRightNeighbour) {
@@ -108,7 +108,7 @@ export class HexagonalCell extends Cell {
         if (hasNoLowerRightNeighbour) {
             closedBorderSegments.push(this.lowerRightBorder);
         }
-        if (hasNoUpperLeftNeighbour){
+        if (hasNoUpperLeftNeighbour) {
             closedBorderSegments.push(this.upperLeftBorder);
         }
         if (hasNoCenterLeftNeighbour) {
@@ -122,6 +122,6 @@ export class HexagonalCell extends Cell {
         return closedBorderSegments;
     }
 
-    
+
 
 }

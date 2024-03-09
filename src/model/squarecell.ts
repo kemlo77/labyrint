@@ -15,14 +15,14 @@ export class SquareCell extends Cell {
     private lowerBorder: BorderSegment;
     private leftBorder: BorderSegment;
 
-    constructor(center: Coordinate, width :number) {
+    constructor(center: Coordinate, width: number) {
         super(center, width);
         this.createCorners();
         this.createBorders();
     }
 
     private createCorners(): void {
-        const halfWidth = this.width / 2;
+        const halfWidth: number = this.width / 2;
         this.upperRightCorner = new Coordinate(this.center.x + halfWidth, this.center.y + halfWidth);
         this.upperLeftCorner = new Coordinate(this.center.x - halfWidth, this.center.y + halfWidth);
         this.lowerRightCorner = new Coordinate(this.center.x + halfWidth, this.center.y - halfWidth);
@@ -39,10 +39,14 @@ export class SquareCell extends Cell {
     get closedBorders(): BorderSegment[] {
         const closedBorderSegments: BorderSegment[] = [];
 
-        const hasNoConnectedCellAbove: boolean = this.connectedNeighbours.every(neighbourCell => neighbourCell.center.y <= this.center.y);
-        const hasNoConnectedCellToTheRight: boolean = this.connectedNeighbours.every(neighbourCell => neighbourCell.center.x <= this.center.x);
-        const hasNoConnectedCellBelow: boolean = this.connectedNeighbours.every(neighbourCell => neighbourCell.center.y >= this.center.y);
-        const hasNoConnectedCellToTheLeft: boolean = this.connectedNeighbours.every(neighbourCell => neighbourCell.center.x >= this.center.x);
+        const hasNoConnectedCellAbove: boolean = this.connectedNeighbours
+            .every(neighbourCell => neighbourCell.center.y <= this.center.y);
+        const hasNoConnectedCellToTheRight: boolean = this.connectedNeighbours
+            .every(neighbourCell => neighbourCell.center.x <= this.center.x);
+        const hasNoConnectedCellBelow: boolean = this.connectedNeighbours
+            .every(neighbourCell => neighbourCell.center.y >= this.center.y);
+        const hasNoConnectedCellToTheLeft: boolean = this.connectedNeighbours
+            .every(neighbourCell => neighbourCell.center.x >= this.center.x);
 
         if (hasNoConnectedCellAbove) {
             closedBorderSegments.push(this.upperBorder);

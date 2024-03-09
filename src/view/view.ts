@@ -5,7 +5,8 @@ export abstract class View {
 
     private canvasElement: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
     protected canvasCtx: CanvasRenderingContext2D = this.canvasElement.getContext('2d');
-    protected mazeColor: string = 'rgba(255,255,255,1)';
+    protected whiteColor: string = 'rgba(255,255,255,1)';
+    protected blackColor: string = 'rgba(0,0,0,1)';
     private trailColor: string = 'rgba(0,0,255,1)';
 
     clearTheCanvas(): void {
@@ -17,7 +18,7 @@ export abstract class View {
     abstract drawCellBorders(cells: Cell[]): void;
 
     paintCellCenter(centerPoint: Coordinate): void {
-        this.canvasCtx.fillStyle = this.mazeColor;
+        this.canvasCtx.fillStyle = this.blackColor;
         this.canvasCtx.beginPath();
         this.canvasCtx.arc(centerPoint.x, centerPoint.y, 3, 0, 2 * Math.PI);
         this.canvasCtx.fill();
@@ -34,7 +35,7 @@ export abstract class View {
     }
 
     concealTrail(startPoint: Coordinate, endPoint: Coordinate): void {
-        this.canvasCtx.strokeStyle = this.mazeColor;
+        this.canvasCtx.strokeStyle = this.whiteColor;
         this.canvasCtx.lineWidth = 4;
         this.canvasCtx.lineCap = 'round';
         this.canvasCtx.beginPath();

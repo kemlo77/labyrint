@@ -31,8 +31,8 @@ export class TriangularGridCreator {
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
             const rowOfCells: Cell[] = [];
             for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
-                const xCoordinate: number = cellWidth + columnIndex * cellWidth / 2;
-                let yCoordinate: number = cellHeight * (rowIndex + 1);
+                const xCoordinate: number = cellWidth * (1 + columnIndex / 2);
+                let yCoordinate: number = cellHeight * (1 + rowIndex);
                 yCoordinate += this.cellHasPointyTop(columnIndex, rowIndex) ? 0 : cellHeight * 1 / 3;
                 const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
                 if (this.cellHasPointyTop(columnIndex, rowIndex)) {
@@ -43,23 +43,6 @@ export class TriangularGridCreator {
             }
             grid.push(rowOfCells);
         }
-        this.interconnectGrid(grid);
-        // loop through the grid and print the coordinates of each cell
-        for (let i: number = 0; i < grid.length; i++) {
-            for (let j: number = 0; j < grid[i].length; j++) {
-                const currentCell: Cell = grid[i][j];
-                console.log('\nNumber of neighbours: ' + currentCell.neighbours.length);
-                // currentCell.neighbours.forEach((neighbour) => {
-                //     console.log('distance: ' + currentCell.center.distanceTo(neighbour.center));
-                // });
-                const distances: string = currentCell.neighbours
-                    .map((neighbour) => neighbour.center.distanceTo(currentCell.center))
-                    .reduce((a, b) => a + ' ' + b, '');
-                console.log('Distances: ' + distances);
-            }
-        }
-
-
         return grid;
     }
 

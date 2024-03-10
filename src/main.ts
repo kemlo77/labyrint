@@ -38,7 +38,7 @@ function createHexagonalMaze(): void {
 }
 
 function createTriangularMaze(): void {
-    model.grid = TriangularGridCreator.createGrid(90, 30, 20);
+    model.grid = TriangularGridCreator.createGrid(102, 37, 20);
     model.view = new BoxedView(18);
     controller.generateLabyrinth();
 }

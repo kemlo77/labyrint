@@ -3,7 +3,7 @@ import { TriangularGridCreator } from '../src/model/grid/triangulargridcreator';
 import { Cell } from '../src/model/grid/cell/cell';
 import { Grid } from '../src/model/grid/grid';
 
-describe('TriangularGrid', () => {
+describe('TriangularGridCreator', () => {
 
     it('verifying number of neighbours', () => {
         const triangularGrid: Grid = TriangularGridCreator.createGrid(3, 3, 10);

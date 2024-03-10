@@ -66,14 +66,9 @@ export class TriangularGridCreator {
     private static connectNeighboursToTheSouth(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
-                const lastRow: boolean = rowIndex == grid[columnIndex].length - 1;
-                if (lastRow) {
-                    continue;
-                }
                 if (this.cellHasFlatTop(columnIndex, rowIndex)) {
                     grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex + 1]);
                 }
-
             }
         }
     }
@@ -81,10 +76,6 @@ export class TriangularGridCreator {
     private static connectNeighboursToTheNorth(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 1; rowIndex < grid[columnIndex].length; rowIndex++) {
-                const firstRow: boolean = rowIndex == 0;
-                if (firstRow) {
-                    continue;
-                }
                 if (TriangularGridCreator.cellHasPointyTop(columnIndex, rowIndex)) {
                     grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex - 1]);
                 }

@@ -1,4 +1,4 @@
-import { Cell } from './cell';
+import { Cell } from './cell/cell';
 
 export class Grid {
 
@@ -36,7 +36,7 @@ export class Grid {
     get cellMatrix(): Cell[][] {
         return this._cellMatrix;
     }
-   
+
 
     get totalNumberOfCells(): number {
         return this._cellMatrix.flat().length;

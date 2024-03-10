@@ -1,6 +1,6 @@
-import { BorderSegment } from './bordersegment';
+import { BorderSegment } from '../../bordersegment';
 import { Cell } from './cell';
-import { Coordinate } from './coordinate';
+import { Coordinate } from '../../coordinate';
 
 
 

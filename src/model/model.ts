@@ -1,5 +1,5 @@
-import { Cell } from './cell';
-import { Grid } from './grid';
+import { Cell } from './grid/cell/cell';
+import { Grid } from './grid/grid';
 
 import { View } from '../view/view';
 

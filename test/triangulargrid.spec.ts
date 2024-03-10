@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { TriangularGridCreator } from '../src/model/triangulargridcreator';
-import { Cell } from '../src/model/cell';
-import { Grid } from '../src/model/grid';
+import { TriangularGridCreator } from '../src/model/grid/triangulargridcreator';
+import { Cell } from '../src/model/grid/cell/cell';
+import { Grid } from '../src/model/grid/grid';
 
 describe('TriangularGrid', () => {
 

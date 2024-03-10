@@ -1,5 +1,5 @@
-import { BorderSegment } from './bordersegment';
-import { Coordinate } from './coordinate';
+import { BorderSegment } from '../../bordersegment';
+import { Coordinate } from '../../coordinate';
 
 export abstract class Cell {
 

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { SquareGridCreator } from '../src/model/squaregridcreator';
-import { Cell } from '../src/model/cell';
-import { Grid } from '../src/model/grid';
+import { SquareGridCreator } from '../src/model/grid/squaregridcreator';
+import { Cell } from '../src/model/grid/cell/cell';
+import { Grid } from '../src/model/grid/grid';
 
 describe('SquareGridCreator', () => {
 

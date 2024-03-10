@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { Cell } from '../src/model/cell';
+import { Cell } from '../src/model/grid/cell/cell';
 import { Coordinate } from '../src/model/coordinate';
-import { SquareCell } from '../src/model/squarecell';
+import { SquareCell } from '../src/model/grid/cell/squarecell';
 
 describe('Cell', () => {
 

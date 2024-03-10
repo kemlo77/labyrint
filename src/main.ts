@@ -1,11 +1,11 @@
 import './style.css';
 import { Controller } from './controller';
 import { Model } from './model/model';
-import { SquareGridCreator } from './model/squaregridcreator';
-import { HexagonalGridCreator } from './model/hexagonalgridcreator';
+import { SquareGridCreator } from './model/grid/squaregridcreator';
+import { HexagonalGridCreator } from './model/grid/hexagonalgridcreator';
 import { RoundedView } from './view/roundedview';
 import { BoxedView } from './view/boxedview';
-import { TriangularGridCreator } from './model/triangulargridcreator';
+import { TriangularGridCreator } from './model/grid/triangulargridcreator';
 
 const model: Model = new Model();
 const controller: Controller = new Controller(model);

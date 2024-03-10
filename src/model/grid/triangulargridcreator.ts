@@ -1,9 +1,9 @@
 
-import { Cell } from './cell';
+import { Cell } from './cell/cell';
 import { Grid } from './grid';
-import { Coordinate } from './coordinate';
-import { PointyTopTriangularCell } from './pointytoptriangularcell';
-import { FlatTopTriangularCell } from './flattoptriangularcell';
+import { Coordinate } from '../coordinate';
+import { PointyTopTriangularCell } from './cell/pointytoptriangularcell';
+import { FlatTopTriangularCell } from './cell/flattoptriangularcell';
 
 export class TriangularGridCreator {
 

@@ -1,4 +1,4 @@
-import { Cell } from '../model/cell';
+import { Cell } from '../model/grid/cell/cell';
 import { Coordinate } from '../model/coordinate';
 
 export abstract class View {

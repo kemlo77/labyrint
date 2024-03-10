@@ -1,7 +1,7 @@
-import { Cell } from './cell';
-import { Coordinate } from './coordinate';
+import { Cell } from './cell/cell';
+import { Coordinate } from '../coordinate';
 import { Grid } from './grid';
-import { HexagonalCell } from './hexagonalcell';
+import { HexagonalCell } from './cell/hexagonalcell';
 
 export class HexagonalGridCreator {
 

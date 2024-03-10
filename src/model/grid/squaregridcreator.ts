@@ -1,7 +1,7 @@
-import { Coordinate } from './coordinate';
-import { Cell } from './cell';
+import { Coordinate } from '../coordinate';
+import { Cell } from './cell/cell';
 import { Grid } from './grid';
-import { SquareCell } from './squarecell';
+import { SquareCell } from './cell/squarecell';
 
 export class SquareGridCreator {
 

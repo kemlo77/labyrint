@@ -33,13 +33,13 @@ export class SquareGridCreator {
     }
 
     private static interconnectCellsInGrid(grid: Cell[][]): void {
-        SquareGridCreator.connectNeighboursToTheSouth(grid);
-        SquareGridCreator.connectNeighboursToTheNorth(grid);
-        SquareGridCreator.connectNeighboursToTheWest(grid);
-        SquareGridCreator.connectNeighboursToTheEast(grid);
+        SquareGridCreator.connectNeighboursBelow(grid);
+        SquareGridCreator.connectNeighboursAbove(grid);
+        SquareGridCreator.connectNeighboursToTheLeft(grid);
+        SquareGridCreator.connectNeighboursToTheRight(grid);
     }
 
-    private static connectNeighboursToTheSouth(grid: Cell[][]): void {
+    private static connectNeighboursBelow(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
                 grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex + 1]);
@@ -47,7 +47,7 @@ export class SquareGridCreator {
         }
     }
 
-    private static connectNeighboursToTheNorth(grid: Cell[][]): void {
+    private static connectNeighboursAbove(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 1; rowIndex < grid[columnIndex].length; rowIndex++) {
                 grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex - 1]);
@@ -55,7 +55,7 @@ export class SquareGridCreator {
         }
     }
 
-    private static connectNeighboursToTheWest(grid: Cell[][]): void {
+    private static connectNeighboursToTheLeft(grid: Cell[][]): void {
         for (let columnIndex: number = 1; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
                 grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex - 1][rowIndex]);
@@ -63,7 +63,7 @@ export class SquareGridCreator {
         }
     }
 
-    private static connectNeighboursToTheEast(grid: Cell[][]): void {
+    private static connectNeighboursToTheRight(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length - 1; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
                 grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex + 1][rowIndex]);

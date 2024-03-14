@@ -39,14 +39,15 @@ export class SquareCell extends Cell {
     get closedBorders(): BorderSegment[] {
         const closedBorderSegments: BorderSegment[] = [];
 
-        const hasNoConnectedCellAbove: boolean = this.connectedNeighbours
-            .every(neighbourCell => neighbourCell.center.y <= this.center.y);
-        const hasNoConnectedCellToTheRight: boolean = this.connectedNeighbours
-            .every(neighbourCell => neighbourCell.center.x <= this.center.x);
-        const hasNoConnectedCellBelow: boolean = this.connectedNeighbours
-            .every(neighbourCell => neighbourCell.center.y >= this.center.y);
-        const hasNoConnectedCellToTheLeft: boolean = this.connectedNeighbours
-            .every(neighbourCell => neighbourCell.center.x >= this.center.x);
+        const isLocatedInCenterOrBelow: any = neighbourCell => neighbourCell.center.y <= this.center.y;
+        const isLocatedInCenterOrToTheLeft: any = neighbourCell => neighbourCell.center.x <= this.center.x;
+        const isLocatedInCenterOrAbove: any = neighbourCell => neighbourCell.center.y >= this.center.y;
+        const isLocatedInCenterOrToTheRight: any = neighbourCell => neighbourCell.center.x >= this.center.x;
+
+        const hasNoConnectedCellAbove: boolean = this.connectedNeighbours.every(isLocatedInCenterOrBelow);
+        const hasNoConnectedCellToTheRight: boolean = this.connectedNeighbours.every(isLocatedInCenterOrToTheLeft);
+        const hasNoConnectedCellBelow: boolean = this.connectedNeighbours.every(isLocatedInCenterOrAbove);
+        const hasNoConnectedCellToTheLeft: boolean = this.connectedNeighbours.every(isLocatedInCenterOrToTheRight);
 
         if (hasNoConnectedCellAbove) {
             closedBorderSegments.push(this.upperBorder);

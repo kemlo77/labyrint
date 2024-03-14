@@ -6,6 +6,7 @@ import { HexagonalGridCreator } from './model/grid/hexagonalgridcreator';
 import { RoundedView } from './view/roundedview';
 import { BoxedView } from './view/boxedview';
 import { TriangularGridCreator } from './model/grid/triangulargridcreator';
+import { OctagonalGridCreator } from './model/grid/octagonalgridcreator';
 
 const model: Model = new Model();
 const controller: Controller = new Controller(model);
@@ -14,6 +15,7 @@ document.getElementById('squareMazeButton').addEventListener('click', () => crea
 document.getElementById('roundedMazeButton').addEventListener('click', () => createRoundedMaze());
 document.getElementById('hexagonalMazeButton').addEventListener('click', () => createHexagonalMaze());
 document.getElementById('triangularMazeButton').addEventListener('click', () => createTriangularMaze());
+document.getElementById('octagonalMazeButton').addEventListener('click', () => createOctagonalMaze());
 
 document.getElementById('simplifyButton').addEventListener('click', () => model.reduceSomeComplexity());
 document.getElementById('showTrailButton').addEventListener('click', () => model.showSolution());
@@ -39,6 +41,12 @@ function createHexagonalMaze(): void {
 
 function createTriangularMaze(): void {
     model.grid = TriangularGridCreator.createGrid(102, 37, 20);
+    model.view = new BoxedView(18);
+    controller.generateLabyrinth();
+}
+
+function createOctagonalMaze(): void {
+    model.grid = OctagonalGridCreator.createGrid(34, 21, 30);
     model.view = new BoxedView(18);
     controller.generateLabyrinth();
 }

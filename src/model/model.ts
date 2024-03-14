@@ -53,7 +53,6 @@ export class Model {
         const nextCell: Cell = this.currentCell.randomUnvisitedNeighbour;
         nextCell.visited = true;
         this.currentCell.establishConnectionTo(nextCell);
-        //this._view.drawConnection(this.currentCell.center, nextCell.center);
         this._sequenceOfVisitedCells.push(nextCell);
         if (nextCell === this._grid.endCell) {
             this._solutionSequence = [...this._sequenceOfVisitedCells];

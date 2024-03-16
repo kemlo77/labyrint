@@ -3,7 +3,6 @@ import { Controller } from './controller';
 import { Model } from './model/model';
 import { SquareGridCreator } from './model/grid/squaregridcreator';
 import { HexagonalGridCreator } from './model/grid/hexagonalgridcreator';
-import { RoundedView } from './view/roundedview';
 import { BoxedView } from './view/boxedview';
 import { TriangularGridCreator } from './model/grid/triangulargridcreator';
 import { OctagonalGridCreator } from './model/grid/octagonalgridcreator';
@@ -12,7 +11,6 @@ const model: Model = new Model();
 const controller: Controller = new Controller(model);
 
 document.getElementById('squareMazeButton').addEventListener('click', () => createSquareMaze());
-document.getElementById('roundedMazeButton').addEventListener('click', () => createRoundedMaze());
 document.getElementById('hexagonalMazeButton').addEventListener('click', () => createHexagonalMaze());
 document.getElementById('triangularMazeButton').addEventListener('click', () => createTriangularMaze());
 document.getElementById('octagonalMazeButton').addEventListener('click', () => createOctagonalMaze());
@@ -24,12 +22,6 @@ document.getElementById('hideTrailButton').addEventListener('click', () => model
 function createSquareMaze(): void {
     model.grid = SquareGridCreator.createGrid(69, 43, 15);
     model.view = new BoxedView(14);
-    controller.generateLabyrinth();
-}
-
-function createRoundedMaze(): void {
-    model.grid = HexagonalGridCreator.createGrid(51, 37, 20);
-    model.view = new RoundedView(16);
     controller.generateLabyrinth();
 }
 

@@ -4,8 +4,8 @@ import { Model } from '../model/model';
 
 export class StandardView extends View {
 
-    constructor(model: Model) {
-        super(model);
+    constructor(canvasElement: HTMLCanvasElement, model: Model) {
+        super(canvasElement, model);
         this._model.attachObserver(this);
     }
 
@@ -38,7 +38,7 @@ export class StandardView extends View {
         for (let index: number = 0; index < solutionSequence.length - 1; index++) {
             const currentCell: Cell = solutionSequence[index];
             const nextCell: Cell = solutionSequence[index + 1];
-            this.drawTrail(currentCell.center, nextCell.center);
+            this.drawLine(currentCell.center, nextCell.center, 2, this.trailColor);
         }
     }
 
@@ -47,7 +47,7 @@ export class StandardView extends View {
         for (let index: number = 0; index < solutionSequence.length - 1; index++) {
             const currentCell: Cell = solutionSequence[index];
             const nextCell: Cell = solutionSequence[index + 1];
-            this.concealTrail(currentCell.center, nextCell.center);
+            this.drawLine(currentCell.center, nextCell.center, 4, this.whiteColor);
         }
     }
 

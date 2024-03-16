@@ -7,8 +7,10 @@ import { StandardView } from './view/standardview';
 import { TriangularGridCreator } from './model/grid/triangulargridcreator';
 import { OctagonalGridCreator } from './model/grid/octagonalgridcreator';
 
+const canvasElement: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
+
 const model: Model = new Model();
-const view: StandardView = new StandardView(model);
+const view: StandardView = new StandardView(canvasElement, model);
 const controller: Controller = new Controller(model, view);
 
 document.getElementById('squareMazeButton').addEventListener('click', () => createSquareMaze());

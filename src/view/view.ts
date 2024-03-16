@@ -4,14 +4,16 @@ import { Observer } from '../observer';
 
 export abstract class View implements Observer {
 
-    private canvasElement: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
-    protected canvasCtx: CanvasRenderingContext2D = this.canvasElement.getContext('2d');
+    private _canvasElement: HTMLCanvasElement;
+    private _canvasCtx: CanvasRenderingContext2D;
     protected whiteColor: string = 'rgba(255,255,255,1)';
     protected blackColor: string = 'rgba(0,0,0,1)';
-    private trailColor: string = 'rgba(0,0,255,1)';
+    protected trailColor: string = 'rgba(0,0,255,1)';
     protected _model: Model;
 
-    constructor(model: Model) {
+    constructor(canvasElement: HTMLCanvasElement, model: Model) {
+        this._canvasElement = canvasElement;
+        this._canvasCtx = this._canvasElement.getContext('2d');
         this._model = model;
     }
 
@@ -19,57 +21,37 @@ export abstract class View implements Observer {
     abstract showSolution(): void;
     abstract hideSolution(): void;
 
-    clearTheCanvas(): void {
-        this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+    protected clearTheCanvas(): void {
+        this._canvasCtx.clearRect(0, 0, this._canvasElement.width, this._canvasElement.height);
     }
 
-    paintCellCenter(centerPoint: Coordinate): void {
-        this.canvasCtx.fillStyle = this.blackColor;
-        this.canvasCtx.beginPath();
-        this.canvasCtx.arc(centerPoint.x, centerPoint.y, 3, 0, 2 * Math.PI);
-        this.canvasCtx.fill();
-    }
-
-    drawTrail(startPoint: Coordinate, endPoint: Coordinate): void {
-        this.canvasCtx.strokeStyle = this.trailColor;
-        this.canvasCtx.lineWidth = 2;
-        this.canvasCtx.lineCap = 'round';
-        this.canvasCtx.beginPath();
-        this.canvasCtx.moveTo(startPoint.x, startPoint.y);
-        this.canvasCtx.lineTo(endPoint.x, endPoint.y);
-        this.canvasCtx.stroke();
-    }
-
-    concealTrail(startPoint: Coordinate, endPoint: Coordinate): void {
-        this.canvasCtx.strokeStyle = this.whiteColor;
-        this.canvasCtx.lineWidth = 4;
-        this.canvasCtx.lineCap = 'round';
-        this.canvasCtx.beginPath();
-        this.canvasCtx.moveTo(startPoint.x, startPoint.y);
-        this.canvasCtx.lineTo(endPoint.x, endPoint.y);
-        this.canvasCtx.stroke();
+    protected paintCellCenter(centerPoint: Coordinate, radius: number, fillColor: string): void {
+        this._canvasCtx.fillStyle = fillColor;
+        this._canvasCtx.beginPath();
+        this._canvasCtx.arc(centerPoint.x, centerPoint.y, radius, 0, 2 * Math.PI);
+        this._canvasCtx.fill();
     }
 
     protected drawLine(fromPoint: Coordinate, toPoint: Coordinate, width: number, color: string): void {
-        this.canvasCtx.strokeStyle = color;
-        this.canvasCtx.lineWidth = width;
-        this.canvasCtx.lineCap = 'round';
-        this.canvasCtx.beginPath();
-        this.canvasCtx.moveTo(fromPoint.x, fromPoint.y);
-        this.canvasCtx.lineTo(toPoint.x, toPoint.y);
-        this.canvasCtx.stroke();
+        this._canvasCtx.strokeStyle = color;
+        this._canvasCtx.lineWidth = width;
+        this._canvasCtx.lineCap = 'round';
+        this._canvasCtx.beginPath();
+        this._canvasCtx.moveTo(fromPoint.x, fromPoint.y);
+        this._canvasCtx.lineTo(toPoint.x, toPoint.y);
+        this._canvasCtx.stroke();
     }
 
     protected fillPolygon(corners: Coordinate[], fillColor: string, borderColor: string): void {
-        this.canvasCtx.fillStyle = fillColor;
-        this.canvasCtx.strokeStyle = borderColor;
-        this.canvasCtx.lineWidth = 1;
-        this.canvasCtx.beginPath();
+        this._canvasCtx.fillStyle = fillColor;
+        this._canvasCtx.strokeStyle = borderColor;
+        this._canvasCtx.lineWidth = 1;
+        this._canvasCtx.beginPath();
         const firstCorner: Coordinate = corners.shift();
-        this.canvasCtx.moveTo(firstCorner.x, firstCorner.y);
-        corners.forEach(corner => this.canvasCtx.lineTo(corner.x, corner.y));
-        this.canvasCtx.fill();
-        this.canvasCtx.stroke();
+        this._canvasCtx.moveTo(firstCorner.x, firstCorner.y);
+        corners.forEach(corner => this._canvasCtx.lineTo(corner.x, corner.y));
+        this._canvasCtx.fill();
+        this._canvasCtx.stroke();
     }
 
 }

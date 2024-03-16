@@ -1,21 +1,27 @@
-import { Cell } from '../model/grid/cell/cell';
 import { Coordinate } from '../model/coordinate';
+import { Model } from '../model/model';
+import { Observer } from '../observer';
 
-export abstract class View {
+export abstract class View implements Observer {
 
     private canvasElement: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
     protected canvasCtx: CanvasRenderingContext2D = this.canvasElement.getContext('2d');
     protected whiteColor: string = 'rgba(255,255,255,1)';
     protected blackColor: string = 'rgba(0,0,0,1)';
     private trailColor: string = 'rgba(0,0,255,1)';
+    protected _model: Model;
+
+    constructor(model: Model) {
+        this._model = model;
+    }
+
+    abstract update(): void;
+    abstract showSolution(): void;
+    abstract hideSolution(): void;
 
     clearTheCanvas(): void {
         this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
     }
-
-    abstract drawConnection(startPoint: Coordinate, endPoint: Coordinate): void;
-    abstract fillCell(cell: Cell): void;
-    abstract drawCellBorders(cells: Cell[]): void;
 
     paintCellCenter(centerPoint: Coordinate): void {
         this.canvasCtx.fillStyle = this.blackColor;
@@ -51,6 +57,18 @@ export abstract class View {
         this.canvasCtx.beginPath();
         this.canvasCtx.moveTo(fromPoint.x, fromPoint.y);
         this.canvasCtx.lineTo(toPoint.x, toPoint.y);
+        this.canvasCtx.stroke();
+    }
+
+    protected fillPolygon(corners: Coordinate[], fillColor: string, borderColor: string): void {
+        this.canvasCtx.fillStyle = fillColor;
+        this.canvasCtx.strokeStyle = borderColor;
+        this.canvasCtx.lineWidth = 1;
+        this.canvasCtx.beginPath();
+        const firstCorner: Coordinate = corners.shift();
+        this.canvasCtx.moveTo(firstCorner.x, firstCorner.y);
+        corners.forEach(corner => this.canvasCtx.lineTo(corner.x, corner.y));
+        this.canvasCtx.fill();
         this.canvasCtx.stroke();
     }
 

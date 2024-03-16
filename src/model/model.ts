@@ -1,21 +1,21 @@
 import { Cell } from './grid/cell/cell';
 import { Grid } from './grid/grid';
+import { Observer } from '../observer';
+import { Subject } from '../subject';
 
-import { View } from '../view/view';
-
-export class Model {
+export class Model implements Subject {
 
     private _grid: Grid;
-    private _view: View;
     private _sequenceOfVisitedCells: Cell[] = [];
     private _solutionSequence: Cell[] = [];
+    private _observers: Observer[] = [];
 
     set grid(grid: Grid) {
         this._grid = grid;
     }
 
-    set view(view: View) {
-        this._view = view;
+    get grid(): Grid {
+        return this._grid;
     }
 
     private get visitedStackIsNotEmpty(): boolean {
@@ -26,8 +26,28 @@ export class Model {
         return this._sequenceOfVisitedCells[this._sequenceOfVisitedCells.length - 1];
     }
 
+    get solutionSequence(): Cell[] {
+        return [...this._solutionSequence];
+    }
+
+    public attachObserver(observer: Observer): void {
+        this._observers.push(observer);
+    }
+
+    public detachObserver(observer: Observer): void {
+        const observerIndex: number = this._observers.indexOf(observer);
+        if (observerIndex > -1) {
+            this._observers.splice(observerIndex, 1);
+        }
+    }
+
+    public notifyObservers(): void {
+        for (const observer of this._observers) {
+            observer.update();
+        }
+    }
+
     public initialize(): void {
-        this._view.clearTheCanvas();
         this._grid.resetVisitedStatusOnCells();
         this._grid.removeEstablishedConnectionsInCells();
         this._sequenceOfVisitedCells = [this._grid.startCell];
@@ -44,9 +64,8 @@ export class Model {
             this.stepToUnvisitedNeighbour();
             numberOfVisitedCells++;
         }
-        //TODO: ganska mycket i den här klassen som borde ligga i en controller-klass
-        //eller via Observer-pattern förmedlas till View-klassen
-        this._view.drawCellBorders(this._grid.allCells);
+
+        this.notifyObservers();
     }
 
     private stepToUnvisitedNeighbour(): void {
@@ -63,35 +82,22 @@ export class Model {
         this._sequenceOfVisitedCells.pop();
     }
 
-    public showSolution(): void {
-        for (let index: number = 0; index < this._solutionSequence.length - 1; index++) {
-            const currentCell: Cell = this._solutionSequence[index];
-            const nextCell: Cell = this._solutionSequence[index + 1];
-            this._view.drawTrail(currentCell.center, nextCell.center);
-        }
-    }
-
-    public hideSolution(): void {
-        for (let index: number = 0; index < this._solutionSequence.length - 1; index++) {
-            const currentCell: Cell = this._solutionSequence[index];
-            const nextCell: Cell = this._solutionSequence[index + 1];
-            this._view.concealTrail(currentCell.center, nextCell.center);
-        }
-    }
-
     public reduceSomeComplexity(): void {
         if (!this._grid) {
             return;
         }
+        this.disconnectCellsWithOnlyOneConnection();
+        this.notifyObservers();
+    }
+
+    private disconnectCellsWithOnlyOneConnection(): void {
         this._grid.allCells
             .filter(cell => cell.connectedNeighbours.length == 1)
             .filter(cell => cell != this._grid.startCell)
             .filter(cell => cell != this._grid.endCell)
             .forEach(cell => {
                 cell.removeConnectionsToCell();
-                this._view.fillCell(cell);
             });
     }
-
 
 }

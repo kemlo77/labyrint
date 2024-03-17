@@ -4,17 +4,18 @@ import { Grid } from './grid';
 import { Coordinate } from '../coordinate';
 import { PointyTopTriangularCell } from './cell/pointytoptriangularcell';
 import { FlatTopTriangularCell } from './cell/flattoptriangularcell';
+import { GridFactory } from './gridfactory';
 
-export class TriangularGridCreator {
+export class TriangularGridFactory extends GridFactory {
 
-    private constructor() {
-        //
+    constructor() {
+        super();
     }
 
 
-    static createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
-        const cellMatrix: Cell[][] = TriangularGridCreator.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
-        TriangularGridCreator.interconnectGrid(cellMatrix);
+    createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
+        const cellMatrix: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
+        this.interconnectGrid(cellMatrix);
 
         const startCell: Cell = cellMatrix[0][0];
         startCell.visited = true;
@@ -24,7 +25,7 @@ export class TriangularGridCreator {
     }
 
 
-    private static createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
+    private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
         const cellHeight: number = Math.sqrt(3) / 2 * cellWidth;
 
         const grid: Cell[][] = [];
@@ -46,24 +47,24 @@ export class TriangularGridCreator {
         return grid;
     }
 
-    private static cellHasPointyTop(columnIndex: number, rowIndex: number): boolean {
+    private cellHasPointyTop(columnIndex: number, rowIndex: number): boolean {
         return !this.cellHasFlatTop(columnIndex, rowIndex);
     }
 
-    private static cellHasFlatTop(columnIndex: number, rowIndex: number): boolean {
+    private cellHasFlatTop(columnIndex: number, rowIndex: number): boolean {
         const evenRowIndex: boolean = rowIndex % 2 == 0;
         const evenColumnIndex: boolean = columnIndex % 2 == 0;
         return (evenRowIndex && evenColumnIndex) || (!evenRowIndex && !evenColumnIndex);
     }
 
-    private static interconnectGrid(grid: Cell[][]): void {
-        TriangularGridCreator.connectNeighboursToTheSouth(grid);
-        TriangularGridCreator.connectNeighboursToTheNorth(grid);
-        TriangularGridCreator.connectNeighboursToTheWest(grid);
-        TriangularGridCreator.connectNeighboursToTheEast(grid);
+    private interconnectGrid(grid: Cell[][]): void {
+        this.connectNeighboursToTheSouth(grid);
+        this.connectNeighboursToTheNorth(grid);
+        this.connectNeighboursToTheWest(grid);
+        this.connectNeighboursToTheEast(grid);
     }
 
-    private static connectNeighboursToTheSouth(grid: Cell[][]): void {
+    private connectNeighboursToTheSouth(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
                 if (this.cellHasFlatTop(columnIndex, rowIndex)) {
@@ -73,10 +74,10 @@ export class TriangularGridCreator {
         }
     }
 
-    private static connectNeighboursToTheNorth(grid: Cell[][]): void {
+    private connectNeighboursToTheNorth(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 1; rowIndex < grid[columnIndex].length; rowIndex++) {
-                if (TriangularGridCreator.cellHasPointyTop(columnIndex, rowIndex)) {
+                if (this.cellHasPointyTop(columnIndex, rowIndex)) {
                     grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex - 1]);
                 }
 
@@ -84,7 +85,7 @@ export class TriangularGridCreator {
         }
     }
 
-    private static connectNeighboursToTheWest(grid: Cell[][]): void {
+    private connectNeighboursToTheWest(grid: Cell[][]): void {
         for (let columnIndex: number = 1; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
                 grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex - 1][rowIndex]);
@@ -92,7 +93,7 @@ export class TriangularGridCreator {
         }
     }
 
-    private static connectNeighboursToTheEast(grid: Cell[][]): void {
+    private connectNeighboursToTheEast(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length - 1; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
                 grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex + 1][rowIndex]);

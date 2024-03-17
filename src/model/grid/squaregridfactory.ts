@@ -2,22 +2,23 @@ import { Coordinate } from '../coordinate';
 import { Cell } from './cell/cell';
 import { Grid } from './grid';
 import { SquareCell } from './cell/squarecell';
+import { GridFactory } from './gridfactory';
 
-export class SquareGridCreator {
+export class SquareGridFactory extends GridFactory {
 
-    private constructor() {
-        //
+    constructor() {
+        super();
     }
 
-    static createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
-        const cellGrid: Cell[][] = SquareGridCreator.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
-        SquareGridCreator.interconnectCellsInGrid(cellGrid);
+    createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
+        const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
+        this.interconnectCellsInGrid(cellGrid);
         const startCell: Cell = cellGrid[0][0];
         const endCell: Cell = cellGrid[numberOfColumns - 1][numberOfRows - 1];
         return new Grid(cellGrid, startCell, endCell);
     }
 
-    private static createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
+    private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
         const cellGrid: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
             const rowOfCells: Cell[] = [];
@@ -32,14 +33,14 @@ export class SquareGridCreator {
         return cellGrid;
     }
 
-    private static interconnectCellsInGrid(grid: Cell[][]): void {
-        SquareGridCreator.connectNeighboursBelow(grid);
-        SquareGridCreator.connectNeighboursAbove(grid);
-        SquareGridCreator.connectNeighboursToTheLeft(grid);
-        SquareGridCreator.connectNeighboursToTheRight(grid);
+    private interconnectCellsInGrid(grid: Cell[][]): void {
+        this.connectNeighboursBelow(grid);
+        this.connectNeighboursAbove(grid);
+        this.connectNeighboursToTheLeft(grid);
+        this.connectNeighboursToTheRight(grid);
     }
 
-    private static connectNeighboursBelow(grid: Cell[][]): void {
+    private connectNeighboursBelow(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
                 grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex + 1]);
@@ -47,7 +48,7 @@ export class SquareGridCreator {
         }
     }
 
-    private static connectNeighboursAbove(grid: Cell[][]): void {
+    private connectNeighboursAbove(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 1; rowIndex < grid[columnIndex].length; rowIndex++) {
                 grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex - 1]);
@@ -55,7 +56,7 @@ export class SquareGridCreator {
         }
     }
 
-    private static connectNeighboursToTheLeft(grid: Cell[][]): void {
+    private connectNeighboursToTheLeft(grid: Cell[][]): void {
         for (let columnIndex: number = 1; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
                 grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex - 1][rowIndex]);
@@ -63,7 +64,7 @@ export class SquareGridCreator {
         }
     }
 
-    private static connectNeighboursToTheRight(grid: Cell[][]): void {
+    private connectNeighboursToTheRight(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length - 1; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
                 grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex + 1][rowIndex]);

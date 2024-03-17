@@ -1,11 +1,8 @@
 import './style.css';
 import { Controller } from './controller';
 import { Model } from './model/model';
-import { SquareGridCreator } from './model/grid/squaregridcreator';
-import { HexagonalGridCreator } from './model/grid/hexagonalgridcreator';
 import { StandardView } from './view/standardview';
-import { TriangularGridCreator } from './model/grid/triangulargridcreator';
-import { OctagonalGridCreator } from './model/grid/octagonalgridcreator';
+import { GridSupplier } from './model/grid/gridsupplier';
 
 const canvasElement: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
 
@@ -23,21 +20,21 @@ document.getElementById('showTrailButton').addEventListener('click', () => contr
 document.getElementById('hideTrailButton').addEventListener('click', () => controller.hideSolution());
 
 function createSquareMaze(): void {
-    model.grid = SquareGridCreator.createGrid(69, 43, 15);
+    model.grid = GridSupplier.getGrid('square');
     controller.generateLabyrinth();
 }
 
 function createHexagonalMaze(): void {
-    model.grid = HexagonalGridCreator.createGrid(51, 37, 20);
+    model.grid = GridSupplier.getGrid('hexagonal');
     controller.generateLabyrinth();
 }
 
 function createTriangularMaze(): void {
-    model.grid = TriangularGridCreator.createGrid(102, 37, 20);
+    model.grid = GridSupplier.getGrid('triangular');
     controller.generateLabyrinth();
 }
 
 function createOctagonalMaze(): void {
-    model.grid = OctagonalGridCreator.createGrid(34, 21, 30);
+    model.grid = GridSupplier.getGrid('octagonal');
     controller.generateLabyrinth();
 }

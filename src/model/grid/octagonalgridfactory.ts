@@ -3,22 +3,23 @@ import { Cell } from './cell/cell';
 import { OctagonalCell } from './cell/octagonalcell';
 import { TiltedSquareCell } from './cell/tiltedsquarecell';
 import { Grid } from './grid';
+import { GridFactory } from './gridfactory';
 
-export class OctagonalGridCreator {
+export class OctagonalGridFactory extends GridFactory {
 
-    private constructor() {
-        //
+    constructor() {
+        super();
     }
 
-    static createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
-        const cellGrid: Cell[][] = OctagonalGridCreator.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
-        OctagonalGridCreator.interconnectCellsInGrid(cellGrid);
+    createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
+        const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
+        this.interconnectCellsInGrid(cellGrid);
         const startCell: Cell = cellGrid[0][0];
         const endCell: Cell = cellGrid[numberOfColumns - 1][numberOfRows - 1];
         return new Grid(cellGrid, startCell, endCell);
     }
 
-    private static createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
+    private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
         const cellGrid: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
             const rowOfCells: Cell[] = [];
@@ -30,7 +31,7 @@ export class OctagonalGridCreator {
                     rowOfCells.push(new OctagonalCell(center, cellWidth));
                 } else {
                     const tiltedSquareCellWidth: number =
-                        cellWidth - OctagonalGridCreator.sideLengthOfOctagonFromInradius(cellWidth / 2);
+                        cellWidth - this.sideLengthOfOctagonFromInradius(cellWidth / 2);
                     const xCoordinate: number = cellWidth * (columnIndex + 1) + cellWidth / 2;
                     const yCoordinate: number = cellWidth * (rowIndex / 2 + 1 / 2) + cellWidth / 2;
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
@@ -43,23 +44,23 @@ export class OctagonalGridCreator {
         return cellGrid;
     }
 
-    private static sideLengthOfOctagonFromInradius(inradius: number): number {
+    private sideLengthOfOctagonFromInradius(inradius: number): number {
         return inradius * 2 / (1 + Math.SQRT2);
     }
 
-    private static interconnectCellsInGrid(grid: Cell[][]): void {
-        OctagonalGridCreator.connectOctagonalCellsVertically(grid);
-        OctagonalGridCreator.connectOctagonalCellsHorizontally(grid);
+    private interconnectCellsInGrid(grid: Cell[][]): void {
+        this.connectOctagonalCellsVertically(grid);
+        this.connectOctagonalCellsHorizontally(grid);
 
-        OctagonalGridCreator.connectOctagonalCellToTiltedSquareCellInQ1(grid);
-        OctagonalGridCreator.connectOctagonalCellToTiltedSquareCellInQ2(grid);
-        OctagonalGridCreator.connectOctagonalCellToTiltedSquareCellInQ3(grid);
-        OctagonalGridCreator.connectOctagonalCellToTiltedSquareCellInQ4(grid);
+        this.connectOctagonalCellToTiltedSquareCellInQ1(grid);
+        this.connectOctagonalCellToTiltedSquareCellInQ2(grid);
+        this.connectOctagonalCellToTiltedSquareCellInQ3(grid);
+        this.connectOctagonalCellToTiltedSquareCellInQ4(grid);
     }
 
 
 
-    private static connectOctagonalCellsVertically(grid: Cell[][]): void {
+    private connectOctagonalCellsVertically(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 2; rowIndex++) {
                 if (rowIndex % 2 === 0) {
@@ -72,7 +73,7 @@ export class OctagonalGridCreator {
         }
     }
 
-    private static connectOctagonalCellsHorizontally(grid: Cell[][]): void {
+    private connectOctagonalCellsHorizontally(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length - 1; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
                 if (rowIndex % 2 == 0) {
@@ -85,7 +86,7 @@ export class OctagonalGridCreator {
         }
     }
 
-    private static connectOctagonalCellToTiltedSquareCellInQ1(grid: Cell[][]): void {
+    private connectOctagonalCellToTiltedSquareCellInQ1(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 2; rowIndex < grid[columnIndex].length; rowIndex++) {
                 if (rowIndex % 2 === 0 && columnIndex < grid.length - 1) {
@@ -96,7 +97,7 @@ export class OctagonalGridCreator {
         }
     }
 
-    private static connectOctagonalCellToTiltedSquareCellInQ2(grid: Cell[][]): void {
+    private connectOctagonalCellToTiltedSquareCellInQ2(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 2; rowIndex < grid[columnIndex].length; rowIndex++) {
                 if (rowIndex % 2 === 0 && columnIndex > 0) {
@@ -107,7 +108,7 @@ export class OctagonalGridCreator {
         }
     }
 
-    private static connectOctagonalCellToTiltedSquareCellInQ3(grid: Cell[][]): void {
+    private connectOctagonalCellToTiltedSquareCellInQ3(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
                 if (rowIndex % 2 === 0 && columnIndex < grid.length - 1) {
@@ -118,7 +119,7 @@ export class OctagonalGridCreator {
         }
     }
 
-    private static connectOctagonalCellToTiltedSquareCellInQ4(grid: Cell[][]): void {
+    private connectOctagonalCellToTiltedSquareCellInQ4(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
                 if (rowIndex % 2 === 0 && columnIndex > 0) {

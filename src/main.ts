@@ -2,39 +2,30 @@ import './style.css';
 import { Controller } from './controller';
 import { Model } from './model/model';
 import { StandardView } from './view/standardview';
-import { GridSupplier } from './model/grid/gridsupplier';
 
 const canvasElement: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
+const squareMazeBtn: HTMLButtonElement = document.getElementById('squareMazeButton') as HTMLButtonElement;
+const hexagonalMazeBtn: HTMLButtonElement = document.getElementById('hexagonalMazeButton') as HTMLButtonElement;
+const triangularMazeBtn: HTMLButtonElement = document.getElementById('triangularMazeButton') as HTMLButtonElement;
+const octagonalMazeBtn: HTMLButtonElement = document.getElementById('octagonalMazeButton') as HTMLButtonElement;
+const generateButton: HTMLButtonElement = document.getElementById('generateButton') as HTMLButtonElement;
+const simplifyButton: HTMLButtonElement = document.getElementById('simplifyButton') as HTMLButtonElement;
+const showTrailButton: HTMLButtonElement = document.getElementById('showTrailButton') as HTMLButtonElement;
+const hideTrailButton: HTMLButtonElement = document.getElementById('hideTrailButton') as HTMLButtonElement;
+
 
 const model: Model = new Model();
 const view: StandardView = new StandardView(canvasElement, model);
 const controller: Controller = new Controller(model, view);
+controller.changeGridType('square');
 
-document.getElementById('squareMazeButton').addEventListener('click', () => createSquareMaze());
-document.getElementById('hexagonalMazeButton').addEventListener('click', () => createHexagonalMaze());
-document.getElementById('triangularMazeButton').addEventListener('click', () => createTriangularMaze());
-document.getElementById('octagonalMazeButton').addEventListener('click', () => createOctagonalMaze());
+squareMazeBtn.addEventListener('click', () => controller.changeGridType('square'));
+hexagonalMazeBtn.addEventListener('click', () => controller.changeGridType('hexagonal'));
+triangularMazeBtn.addEventListener('click', () => controller.changeGridType('triangular'));
+octagonalMazeBtn.addEventListener('click', () => controller.changeGridType('octagonal'));
 
-document.getElementById('simplifyButton').addEventListener('click', () => model.reduceSomeComplexity());
-document.getElementById('showTrailButton').addEventListener('click', () => controller.showSolution());
-document.getElementById('hideTrailButton').addEventListener('click', () => controller.hideSolution());
+generateButton.addEventListener('click', () => controller.generateLabyrinth());
 
-function createSquareMaze(): void {
-    model.grid = GridSupplier.getGrid('square');
-    controller.generateLabyrinth();
-}
-
-function createHexagonalMaze(): void {
-    model.grid = GridSupplier.getGrid('hexagonal');
-    controller.generateLabyrinth();
-}
-
-function createTriangularMaze(): void {
-    model.grid = GridSupplier.getGrid('triangular');
-    controller.generateLabyrinth();
-}
-
-function createOctagonalMaze(): void {
-    model.grid = GridSupplier.getGrid('octagonal');
-    controller.generateLabyrinth();
-}
+simplifyButton.addEventListener('click', () => model.reduceSomeComplexity());
+showTrailButton.addEventListener('click', () => controller.showSolution());
+hideTrailButton.addEventListener('click', () => controller.hideSolution());

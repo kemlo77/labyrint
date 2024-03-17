@@ -2,6 +2,7 @@ import { Cell } from './grid/cell/cell';
 import { Grid } from './grid/grid';
 import { Observer } from '../observer';
 import { Subject } from '../subject';
+import { GridSupplier } from './grid/gridsupplier';
 
 export class Model implements Subject {
 
@@ -10,8 +11,8 @@ export class Model implements Subject {
     private _solutionSequence: Cell[] = [];
     private _observers: Observer[] = [];
 
-    set grid(grid: Grid) {
-        this._grid = grid;
+    changeGridType(gridType: string): void {
+        this._grid = GridSupplier.getGrid(gridType);
     }
 
     get grid(): Grid {
@@ -61,14 +62,14 @@ export class Model implements Subject {
             while (this.currentCell.hasNoUnvisitedNeighbours && this.visitedStackIsNotEmpty) {
                 this.stepBackwards();
             }
-            this.stepToUnvisitedNeighbour();
+            this.stepToRandomUnvisitedNeighbour();
             numberOfVisitedCells++;
         }
 
         this.notifyObservers();
     }
 
-    private stepToUnvisitedNeighbour(): void {
+    private stepToRandomUnvisitedNeighbour(): void {
         const nextCell: Cell = this.currentCell.randomUnvisitedNeighbour;
         nextCell.visited = true;
         this.currentCell.establishConnectionTo(nextCell);
@@ -90,6 +91,7 @@ export class Model implements Subject {
         this.notifyObservers();
     }
 
+    //TODO: feature envy
     private disconnectCellsWithOnlyOneConnection(): void {
         this._grid.allCells
             .filter(cell => cell.connectedNeighbours.length == 1)

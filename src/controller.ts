@@ -1,3 +1,4 @@
+import { GridSupplier } from './model/grid/gridsupplier';
 import { Model } from './model/model';
 import { View } from './view/view';
 
@@ -9,6 +10,11 @@ export class Controller {
     constructor(model: Model, view: View) {
         this._model = model;
         this._view = view;
+    }
+
+    public changeGridType(gridType: string): void {
+        this._model.changeGridType(gridType);
+        this._model.generateLabyrinth();
     }
 
     public generateLabyrinth(): void {

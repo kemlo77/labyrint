@@ -34,40 +34,28 @@ export class SquareGridFactory extends GridFactory {
     }
 
     private interconnectCellsInGrid(grid: Cell[][]): void {
-        this.connectNeighboursBelow(grid);
-        this.connectNeighboursAbove(grid);
-        this.connectNeighboursToTheLeft(grid);
-        this.connectNeighboursToTheRight(grid);
+        this.connectCellsVertically(grid);
+        this.connectCellsHorizontally(grid);
     }
 
-    private connectNeighboursBelow(grid: Cell[][]): void {
+    private connectCellsVertically(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
-                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex + 1]);
+                const cell: Cell = grid[columnIndex][rowIndex];
+                const neighbourCell: Cell = grid[columnIndex][rowIndex + 1];
+                cell.addNeighbour(neighbourCell);
+                neighbourCell.addNeighbour(cell);
             }
         }
     }
 
-    private connectNeighboursAbove(grid: Cell[][]): void {
-        for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
-            for (let rowIndex: number = 1; rowIndex < grid[columnIndex].length; rowIndex++) {
-                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex - 1]);
-            }
-        }
-    }
-
-    private connectNeighboursToTheLeft(grid: Cell[][]): void {
+    private connectCellsHorizontally(grid: Cell[][]): void {
         for (let columnIndex: number = 1; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
-                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex - 1][rowIndex]);
-            }
-        }
-    }
-
-    private connectNeighboursToTheRight(grid: Cell[][]): void {
-        for (let columnIndex: number = 0; columnIndex < grid.length - 1; columnIndex++) {
-            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
-                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex + 1][rowIndex]);
+                const cell: Cell = grid[columnIndex][rowIndex];
+                const neighbourCell: Cell = grid[columnIndex - 1][rowIndex];
+                cell.addNeighbour(neighbourCell);
+                neighbourCell.addNeighbour(cell);
             }
         }
     }

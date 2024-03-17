@@ -1,4 +1,3 @@
-import { GridSupplier } from './model/grid/gridsupplier';
 import { Model } from './model/model';
 import { View } from './view/view';
 

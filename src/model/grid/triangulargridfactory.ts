@@ -33,12 +33,14 @@ export class TriangularGridFactory extends GridFactory {
             const rowOfCells: Cell[] = [];
             for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
                 const xCoordinate: number = cellWidth * (1 + columnIndex / 2);
-                let yCoordinate: number = cellHeight * (1 + rowIndex);
-                yCoordinate += this.cellHasPointyTop(columnIndex, rowIndex) ? 0 : cellHeight * 1 / 3;
-                const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
+                
                 if (this.cellHasPointyTop(columnIndex, rowIndex)) {
+                    let yCoordinate: number = cellHeight * (1 + rowIndex);
+                    const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
                     rowOfCells.push(new PointyTopTriangularCell(center, cellWidth));
                 } else {
+                    let yCoordinate: number = cellHeight * (4/3 + rowIndex);
+                    const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
                     rowOfCells.push(new FlatTopTriangularCell(center, cellWidth));
                 }
             }
@@ -58,46 +60,32 @@ export class TriangularGridFactory extends GridFactory {
     }
 
     private interconnectGrid(grid: Cell[][]): void {
-        this.connectNeighboursToTheSouth(grid);
-        this.connectNeighboursToTheNorth(grid);
-        this.connectNeighboursToTheWest(grid);
-        this.connectNeighboursToTheEast(grid);
+        this.connectCellsVertically(grid);
+        this.connectCellsHorizontally(grid);
     }
 
-    private connectNeighboursToTheSouth(grid: Cell[][]): void {
+    private connectCellsVertically(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
                 if (this.cellHasFlatTop(columnIndex, rowIndex)) {
-                    grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex + 1]);
+                    const cell: Cell = grid[columnIndex][rowIndex];
+                    const neighbourCell: Cell = grid[columnIndex][rowIndex + 1];
+                    cell.addNeighbour(neighbourCell);
+                    neighbourCell.addNeighbour(cell);
                 }
             }
         }
     }
 
-    private connectNeighboursToTheNorth(grid: Cell[][]): void {
-        for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
-            for (let rowIndex: number = 1; rowIndex < grid[columnIndex].length; rowIndex++) {
-                if (this.cellHasPointyTop(columnIndex, rowIndex)) {
-                    grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex - 1]);
-                }
-
-            }
-        }
-    }
-
-    private connectNeighboursToTheWest(grid: Cell[][]): void {
+    private connectCellsHorizontally(grid: Cell[][]): void {
         for (let columnIndex: number = 1; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
-                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex - 1][rowIndex]);
+                const cell: Cell = grid[columnIndex][rowIndex];
+                const neighbourCell: Cell = grid[columnIndex - 1][rowIndex];
+                cell.addNeighbour(neighbourCell);
+                neighbourCell.addNeighbour(cell);
             }
         }
     }
 
-    private connectNeighboursToTheEast(grid: Cell[][]): void {
-        for (let columnIndex: number = 0; columnIndex < grid.length - 1; columnIndex++) {
-            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
-                grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex + 1][rowIndex]);
-            }
-        }
-    }
 }

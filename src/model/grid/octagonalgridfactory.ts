@@ -13,7 +13,7 @@ export class OctagonalGridFactory extends GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
-        this.interconnectCellsInGrid(cellGrid);
+        this.connectOctagonalCellsToNeighbourCells(cellGrid);
         const startCell: Cell = cellGrid[0][0];
         const endCell: Cell = cellGrid[numberOfColumns - 1][numberOfRows - 1];
         return new Grid(cellGrid, startCell, endCell);
@@ -48,86 +48,62 @@ export class OctagonalGridFactory extends GridFactory {
         return inradius * 2 / (1 + Math.SQRT2);
     }
 
-    private interconnectCellsInGrid(grid: Cell[][]): void {
-        this.connectOctagonalCellsVertically(grid);
-        this.connectOctagonalCellsHorizontally(grid);
+    private connectOctagonalCellsToNeighbourCells(grid: Cell[][]): void {
 
-        this.connectOctagonalCellToTiltedSquareCellInQ1(grid);
-        this.connectOctagonalCellToTiltedSquareCellInQ2(grid);
-        this.connectOctagonalCellToTiltedSquareCellInQ3(grid);
-        this.connectOctagonalCellToTiltedSquareCellInQ4(grid);
-    }
-
-
-
-    private connectOctagonalCellsVertically(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
-            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 2; rowIndex++) {
-                if (rowIndex % 2 === 0) {
-                    const cell: Cell = grid[columnIndex][rowIndex];
-                    const neighbour: Cell = grid[columnIndex][rowIndex + 2];
-                    cell.addNeighbour(neighbour);
-                    neighbour.addNeighbour(cell);
-                }
-            }
-        }
-    }
-
-    private connectOctagonalCellsHorizontally(grid: Cell[][]): void {
-        for (let columnIndex: number = 0; columnIndex < grid.length - 1; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
-                if (rowIndex % 2 == 0) {
-                    const cell: Cell = grid[columnIndex][rowIndex];
-                    const neighbour: Cell = grid[columnIndex + 1][rowIndex];
-                    cell.addNeighbour(neighbour);
-                    neighbour.addNeighbour(cell);
-                }
-            }
-        }
-    }
 
-    private connectOctagonalCellToTiltedSquareCellInQ1(grid: Cell[][]): void {
-        for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
-            for (let rowIndex: number = 2; rowIndex < grid[columnIndex].length; rowIndex++) {
-                if (rowIndex % 2 === 0 && columnIndex < grid.length - 1) {
-                    grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex - 1]);
-                    grid[columnIndex][rowIndex - 1].addNeighbour(grid[columnIndex][rowIndex]);
-                }
-            }
-        }
-    }
+                const rowWithTiltedSquareCells = rowIndex % 2 === 1;
+                const currentCell: Cell = grid[columnIndex][rowIndex];
+                const notOnTheFirstColumn = columnIndex !== 0;
+                const notOnTheLastColumn = columnIndex !== grid.length - 1;
+                const notOnTheFirstRow = rowIndex !== 0;
+                const notOnTheLastRow = rowIndex !== grid[columnIndex].length - 1;
 
-    private connectOctagonalCellToTiltedSquareCellInQ2(grid: Cell[][]): void {
-        for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
-            for (let rowIndex: number = 2; rowIndex < grid[columnIndex].length; rowIndex++) {
-                if (rowIndex % 2 === 0 && columnIndex > 0) {
-                    grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex - 1][rowIndex - 1]);
-                    grid[columnIndex - 1][rowIndex - 1].addNeighbour(grid[columnIndex][rowIndex]);
+                if (rowWithTiltedSquareCells) {
+                    continue;
                 }
-            }
-        }
-    }
+                
+                if (notOnTheLastRow) {
+                    const neighbourOctagonalCellBelow: Cell = grid[columnIndex][rowIndex + 2];
+                    currentCell.addNeighbour(neighbourOctagonalCellBelow);
+                    neighbourOctagonalCellBelow.addNeighbour(currentCell);
+                }
 
-    private connectOctagonalCellToTiltedSquareCellInQ3(grid: Cell[][]): void {
-        for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
-            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
-                if (rowIndex % 2 === 0 && columnIndex < grid.length - 1) {
-                    grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex][rowIndex + 1]);
-                    grid[columnIndex][rowIndex + 1].addNeighbour(grid[columnIndex][rowIndex]);
+                if (notOnTheLastColumn) {
+                    const neighbourOctagonalCellToTheRight: Cell = grid[columnIndex + 1][rowIndex];
+                    currentCell.addNeighbour(neighbourOctagonalCellToTheRight);
+                    neighbourOctagonalCellToTheRight.addNeighbour(currentCell);
                 }
-            }
-        }
-    }
 
-    private connectOctagonalCellToTiltedSquareCellInQ4(grid: Cell[][]): void {
-        for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
-            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
-                if (rowIndex % 2 === 0 && columnIndex > 0) {
-                    grid[columnIndex][rowIndex].addNeighbour(grid[columnIndex - 1][rowIndex + 1]);
-                    grid[columnIndex - 1][rowIndex + 1].addNeighbour(grid[columnIndex][rowIndex]);
+                if (notOnTheFirstRow && notOnTheLastColumn) {
+                    const neighbourTiltedSquareCellInQ1: Cell = grid[columnIndex][rowIndex - 1];
+                    currentCell.addNeighbour(neighbourTiltedSquareCellInQ1);
+                    neighbourTiltedSquareCellInQ1.addNeighbour(currentCell);
                 }
+
+                if (notOnTheFirstRow && notOnTheFirstColumn) {
+                    const neighbourTiltedSquareCellInQ2 = grid[columnIndex - 1][rowIndex - 1];
+                    currentCell.addNeighbour(neighbourTiltedSquareCellInQ2);
+                    neighbourTiltedSquareCellInQ2.addNeighbour(currentCell);
+                }
+
+                if (notOnTheLastColumn && notOnTheLastRow) {
+                    const neighbourTiltedSquareCellInQ3 = grid[columnIndex][rowIndex + 1];
+                    currentCell.addNeighbour(neighbourTiltedSquareCellInQ3);
+                    neighbourTiltedSquareCellInQ3.addNeighbour(currentCell);
+                }
+
+                if (notOnTheFirstColumn && notOnTheLastRow) {
+                    const neighbourTiltedSquareCellInQ4 = grid[columnIndex - 1][rowIndex + 1];
+                    currentCell.addNeighbour(neighbourTiltedSquareCellInQ4);
+                    neighbourTiltedSquareCellInQ4.addNeighbour(currentCell);
+                }
+                
             }
         }
+
+
     }
 
 }

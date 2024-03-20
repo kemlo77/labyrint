@@ -33,13 +33,13 @@ export class TriangularGridFactory extends GridFactory {
             const rowOfCells: Cell[] = [];
             for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
                 const xCoordinate: number = cellWidth * (1 + columnIndex / 2);
-                
+
                 if (this.cellHasPointyTop(columnIndex, rowIndex)) {
-                    let yCoordinate: number = cellHeight * (1 + rowIndex);
+                    const yCoordinate: number = cellHeight * (1 + rowIndex);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
                     rowOfCells.push(new PointyTopTriangularCell(center, cellWidth));
                 } else {
-                    let yCoordinate: number = cellHeight * (4/3 + rowIndex);
+                    const yCoordinate: number = cellHeight * (4 / 3 + rowIndex);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
                     rowOfCells.push(new FlatTopTriangularCell(center, cellWidth));
                 }

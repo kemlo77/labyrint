@@ -54,21 +54,22 @@ export class HexagonalGridFactory extends GridFactory {
         for (let rowIndex: number = 0; rowIndex < transposedGrid.length; rowIndex++) {
             for (let columnIndex: number = 0; columnIndex < transposedGrid[rowIndex].length; columnIndex++) {
                 const currentCell: Cell = transposedGrid[rowIndex][columnIndex];
-                const neighbourDistance: number = cellWidth * 1.01
-                const cellIsWithinNeighbouringDistance: CellTest = (cell) => currentCell.center.distanceTo(cell.center) < neighbourDistance;
+                const neighbourDistance: number = cellWidth * 1.01;
+                const cellIsWithinNeighbouringDistance: CellTest =
+                    (cell) => currentCell.center.distanceTo(cell.center) < neighbourDistance;
                 const addCellAsNeighbour: CellAction = (cell) => currentCell.addNeighbour(cell);
                 const notOnTheLastRow: boolean = rowIndex !== transposedGrid.length - 1;
                 const notOnTheFirstRow: boolean = rowIndex !== 0;
 
                 if (notOnTheLastRow) {
-                    const cellsOnNextRow: Cell[] =  transposedGrid[rowIndex + 1];
+                    const cellsOnNextRow: Cell[] = transposedGrid[rowIndex + 1];
                     cellsOnNextRow
                         .filter(cellIsWithinNeighbouringDistance)
                         .forEach(addCellAsNeighbour);
                 }
 
                 if (notOnTheFirstRow) {
-                    const cellsOnPreviousRow: Cell[] =  transposedGrid[rowIndex - 1];
+                    const cellsOnPreviousRow: Cell[] = transposedGrid[rowIndex - 1];
                     cellsOnPreviousRow
                         .filter(cellIsWithinNeighbouringDistance)
                         .forEach(addCellAsNeighbour);

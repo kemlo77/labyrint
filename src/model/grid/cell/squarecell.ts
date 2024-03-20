@@ -1,6 +1,7 @@
 import { BorderSegment } from '../../bordersegment';
 import { Cell } from './cell';
 import { Coordinate } from '../../coordinate';
+import { CellTest } from './celltypealiases';
 
 
 
@@ -39,10 +40,10 @@ export class SquareCell extends Cell {
     get closedBorders(): BorderSegment[] {
         const closedBorderSegments: BorderSegment[] = [];
 
-        const isLocatedInCenterOrBelow: any = neighbourCell => neighbourCell.center.y <= this.center.y;
-        const isLocatedInCenterOrToTheLeft: any = neighbourCell => neighbourCell.center.x <= this.center.x;
-        const isLocatedInCenterOrAbove: any = neighbourCell => neighbourCell.center.y >= this.center.y;
-        const isLocatedInCenterOrToTheRight: any = neighbourCell => neighbourCell.center.x >= this.center.x;
+        const isLocatedInCenterOrBelow: CellTest = neighbourCell => neighbourCell.center.y <= this.center.y;
+        const isLocatedInCenterOrToTheLeft: CellTest = neighbourCell => neighbourCell.center.x <= this.center.x;
+        const isLocatedInCenterOrAbove: CellTest = neighbourCell => neighbourCell.center.y >= this.center.y;
+        const isLocatedInCenterOrToTheRight: CellTest = neighbourCell => neighbourCell.center.x >= this.center.x;
 
         const hasNoConnectedCellAbove: boolean = this.connectedNeighbours.every(isLocatedInCenterOrBelow);
         const hasNoConnectedCellToTheRight: boolean = this.connectedNeighbours.every(isLocatedInCenterOrToTheLeft);

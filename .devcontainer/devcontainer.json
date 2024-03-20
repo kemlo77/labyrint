@@ -1,0 +1,12 @@
+{
+    "forwardPorts": [5600],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "GitHub.copilot",
+                "GitHub.copilot-chat",
+                "dbaeumer.vscode-eslint"
+            ]
+        }
+    }
+}

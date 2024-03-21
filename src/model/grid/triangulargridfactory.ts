@@ -60,30 +60,27 @@ export class TriangularGridFactory extends GridFactory {
     }
 
     private interconnectGrid(grid: Cell[][]): void {
-        this.connectCellsVertically(grid);
-        this.connectCellsHorizontally(grid);
-    }
-
-    private connectCellsVertically(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
-            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length - 1; rowIndex++) {
-                if (this.cellHasFlatTop(columnIndex, rowIndex)) {
-                    const cell: Cell = grid[columnIndex][rowIndex];
-                    const neighbourCell: Cell = grid[columnIndex][rowIndex + 1];
-                    cell.addNeighbour(neighbourCell);
-                    neighbourCell.addNeighbour(cell);
-                }
-            }
-        }
-    }
-
-    private connectCellsHorizontally(grid: Cell[][]): void {
-        for (let columnIndex: number = 1; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
-                const cell: Cell = grid[columnIndex][rowIndex];
-                const neighbourCell: Cell = grid[columnIndex - 1][rowIndex];
-                cell.addNeighbour(neighbourCell);
-                neighbourCell.addNeighbour(cell);
+
+                const currentCell: Cell = grid[columnIndex][rowIndex];
+                const notOnLastRow: boolean = rowIndex !== grid[columnIndex].length - 1;
+                const notInFirstColumn: boolean = columnIndex !== 0;
+                const cellHasFlatTop: boolean = this.cellHasFlatTop(columnIndex, rowIndex);
+
+                //TODO: Undersök varför det inte är cellHasPointyTop här?
+                if (notOnLastRow && cellHasFlatTop) {
+                    const neighbourCellBelow: Cell = grid[columnIndex][rowIndex + 1];
+                    currentCell.addNeighbour(neighbourCellBelow);
+                    neighbourCellBelow.addNeighbour(currentCell);
+                }
+
+                if (notInFirstColumn) {
+
+                    const neighbourCellToTheLeft: Cell = grid[columnIndex - 1][rowIndex];
+                    currentCell.addNeighbour(neighbourCellToTheLeft);
+                    neighbourCellToTheLeft.addNeighbour(currentCell);
+                }
             }
         }
     }

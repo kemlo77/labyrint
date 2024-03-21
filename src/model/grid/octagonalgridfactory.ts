@@ -53,17 +53,17 @@ export class OctagonalGridFactory extends GridFactory {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
 
-                const rowWithTiltedSquareCells = rowIndex % 2 === 1;
+                const rowWithTiltedSquareCells: boolean = rowIndex % 2 === 1;
                 const currentCell: Cell = grid[columnIndex][rowIndex];
-                const notOnTheFirstColumn = columnIndex !== 0;
-                const notOnTheLastColumn = columnIndex !== grid.length - 1;
-                const notOnTheFirstRow = rowIndex !== 0;
-                const notOnTheLastRow = rowIndex !== grid[columnIndex].length - 1;
+                const notOnTheFirstColumn: boolean = columnIndex !== 0;
+                const notOnTheLastColumn: boolean = columnIndex !== grid.length - 1;
+                const notOnTheFirstRow: boolean = rowIndex !== 0;
+                const notOnTheLastRow: boolean = rowIndex !== grid[columnIndex].length - 1;
 
                 if (rowWithTiltedSquareCells) {
                     continue;
                 }
-                
+
                 if (notOnTheLastRow) {
                     const neighbourOctagonalCellBelow: Cell = grid[columnIndex][rowIndex + 2];
                     currentCell.addNeighbour(neighbourOctagonalCellBelow);
@@ -77,29 +77,29 @@ export class OctagonalGridFactory extends GridFactory {
                 }
 
                 if (notOnTheFirstRow && notOnTheLastColumn) {
-                    const neighbourTiltedSquareCellInQ1: Cell = grid[columnIndex][rowIndex - 1];
-                    currentCell.addNeighbour(neighbourTiltedSquareCellInQ1);
-                    neighbourTiltedSquareCellInQ1.addNeighbour(currentCell);
+                    const neighbourTiltedSquareCellUpRight: Cell = grid[columnIndex][rowIndex - 1];
+                    currentCell.addNeighbour(neighbourTiltedSquareCellUpRight);
+                    neighbourTiltedSquareCellUpRight.addNeighbour(currentCell);
                 }
 
                 if (notOnTheFirstRow && notOnTheFirstColumn) {
-                    const neighbourTiltedSquareCellInQ2 = grid[columnIndex - 1][rowIndex - 1];
-                    currentCell.addNeighbour(neighbourTiltedSquareCellInQ2);
-                    neighbourTiltedSquareCellInQ2.addNeighbour(currentCell);
+                    const neighbourTiltedSquareCellUpLeft: Cell = grid[columnIndex - 1][rowIndex - 1];
+                    currentCell.addNeighbour(neighbourTiltedSquareCellUpLeft);
+                    neighbourTiltedSquareCellUpLeft.addNeighbour(currentCell);
                 }
 
                 if (notOnTheLastColumn && notOnTheLastRow) {
-                    const neighbourTiltedSquareCellInQ3 = grid[columnIndex][rowIndex + 1];
-                    currentCell.addNeighbour(neighbourTiltedSquareCellInQ3);
-                    neighbourTiltedSquareCellInQ3.addNeighbour(currentCell);
+                    const neighbourTiltedSquareCellDownLeft: Cell = grid[columnIndex][rowIndex + 1];
+                    currentCell.addNeighbour(neighbourTiltedSquareCellDownLeft);
+                    neighbourTiltedSquareCellDownLeft.addNeighbour(currentCell);
                 }
 
                 if (notOnTheFirstColumn && notOnTheLastRow) {
-                    const neighbourTiltedSquareCellInQ4 = grid[columnIndex - 1][rowIndex + 1];
-                    currentCell.addNeighbour(neighbourTiltedSquareCellInQ4);
-                    neighbourTiltedSquareCellInQ4.addNeighbour(currentCell);
+                    const neighbourTiltedSquareCellDownRight: Cell = grid[columnIndex - 1][rowIndex + 1];
+                    currentCell.addNeighbour(neighbourTiltedSquareCellDownRight);
+                    neighbourTiltedSquareCellDownRight.addNeighbour(currentCell);
                 }
-                
+
             }
         }
 

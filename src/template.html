@@ -15,11 +15,17 @@
 
 <body>
     <br>
-    Generate a labyrinth:<br>
-    <button type="button" id="squareMazeButton">Square</button>
-    <button type="button" id="hexagonalMazeButton">Hexagonal</button>
-    <button type="button" id="triangularMazeButton">Triangular</button>
-    <button type="button" id="octagonalMazeButton">Octagonal</button>
+    Select type of labyrinth:<br>
+    <form>
+        <input type="radio" id="square" name="mazeType" value="square" checked>
+        <label for="square">Square</label><br>
+        <input type="radio" id="hexagonal" name="mazeType" value="hexagonal">
+        <label for="hexagonal">Hexagonal</label><br>
+        <input type="radio" id="triangular" name="mazeType" value="triangular">
+        <label for="triangular">Triangular</label><br>
+        <input type="radio" id="octagonal" name="mazeType" value="octagonal">
+        <label for="octagonal">Octagonal</label>
+    </form>
     <br>
     <button type="button" id="generateButton">Generate new</button>
     <br>

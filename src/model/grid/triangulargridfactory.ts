@@ -68,6 +68,12 @@ export class TriangularGridFactory extends GridFactory {
                 const notInFirstColumn: boolean = columnIndex !== 0;
                 const cellHasFlatTop: boolean = this.cellHasFlatTop(columnIndex, rowIndex);
 
+                if (notInFirstColumn) {
+                    const neighbourCellToTheLeft: Cell = grid[columnIndex - 1][rowIndex];
+                    currentCell.addNeighbour(neighbourCellToTheLeft);
+                    neighbourCellToTheLeft.addNeighbour(currentCell);
+                }
+
                 //TODO: Undersök varför det inte är cellHasPointyTop här?
                 if (notOnLastRow && cellHasFlatTop) {
                     const neighbourCellBelow: Cell = grid[columnIndex][rowIndex + 1];
@@ -75,12 +81,7 @@ export class TriangularGridFactory extends GridFactory {
                     neighbourCellBelow.addNeighbour(currentCell);
                 }
 
-                if (notInFirstColumn) {
 
-                    const neighbourCellToTheLeft: Cell = grid[columnIndex - 1][rowIndex];
-                    currentCell.addNeighbour(neighbourCellToTheLeft);
-                    neighbourCellToTheLeft.addNeighbour(currentCell);
-                }
             }
         }
     }

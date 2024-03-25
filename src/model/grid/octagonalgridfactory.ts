@@ -88,13 +88,13 @@ export class OctagonalGridFactory extends GridFactory {
                     neighbourTiltedSquareCellUpLeft.addNeighbour(currentCell);
                 }
 
-                if (notOnTheLastColumn && notOnTheLastRow) {
+                if (notOnTheLastRow && notOnTheLastColumn) {
                     const neighbourTiltedSquareCellDownLeft: Cell = grid[columnIndex][rowIndex + 1];
                     currentCell.addNeighbour(neighbourTiltedSquareCellDownLeft);
                     neighbourTiltedSquareCellDownLeft.addNeighbour(currentCell);
                 }
 
-                if (notOnTheFirstColumn && notOnTheLastRow) {
+                if (notOnTheLastRow && notOnTheFirstColumn) {
                     const neighbourTiltedSquareCellDownRight: Cell = grid[columnIndex - 1][rowIndex + 1];
                     currentCell.addNeighbour(neighbourTiltedSquareCellDownRight);
                     neighbourTiltedSquareCellDownRight.addNeighbour(currentCell);

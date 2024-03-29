@@ -1,15 +1,16 @@
-import { BorderSegment } from '../../bordersegment';
+import { Segment } from '../../segment';
 import { Cell } from './cell';
 import { Coordinate } from '../../coordinate';
+import { CellTest } from './celltypealiases';
 
 export class FlatTopTriangularCell extends Cell {
 
     private lowerCorner: Coordinate;
     private rightCorner: Coordinate;
     private leftCorner: Coordinate;
-    private rightBorder: BorderSegment;
-    private leftBorder: BorderSegment;
-    private upperBorder: BorderSegment;
+    private rightBorder: Segment;
+    private leftBorder: Segment;
+    private upperBorder: Segment;
 
     constructor(center: Coordinate, width: number) {
         super(center, width);
@@ -28,9 +29,9 @@ export class FlatTopTriangularCell extends Cell {
     }
 
     private createBorders(): void {
-        this.upperBorder = new BorderSegment(this.leftCorner, this.rightCorner);
-        this.rightBorder = new BorderSegment(this.lowerCorner, this.rightCorner);
-        this.leftBorder = new BorderSegment(this.lowerCorner, this.leftCorner);
+        this.upperBorder = new Segment(this.leftCorner, this.rightCorner);
+        this.rightBorder = new Segment(this.lowerCorner, this.rightCorner);
+        this.leftBorder = new Segment(this.lowerCorner, this.leftCorner);
     }
 
     get corners(): Coordinate[] {
@@ -41,27 +42,27 @@ export class FlatTopTriangularCell extends Cell {
         ];
     }
 
-    get closedBorders(): BorderSegment[] {
-        const closedBorderSegments: BorderSegment[] = [];
+    get closedBorders(): Segment[] {
+        const closedBorders: Segment[] = [];
 
-        const isLocatedBelowCenter: any = neighbourCell => neighbourCell.center.y < this.center.y;
-        const isLocatedInCenterOrToTheLeft: any = neighbourCell => neighbourCell.center.x <= this.center.x;
-        const isLocatedInCenterOrToTheRight: any = neighbourCell => neighbourCell.center.x >= this.center.x;
+        const isLocatedBelowCenter: CellTest = neighbourCell => neighbourCell.center.y < this.center.y;
+        const isLocatedInCenterOrToTheLeft: CellTest = neighbourCell => neighbourCell.center.x <= this.center.x;
+        const isLocatedInCenterOrToTheRight: CellTest = neighbourCell => neighbourCell.center.x >= this.center.x;
 
         const hasNoConnectedCellAbove: boolean = this.connectedNeighbours.every(isLocatedBelowCenter);
         const hasNoConnectedCellToTheRight: boolean = this.connectedNeighbours.every(isLocatedInCenterOrToTheLeft);
         const hasNoConnectedCellToTheLeft: boolean = this.connectedNeighbours.every(isLocatedInCenterOrToTheRight);
 
         if (hasNoConnectedCellAbove) {
-            closedBorderSegments.push(this.upperBorder);
+            closedBorders.push(this.upperBorder);
         }
         if (hasNoConnectedCellToTheRight) {
-            closedBorderSegments.push(this.rightBorder);
+            closedBorders.push(this.rightBorder);
         }
         if (hasNoConnectedCellToTheLeft) {
-            closedBorderSegments.push(this.leftBorder);
+            closedBorders.push(this.leftBorder);
         }
 
-        return closedBorderSegments;
+        return closedBorders;
     }
 }

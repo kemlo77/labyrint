@@ -1,4 +1,4 @@
-import { BorderSegment } from '../../bordersegment';
+import { Segment } from '../../segment';
 import { Coordinate } from '../../coordinate';
 import { Cell } from './cell';
 
@@ -8,10 +8,10 @@ export class TiltedSquareCell extends Cell {
     private rightCorner: Coordinate;
     private leftCorner: Coordinate;
     private lowerCorner: Coordinate;
-    private upperRightBorder: BorderSegment;
-    private lowerRightBorder: BorderSegment;
-    private lowerLeftBorder: BorderSegment;
-    private upperLeftBorder: BorderSegment;
+    private upperRightBorder: Segment;
+    private lowerRightBorder: Segment;
+    private lowerLeftBorder: Segment;
+    private upperLeftBorder: Segment;
 
 
     constructor(center: Coordinate, width: number) {
@@ -30,15 +30,15 @@ export class TiltedSquareCell extends Cell {
     }
 
     private createBorders(): void {
-        this.upperRightBorder = new BorderSegment(this.upperCorner, this.rightCorner);
-        this.lowerRightBorder = new BorderSegment(this.rightCorner, this.lowerCorner);
-        this.lowerLeftBorder = new BorderSegment(this.lowerCorner, this.leftCorner);
-        this.upperLeftBorder = new BorderSegment(this.leftCorner, this.upperCorner);
+        this.upperRightBorder = new Segment(this.upperCorner, this.rightCorner);
+        this.lowerRightBorder = new Segment(this.rightCorner, this.lowerCorner);
+        this.lowerLeftBorder = new Segment(this.lowerCorner, this.leftCorner);
+        this.upperLeftBorder = new Segment(this.leftCorner, this.upperCorner);
     }
 
 
-    get closedBorders(): BorderSegment[] {
-        const closedBorderSegments: BorderSegment[] = [];
+    get closedBorders(): Segment[] {
+        const closedBorders: Segment[] = [];
 
         type CellTest = (cell: Cell) => boolean;
         const isLocatedInFirstQuadrant: CellTest = c => c.center.x > this.center.x && c.center.y > this.center.y;
@@ -52,18 +52,18 @@ export class TiltedSquareCell extends Cell {
         const hasNoConnectedCellInFourthQuadrant: boolean = !this.connectedNeighbours.some(isLocatedInFourthQuadrant);
 
         if (hasNoConnectedCellInFirstQuadrant) {
-            closedBorderSegments.push(this.upperRightBorder);
+            closedBorders.push(this.upperRightBorder);
         }
         if (hasNoConnectedCellInSecondQuadrant) {
-            closedBorderSegments.push(this.upperLeftBorder);
+            closedBorders.push(this.upperLeftBorder);
         }
         if (hasNoConnectedCellInThirdQuadrant) {
-            closedBorderSegments.push(this.lowerLeftBorder);
+            closedBorders.push(this.lowerLeftBorder);
         }
         if (hasNoConnectedCellInFourthQuadrant) {
-            closedBorderSegments.push(this.lowerRightBorder);
+            closedBorders.push(this.lowerRightBorder);
         }
-        return closedBorderSegments;
+        return closedBorders;
 
     }
 

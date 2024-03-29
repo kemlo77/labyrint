@@ -3,6 +3,7 @@ import { Grid } from './grid/grid';
 import { Observer } from '../observer';
 import { Subject } from '../subject';
 import { GridSupplier } from './grid/gridsupplier';
+import { Segment } from './segment';
 
 export class Model implements Subject {
 
@@ -27,8 +28,18 @@ export class Model implements Subject {
         return this._sequenceOfVisitedCells[this._sequenceOfVisitedCells.length - 1];
     }
 
-    get solutionSequence(): Cell[] {
+    get solutionCellSequence(): Cell[] {
         return [...this._solutionSequence];
+    }
+
+    get solutionTrail(): Segment[] {
+        const solutionTrail: Segment[] = [];
+        for (let index: number = 0; index < this._solutionSequence.length - 1; index++) {
+            const currentCell: Cell = this._solutionSequence[index];
+            const nextCell: Cell = this._solutionSequence[index + 1];
+            solutionTrail.push(new Segment(currentCell.center, nextCell.center));
+        }
+        return solutionTrail;
     }
 
     public attachObserver(observer: Observer): void {
@@ -91,7 +102,7 @@ export class Model implements Subject {
         this.notifyObservers();
     }
 
-    //TODO: feature envy
+    //TODO: feature envy? Borde det ligga i grid?
     private disconnectCellsWithOnlyOneConnection(): void {
         this._grid.allCells
             .filter(cell => cell.connectedNeighbours.length == 1)

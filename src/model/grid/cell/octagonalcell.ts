@@ -1,4 +1,4 @@
-import { BorderSegment } from '../../bordersegment';
+import { Segment } from '../../segment';
 import { Coordinate } from '../../coordinate';
 import { Cell } from './cell';
 
@@ -15,14 +15,14 @@ export class OctagonalCell extends Cell {
     private lowerQ3Corner: Coordinate;
     private upperQ4Corner: Coordinate;
     private lowerQ4Corner: Coordinate;
-    private rightBorder: BorderSegment;
-    private upRightBorder: BorderSegment;
-    private upperBorder: BorderSegment;
-    private upLeftBorder: BorderSegment;
-    private leftBorder: BorderSegment;
-    private lowLeftBorder: BorderSegment;
-    private lowerBorder: BorderSegment;
-    private lowRightBorder: BorderSegment;
+    private rightBorder: Segment;
+    private upRightBorder: Segment;
+    private upperBorder: Segment;
+    private upLeftBorder: Segment;
+    private leftBorder: Segment;
+    private lowLeftBorder: Segment;
+    private lowerBorder: Segment;
+    private lowRightBorder: Segment;
 
 
 
@@ -51,18 +51,18 @@ export class OctagonalCell extends Cell {
     }
 
     private createBorders(): void {
-        this.rightBorder = new BorderSegment(this.upperQ4Corner, this.lowerQ1Corner);
-        this.upRightBorder = new BorderSegment(this.lowerQ1Corner, this.upperQ1Corner);
-        this.upperBorder = new BorderSegment(this.upperQ1Corner, this.upperQ2Corner);
-        this.upLeftBorder = new BorderSegment(this.upperQ2Corner, this.lowerQ2Corner);
-        this.leftBorder = new BorderSegment(this.lowerQ2Corner, this.upperQ3Corner);
-        this.lowLeftBorder = new BorderSegment(this.upperQ3Corner, this.lowerQ3Corner);
-        this.lowerBorder = new BorderSegment(this.lowerQ3Corner, this.lowerQ4Corner);
-        this.lowRightBorder = new BorderSegment(this.lowerQ4Corner, this.upperQ4Corner);
+        this.rightBorder = new Segment(this.upperQ4Corner, this.lowerQ1Corner);
+        this.upRightBorder = new Segment(this.lowerQ1Corner, this.upperQ1Corner);
+        this.upperBorder = new Segment(this.upperQ1Corner, this.upperQ2Corner);
+        this.upLeftBorder = new Segment(this.upperQ2Corner, this.lowerQ2Corner);
+        this.leftBorder = new Segment(this.lowerQ2Corner, this.upperQ3Corner);
+        this.lowLeftBorder = new Segment(this.upperQ3Corner, this.lowerQ3Corner);
+        this.lowerBorder = new Segment(this.lowerQ3Corner, this.lowerQ4Corner);
+        this.lowRightBorder = new Segment(this.lowerQ4Corner, this.upperQ4Corner);
     }
 
-    get closedBorders(): BorderSegment[] {
-        const closedBorderSegments: BorderSegment[] = [];
+    get closedBorders(): Segment[] {
+        const closedBorders: Segment[] = [];
 
         type CellTest = (cell: Cell) => boolean;
         const isLocatedToTheRight: CellTest = c => c.center.x > this.center.x && c.center.y === this.center.y;
@@ -84,31 +84,31 @@ export class OctagonalCell extends Cell {
         const hasNoConnectedCellInQ4: boolean = !this.connectedNeighbours.some(isLocatedInQ4);
 
         if (hasNoConnectedCellToTheRight) {
-            closedBorderSegments.push(this.rightBorder);
+            closedBorders.push(this.rightBorder);
         }
         if (hasNoConnectedCellInQ1) {
-            closedBorderSegments.push(this.upRightBorder);
+            closedBorders.push(this.upRightBorder);
         }
         if (hasNoConnectedCellAbove) {
-            closedBorderSegments.push(this.upperBorder);
+            closedBorders.push(this.upperBorder);
         }
         if (hasNoConnectedCellInQ2) {
-            closedBorderSegments.push(this.upLeftBorder);
+            closedBorders.push(this.upLeftBorder);
         }
         if (hasNoConnectedCellToTheLeft) {
-            closedBorderSegments.push(this.leftBorder);
+            closedBorders.push(this.leftBorder);
         }
         if (hasNoConnectedCellInQ3) {
-            closedBorderSegments.push(this.lowLeftBorder);
+            closedBorders.push(this.lowLeftBorder);
         }
         if (hasNoConnectedCellBelow) {
-            closedBorderSegments.push(this.lowerBorder);
+            closedBorders.push(this.lowerBorder);
         }
         if (hasNoConnectedCellInQ4) {
-            closedBorderSegments.push(this.lowRightBorder);
+            closedBorders.push(this.lowRightBorder);
         }
 
-        return closedBorderSegments;
+        return closedBorders;
     }
 
     get corners(): Coordinate[] {

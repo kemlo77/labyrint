@@ -1,4 +1,4 @@
-import { BorderSegment } from '../../bordersegment';
+import { Segment } from '../../segment';
 import { Cell } from './cell';
 import { Coordinate } from '../../coordinate';
 import { CellTest } from './celltypealiases';
@@ -11,10 +11,10 @@ export class SquareCell extends Cell {
     private upperLeftCorner: Coordinate;
     private lowerRightCorner: Coordinate;
     private lowerLeftCorner: Coordinate;
-    private upperBorder: BorderSegment;
-    private rightBorder: BorderSegment;
-    private lowerBorder: BorderSegment;
-    private leftBorder: BorderSegment;
+    private upperBorder: Segment;
+    private rightBorder: Segment;
+    private lowerBorder: Segment;
+    private leftBorder: Segment;
 
     constructor(center: Coordinate, width: number) {
         super(center, width);
@@ -31,14 +31,14 @@ export class SquareCell extends Cell {
     }
 
     private createBorders(): void {
-        this.upperBorder = new BorderSegment(this.upperLeftCorner, this.upperRightCorner);
-        this.rightBorder = new BorderSegment(this.upperRightCorner, this.lowerRightCorner);
-        this.lowerBorder = new BorderSegment(this.lowerLeftCorner, this.lowerRightCorner);
-        this.leftBorder = new BorderSegment(this.upperLeftCorner, this.lowerLeftCorner);
+        this.upperBorder = new Segment(this.upperLeftCorner, this.upperRightCorner);
+        this.rightBorder = new Segment(this.upperRightCorner, this.lowerRightCorner);
+        this.lowerBorder = new Segment(this.lowerLeftCorner, this.lowerRightCorner);
+        this.leftBorder = new Segment(this.upperLeftCorner, this.lowerLeftCorner);
     }
 
-    get closedBorders(): BorderSegment[] {
-        const closedBorderSegments: BorderSegment[] = [];
+    get closedBorders(): Segment[] {
+        const closedBorders: Segment[] = [];
 
         const isLocatedInCenterOrBelow: CellTest = neighbourCell => neighbourCell.center.y <= this.center.y;
         const isLocatedInCenterOrToTheLeft: CellTest = neighbourCell => neighbourCell.center.x <= this.center.x;
@@ -51,19 +51,19 @@ export class SquareCell extends Cell {
         const hasNoConnectedCellToTheLeft: boolean = this.connectedNeighbours.every(isLocatedInCenterOrToTheRight);
 
         if (hasNoConnectedCellAbove) {
-            closedBorderSegments.push(this.upperBorder);
+            closedBorders.push(this.upperBorder);
         }
         if (hasNoConnectedCellToTheRight) {
-            closedBorderSegments.push(this.rightBorder);
+            closedBorders.push(this.rightBorder);
         }
         if (hasNoConnectedCellBelow) {
-            closedBorderSegments.push(this.lowerBorder);
+            closedBorders.push(this.lowerBorder);
         }
         if (hasNoConnectedCellToTheLeft) {
-            closedBorderSegments.push(this.leftBorder);
+            closedBorders.push(this.leftBorder);
         }
 
-        return closedBorderSegments;
+        return closedBorders;
     }
 
     get corners(): Coordinate[] {

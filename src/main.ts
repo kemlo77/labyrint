@@ -1,7 +1,8 @@
 import './style.css';
 import { Controller } from './controller';
 import { Model } from './model/model';
-import { StandardView } from './view/standardview';
+import { View } from './view/view';
+import { CanvasPainter } from './view/canvaspainter';
 
 const canvasElement: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
 const generateButton: HTMLButtonElement = document.getElementById('generateButton') as HTMLButtonElement;
@@ -11,7 +12,8 @@ const hideTrailButton: HTMLButtonElement = document.getElementById('hideTrailBut
 const mazeTypeRadioButtons: NodeListOf<HTMLInputElement> = document.querySelectorAll('input[name="mazeType"]');
 
 const model: Model = new Model();
-const view: StandardView = new StandardView(canvasElement, model);
+const canvasPainter: CanvasPainter = new CanvasPainter(canvasElement);
+const view: View = new View(canvasPainter, model);
 const controller: Controller = new Controller(model, view);
 controller.changeGridType('square');
 

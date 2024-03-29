@@ -1,57 +1,47 @@
-import { Coordinate } from '../model/coordinate';
+import { Cell } from '../model/grid/cell/cell';
 import { Model } from '../model/model';
 import { Observer } from '../observer';
+import { CanvasPainter, BLACK_COLOR, BLUE_COLOR, WHITE_COLOR } from './canvaspainter';
 
-export abstract class View implements Observer {
+export class View implements Observer {
 
-    private _canvasElement: HTMLCanvasElement;
-    private _canvasCtx: CanvasRenderingContext2D;
-    protected whiteColor: string = 'rgba(255,255,255,1)';
-    protected blackColor: string = 'rgba(0,0,0,1)';
-    protected trailColor: string = 'rgba(0,0,255,1)';
-    protected _model: Model;
+    private _model: Model;
+    private _canvasPainter: CanvasPainter;
 
-    constructor(canvasElement: HTMLCanvasElement, model: Model) {
-        this._canvasElement = canvasElement;
-        this._canvasCtx = this._canvasElement.getContext('2d');
+
+    constructor(canvasPainter: CanvasPainter, model: Model) {
+        this._canvasPainter = canvasPainter;
         this._model = model;
+        this._model.attachObserver(this);
     }
 
-    abstract update(): void;
-    abstract showSolution(): void;
-    abstract hideSolution(): void;
-
-    protected clearTheCanvas(): void {
-        this._canvasCtx.clearRect(0, 0, this._canvasElement.width, this._canvasElement.height);
+    update(): void {
+        this._canvasPainter.clearTheCanvas();
+        this.shadeDisconnectedCells();
+        this.drawAllCellBorders();
     }
 
-    protected paintCellCenter(centerPoint: Coordinate, radius: number, fillColor: string): void {
-        this._canvasCtx.fillStyle = fillColor;
-        this._canvasCtx.beginPath();
-        this._canvasCtx.arc(centerPoint.x, centerPoint.y, radius, 0, 2 * Math.PI);
-        this._canvasCtx.fill();
+    private shadeDisconnectedCells(): void {
+        this._model.grid.allDisconnectedCells
+            .forEach(cell => this.fillCell(cell, BLACK_COLOR, BLACK_COLOR));
     }
 
-    protected drawLine(fromPoint: Coordinate, toPoint: Coordinate, width: number, color: string): void {
-        this._canvasCtx.strokeStyle = color;
-        this._canvasCtx.lineWidth = width;
-        this._canvasCtx.lineCap = 'round';
-        this._canvasCtx.beginPath();
-        this._canvasCtx.moveTo(fromPoint.x, fromPoint.y);
-        this._canvasCtx.lineTo(toPoint.x, toPoint.y);
-        this._canvasCtx.stroke();
+    private fillCell(cell: Cell, fillColor: string, borderColor: string): void {
+        this._canvasPainter.fillPolygon(cell.corners, fillColor, borderColor);
     }
 
-    protected fillPolygon(corners: Coordinate[], fillColor: string, borderColor: string): void {
-        this._canvasCtx.fillStyle = fillColor;
-        this._canvasCtx.strokeStyle = borderColor;
-        this._canvasCtx.lineWidth = 1;
-        this._canvasCtx.beginPath();
-        const firstCorner: Coordinate = corners.shift();
-        this._canvasCtx.moveTo(firstCorner.x, firstCorner.y);
-        corners.forEach(corner => this._canvasCtx.lineTo(corner.x, corner.y));
-        this._canvasCtx.fill();
-        this._canvasCtx.stroke();
+    private drawAllCellBorders(): void {
+        this._model.grid.allCells.forEach(cell => {
+            this._canvasPainter.drawSegments(cell.closedBorders, 1, BLACK_COLOR);
+        });
+    }
+
+    public showSolution(): void {
+        this._canvasPainter.drawSegments(this._model.solutionTrail, 2, BLUE_COLOR);
+    }
+
+    public hideSolution(): void {
+        this._canvasPainter.drawSegments(this._model.solutionTrail, 4, WHITE_COLOR);
     }
 
 }

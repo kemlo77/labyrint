@@ -34,6 +34,10 @@ export class Grid {
         return this._cellMatrix.flat().filter(cell => cell.neighbours.length > 0);
     }
 
+    get allDisconnectedCells(): Cell[] {
+        return this.allCells.filter(cell => cell.connectedNeighbours.length == 0);
+    }
+
     get totalNumberOfCells(): number {
         return this.allCells.length;
     }

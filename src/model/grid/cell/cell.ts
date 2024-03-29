@@ -1,4 +1,4 @@
-import { BorderSegment } from '../../bordersegment';
+import { Segment } from '../../segment';
 import { Coordinate } from '../../coordinate';
 
 export abstract class Cell {
@@ -83,7 +83,7 @@ export abstract class Cell {
         }
     }
 
-    abstract get closedBorders(): BorderSegment[];
+    abstract get closedBorders(): Segment[];
 
     abstract get corners(): Coordinate[];
 

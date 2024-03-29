@@ -1,4 +1,4 @@
-import { BorderSegment } from '../../bordersegment';
+import { Segment } from '../../segment';
 import { Cell } from './cell';
 import { Coordinate } from '../../coordinate';
 
@@ -11,12 +11,12 @@ export class HexagonalCell extends Cell {
     private lowerLeftCorner: Coordinate;
     private lowerCenterCorner: Coordinate;
 
-    private upperRightBorder: BorderSegment;
-    private upperLeftBorder: BorderSegment;
-    private centerRightBorder: BorderSegment;
-    private centerLeftBorder: BorderSegment;
-    private lowerRightBorder: BorderSegment;
-    private lowerLeftBorder: BorderSegment;
+    private upperRightBorder: Segment;
+    private upperLeftBorder: Segment;
+    private centerRightBorder: Segment;
+    private centerLeftBorder: Segment;
+    private lowerRightBorder: Segment;
+    private lowerLeftBorder: Segment;
 
     constructor(center: Coordinate, width: number) {
         super(center, width);
@@ -37,12 +37,12 @@ export class HexagonalCell extends Cell {
     }
 
     private createBorders(): void {
-        this.upperRightBorder = new BorderSegment(this.upperCenterCorner, this.upperRightCorner);
-        this.centerRightBorder = new BorderSegment(this.upperRightCorner, this.lowerRightCorner);
-        this.lowerRightBorder = new BorderSegment(this.lowerRightCorner, this.lowerCenterCorner);
-        this.lowerLeftBorder = new BorderSegment(this.lowerCenterCorner, this.lowerLeftCorner);
-        this.centerLeftBorder = new BorderSegment(this.lowerLeftCorner, this.upperLeftCorner);
-        this.upperLeftBorder = new BorderSegment(this.upperLeftCorner, this.upperCenterCorner);
+        this.upperRightBorder = new Segment(this.upperCenterCorner, this.upperRightCorner);
+        this.centerRightBorder = new Segment(this.upperRightCorner, this.lowerRightCorner);
+        this.lowerRightBorder = new Segment(this.lowerRightCorner, this.lowerCenterCorner);
+        this.lowerLeftBorder = new Segment(this.lowerCenterCorner, this.lowerLeftCorner);
+        this.centerLeftBorder = new Segment(this.lowerLeftCorner, this.upperLeftCorner);
+        this.upperLeftBorder = new Segment(this.upperLeftCorner, this.upperCenterCorner);
 
     }
 
@@ -56,9 +56,9 @@ export class HexagonalCell extends Cell {
             this.upperLeftCorner
         ];
     }
-    get closedBorders(): BorderSegment[] {
+    get closedBorders(): Segment[] {
         //TODO returnera dom borders som inte har en connected neighbour
-        const closedBorderSegments: BorderSegment[] = [];
+        const closedBorders: Segment[] = [];
         let hasNoCenterRightNeighbour: boolean = true;
         let hasNoCenterLeftNeighbour: boolean = true;
         let hasNoUpperRightNeighbour: boolean = true;
@@ -100,26 +100,26 @@ export class HexagonalCell extends Cell {
             }
         });
         if (hasNoUpperRightNeighbour) {
-            closedBorderSegments.push(this.upperRightBorder);
+            closedBorders.push(this.upperRightBorder);
         }
         if (hasNoCenterRightNeighbour) {
-            closedBorderSegments.push(this.centerRightBorder);
+            closedBorders.push(this.centerRightBorder);
         }
         if (hasNoLowerRightNeighbour) {
-            closedBorderSegments.push(this.lowerRightBorder);
+            closedBorders.push(this.lowerRightBorder);
         }
         if (hasNoUpperLeftNeighbour) {
-            closedBorderSegments.push(this.upperLeftBorder);
+            closedBorders.push(this.upperLeftBorder);
         }
         if (hasNoCenterLeftNeighbour) {
-            closedBorderSegments.push(this.centerLeftBorder);
+            closedBorders.push(this.centerLeftBorder);
         }
         if (hasNoLowerLeftNeighbour) {
-            closedBorderSegments.push(this.lowerLeftBorder);
+            closedBorders.push(this.lowerLeftBorder);
         }
 
 
-        return closedBorderSegments;
+        return closedBorders;
     }
 
 

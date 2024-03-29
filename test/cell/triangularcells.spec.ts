@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { PointyTopTriangularCell } from '../../src/model/grid/cell/pointytoptriangularcell';
 import { Coordinate } from '../../src/model/coordinate';
-import { BorderSegment } from '../../src/model/bordersegment';
+import { Segment } from '../../src/model/segment';
 
 
 describe('PointyTopTriangularCell', () => {
@@ -28,7 +28,7 @@ describe('PointyTopTriangularCell', () => {
     });
 
     it('should have 3 borders when no neighbours', () => {
-        const borders: BorderSegment[] = cell.closedBorders;
+        const borders: Segment[] = cell.closedBorders;
         expect(borders.length).to.equal(3);
     });
 
@@ -36,7 +36,7 @@ describe('PointyTopTriangularCell', () => {
         const neighbour: PointyTopTriangularCell = new PointyTopTriangularCell(new Coordinate(0, -20), 10);
         cell.addNeighbour(neighbour);
         cell.establishConnectionTo(neighbour);
-        const borders: BorderSegment[] = cell.closedBorders;
+        const borders: Segment[] = cell.closedBorders;
         expect(borders.length).to.equal(2);
     });
 
@@ -47,7 +47,7 @@ describe('PointyTopTriangularCell', () => {
         cell.addNeighbour(neighbour2);
         cell.establishConnectionTo(neighbour1);
         cell.establishConnectionTo(neighbour2);
-        const borders: BorderSegment[] = cell.closedBorders;
+        const borders: Segment[] = cell.closedBorders;
         expect(borders.length).to.equal(1);
     });
 

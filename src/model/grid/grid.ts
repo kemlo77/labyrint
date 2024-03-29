@@ -46,13 +46,28 @@ export class Grid {
         return this.allCells.filter(cell => cell.visited).length;
     }
 
-    public resetVisitedStatusOnCells(): void {
+    public resetGrid(): void {
+        this.resetVisitedStatusOnCells();
+        this.removeEstablishedConnectionsInCells();
+    }
+
+    private resetVisitedStatusOnCells(): void {
         this.allCells.forEach(cell => cell.visited = false);
         this.startCell.visited = true;
     }
 
-    public removeEstablishedConnectionsInCells(): void {
+    private removeEstablishedConnectionsInCells(): void {
         this.allCells.forEach(cell => cell.removeEstablishedConnections());
+    }
+
+    public disconnectCellsWithOnlyOneConnection(): void {
+        this.allCells
+            .filter(cell => cell.connectedNeighbours.length == 1)
+            .filter(cell => cell != this.startCell)
+            .filter(cell => cell != this.endCell)
+            .forEach(cell => {
+                cell.removeConnectionsToCell();
+            });
     }
 
     public printNeighboursPerCell(): void {

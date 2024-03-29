@@ -60,8 +60,7 @@ export class Model implements Subject {
     }
 
     public initialize(): void {
-        this._grid.resetVisitedStatusOnCells();
-        this._grid.removeEstablishedConnectionsInCells();
+        this._grid.resetGrid();
         this._sequenceOfVisitedCells = [this._grid.startCell];
         this._solutionSequence = [];
     }
@@ -98,19 +97,8 @@ export class Model implements Subject {
         if (!this._grid) {
             return;
         }
-        this.disconnectCellsWithOnlyOneConnection();
+        this._grid.disconnectCellsWithOnlyOneConnection();
         this.notifyObservers();
-    }
-
-    //TODO: feature envy? Borde det ligga i grid?
-    private disconnectCellsWithOnlyOneConnection(): void {
-        this._grid.allCells
-            .filter(cell => cell.connectedNeighbours.length == 1)
-            .filter(cell => cell != this._grid.startCell)
-            .filter(cell => cell != this._grid.endCell)
-            .forEach(cell => {
-                cell.removeConnectionsToCell();
-            });
     }
 
 }

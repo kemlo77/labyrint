@@ -2,6 +2,7 @@ import { Grid } from './grid';
 import { HexagonalGridFactory } from './hexagonalgridfactory';
 import { OctagonalGridFactory } from './octagonalgridfactory';
 import { SquareGridFactory } from './squaregridfactory';
+import { TiltedSquareGridFactory } from './tiltedsquaregridfactory';
 import { TriangularGridFactory } from './triangulargridfactory';
 
 export class GridSupplier {
@@ -21,6 +22,10 @@ export class GridSupplier {
 
         if (gridType === 'octagonal') {
             return new OctagonalGridFactory().createGrid(34, 21, 30);
+        }
+
+        if (gridType === 'tiltedSquare') {
+            return new TiltedSquareGridFactory().createGrid(41, 25, 25);
         }
 
         throw new Error('Invalid grid type');

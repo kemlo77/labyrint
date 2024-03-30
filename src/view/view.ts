@@ -1,7 +1,14 @@
 import { Cell } from '../model/grid/cell/cell';
 import { Model } from '../model/model';
 import { Observer } from '../observer';
-import { CanvasPainter, BLACK_COLOR, BLUE_COLOR, WHITE_COLOR } from './canvaspainter';
+import {
+    CanvasPainter,
+    BLACK_COLOR,
+    BLUE_COLOR,
+    WHITE_COLOR,
+    LIGHT_GREEN_COLOR,
+    LIGHT_RED_COLOR
+} from './canvaspainter';
 
 export class View implements Observer {
 
@@ -18,6 +25,9 @@ export class View implements Observer {
     update(): void {
         this._canvasPainter.clearTheCanvas();
         this.shadeDisconnectedCells();
+
+        this.drawStartCell();
+        this.drawEndCell();
         this.drawAllCellBorders();
     }
 
@@ -34,6 +44,28 @@ export class View implements Observer {
         this._model.grid.allCells.forEach(cell => {
             this._canvasPainter.drawSegments(cell.closedBorders, 1, BLACK_COLOR);
         });
+    }
+
+    private drawAllCellCenters(): void {
+        this._model.grid.allCells.forEach(cell => {
+            this._canvasPainter.drawFilledCircle(cell.center, 2, BLACK_COLOR);
+        });
+    }
+
+    private drawAllCellConnections(): void {
+        this._model.grid.allCells.forEach(cell => {
+            cell.connectedNeighbours.forEach(neighbour => {
+                this._canvasPainter.drawLine(cell.center, neighbour.center, 1, BLUE_COLOR);
+            });
+        });
+    }
+
+    private drawStartCell(): void {
+        this._canvasPainter.fillPolygon(this._model.grid.startCell.corners, LIGHT_GREEN_COLOR, LIGHT_GREEN_COLOR);
+    }
+
+    private drawEndCell(): void {
+        this._canvasPainter.fillPolygon(this._model.grid.endCell.corners, LIGHT_RED_COLOR, LIGHT_RED_COLOR);
     }
 
     public showSolution(): void {

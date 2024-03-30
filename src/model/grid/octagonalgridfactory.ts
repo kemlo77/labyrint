@@ -15,7 +15,7 @@ export class OctagonalGridFactory extends GridFactory {
         const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
         this.connectOctagonalCellsToNeighbourCells(cellGrid);
         const startCell: Cell = cellGrid[0][0];
-        const endCell: Cell = cellGrid[numberOfColumns - 1][numberOfRows - 1];
+        const endCell: Cell = cellGrid[numberOfColumns - 1][2 * (numberOfRows - 1)];
         return new Grid(cellGrid, startCell, endCell);
     }
 
@@ -32,8 +32,8 @@ export class OctagonalGridFactory extends GridFactory {
                 } else {
                     const tiltedSquareCellWidth: number =
                         cellWidth - this.sideLengthOfOctagonFromInradius(cellWidth / 2);
-                    const xCoordinate: number = cellWidth * (columnIndex + 1) + cellWidth / 2;
-                    const yCoordinate: number = cellWidth * (rowIndex / 2 + 1 / 2) + cellWidth / 2;
+                    const xCoordinate: number = cellWidth * (columnIndex + 3 / 2);
+                    const yCoordinate: number = cellWidth * (rowIndex / 2 + 1);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
                     rowOfCells.push(new TiltedSquareCell(center, tiltedSquareCellWidth));
                 }

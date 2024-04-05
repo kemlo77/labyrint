@@ -3,6 +3,7 @@ import { HexagonalGridFactory } from './hexagonalgridfactory';
 import { OctagonalGridFactory } from './octagonalgridfactory';
 import { SquareGridFactory } from './squaregridfactory';
 import { TiltedSquareGridFactory } from './tiltedsquaregridfactory';
+import { TiltedSquareVariantFactory } from './tiltedsquarevariantfactory';
 import { TriangularGridFactory } from './triangulargridfactory';
 
 export class GridSupplier {
@@ -26,6 +27,10 @@ export class GridSupplier {
 
         if (gridType === 'tiltedSquare') {
             return new TiltedSquareGridFactory().createGrid(41, 25, 25);
+        }
+
+        if (gridType === 'tiltedSquareVariant') {
+            return new TiltedSquareVariantFactory().createGrid(32, 32, 20);
         }
 
         throw new Error('Invalid grid type');

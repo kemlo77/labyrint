@@ -1,10 +1,10 @@
 import { Coordinate } from '../coordinate';
 import { Cell } from './cell/cell';
+import { TiltedSquareCell } from './cell/tiltedsquarecell';
 import { Grid } from './grid';
-import { SquareCell } from './cell/squarecell';
 import { GridFactory } from './gridfactory';
 
-export class SquareGridFactory extends GridFactory {
+export class TiltedSquareVariantFactory extends GridFactory {
 
     constructor() {
         super();
@@ -20,16 +20,17 @@ export class SquareGridFactory extends GridFactory {
 
     private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
         const startOffsetX: number = cellWidth;
-        const startOffsetY: number = cellWidth;
+        const startOffsetY: number = cellWidth / 2 * (numberOfColumns + 1);
         const cellGrid: Cell[][] = [];
 
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
             const rowOfCells: Cell[] = [];
             for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
-                const xCoordinate: number = startOffsetX + cellWidth * columnIndex;
-                const yCoordinate: number = startOffsetY + cellWidth * rowIndex;
+
+                const xCoordinate: number = startOffsetX + cellWidth * columnIndex / 2 + cellWidth * rowIndex / 2;
+                const yCoordinate: number = startOffsetY - cellWidth * columnIndex / 2 + cellWidth * rowIndex / 2;
                 const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                rowOfCells.push(new SquareCell(center, cellWidth));
+                rowOfCells.push(new TiltedSquareCell(center, cellWidth));
             }
             cellGrid.push(rowOfCells);
         }
@@ -59,5 +60,7 @@ export class SquareGridFactory extends GridFactory {
             }
         }
     }
+
+
 
 }

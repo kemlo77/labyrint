@@ -14,7 +14,6 @@ export class Controller {
 
     public changeGridType(gridType: string): void {
         this._model.changeGridType(gridType);
-        this._model.generateLabyrinth();
     }
 
     public generateLabyrinth(): void {

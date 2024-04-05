@@ -16,6 +16,7 @@ export class Model implements Subject {
 
     changeGridType(gridType: string): void {
         this._grid = GridSupplier.getGrid(gridType);
+        this.notifyObservers();
     }
 
     get grid(): Grid {

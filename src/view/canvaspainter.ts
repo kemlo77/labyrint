@@ -6,6 +6,7 @@ export const BLACK_COLOR: string = 'rgba(0,0,0,1)';
 export const BLUE_COLOR: string = 'rgba(0,0,255,1)';
 export const LIGHT_GREEN_COLOR: string = 'rgba(0,255,0,0.5)';
 export const LIGHT_RED_COLOR: string = 'rgba(255,0,0,0.5)';
+export const LIGHT_GRAY_COLOR: string = 'rgba(128,128,128,0.2)';
 
 export class CanvasPainter {
 

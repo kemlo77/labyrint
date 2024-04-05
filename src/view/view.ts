@@ -7,7 +7,8 @@ import {
     BLUE_COLOR,
     WHITE_COLOR,
     LIGHT_GREEN_COLOR,
-    LIGHT_RED_COLOR
+    LIGHT_RED_COLOR,
+    LIGHT_GRAY_COLOR
 } from './canvaspainter';
 
 export class View implements Observer {
@@ -33,7 +34,7 @@ export class View implements Observer {
 
     private shadeDisconnectedCells(): void {
         this._model.grid.allDisconnectedCells
-            .forEach(cell => this.fillCell(cell, BLACK_COLOR, BLACK_COLOR));
+            .forEach(cell => this.fillCell(cell, LIGHT_GRAY_COLOR, BLACK_COLOR));
     }
 
     private fillCell(cell: Cell, fillColor: string, borderColor: string): void {

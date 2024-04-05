@@ -1,7 +1,7 @@
 
 import { Grid } from '../src/model/grid/grid';
 import { expect } from 'chai';
-import { OctagonalGridFactory } from '../src/model/grid/octagonalgridfactory';
+import { OctagonalGridFactory } from '../src/model/grid/gridfactories/octagonalgridfactory';
 
 describe('OctagonalGridFactory', () => {
 

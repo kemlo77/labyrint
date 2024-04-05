@@ -1,16 +1,12 @@
-import { Cell } from './cell/cell';
-import { Coordinate } from '../coordinate';
-import { Grid } from './grid';
-import { HexagonalCell } from './cell/hexagonalcell';
+import { Cell } from '../cell/cell';
+import { Coordinate } from '../../coordinate';
+import { Grid } from '../grid';
+import { HexagonalCell } from '../cell/hexagonalcell';
 import { GridFactory } from './gridfactory';
-import { MatrixOperations } from '../../service/matrixoperations';
-import { CellAction, CellTest } from './cell/celltypealiases';
+import { MatrixOperations } from '../../../service/matrixoperations';
+import { CellAction, CellTest } from '../cell/celltypealiases';
 
-export class HexagonalGridFactory extends GridFactory {
-
-    constructor() {
-        super();
-    }
+export class HexagonalGridFactory implements GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);

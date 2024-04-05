@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { TriangularGridFactory } from '../src/model/grid/triangulargridfactory';
+import { TriangularGridFactory } from '../src/model/grid/gridfactories/triangulargridfactory';
 import { Cell } from '../src/model/grid/cell/cell';
 import { Grid } from '../src/model/grid/grid';
 

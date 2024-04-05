@@ -1,17 +1,12 @@
 
-import { Cell } from './cell/cell';
-import { Grid } from './grid';
-import { Coordinate } from '../coordinate';
-import { PointyTopTriangularCell } from './cell/pointytoptriangularcell';
-import { FlatTopTriangularCell } from './cell/flattoptriangularcell';
+import { Cell } from '../cell/cell';
+import { Grid } from '../grid';
+import { Coordinate } from '../../coordinate';
+import { PointyTopTriangularCell } from '../cell/pointytoptriangularcell';
+import { FlatTopTriangularCell } from '../cell/flattoptriangularcell';
 import { GridFactory } from './gridfactory';
 
-export class TriangularGridFactory extends GridFactory {
-
-    constructor() {
-        super();
-    }
-
+export class TriangularGridFactory implements GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellMatrix: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);

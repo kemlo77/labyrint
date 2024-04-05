@@ -1,14 +1,10 @@
-import { Coordinate } from '../coordinate';
-import { Cell } from './cell/cell';
-import { Grid } from './grid';
-import { SquareCell } from './cell/squarecell';
+import { Coordinate } from '../../coordinate';
+import { Cell } from '../cell/cell';
+import { Grid } from '../grid';
+import { SquareCell } from '../cell/squarecell';
 import { GridFactory } from './gridfactory';
 
-export class SquareGridFactory extends GridFactory {
-
-    constructor() {
-        super();
-    }
+export class SquareGridFactory implements GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);

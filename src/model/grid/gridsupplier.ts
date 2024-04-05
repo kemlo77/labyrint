@@ -1,10 +1,10 @@
 import { Grid } from './grid';
-import { HexagonalGridFactory } from './hexagonalgridfactory';
-import { OctagonalGridFactory } from './octagonalgridfactory';
-import { SquareGridFactory } from './squaregridfactory';
-import { TiltedSquareGridFactory } from './tiltedsquaregridfactory';
-import { TiltedSquareVariantFactory } from './tiltedsquarevariantfactory';
-import { TriangularGridFactory } from './triangulargridfactory';
+import { HexagonalGridFactory } from './gridfactories/hexagonalgridfactory';
+import { OctagonalGridFactory } from './gridfactories/octagonalgridfactory';
+import { SquareGridFactory } from './gridfactories/squaregridfactory';
+import { TiltedSquareGridFactory } from './gridfactories/tiltedsquaregridfactory';
+import { TiltedSquareVariantFactory } from './gridfactories/tiltedsquarevariantfactory';
+import { TriangularGridFactory } from './gridfactories/triangulargridfactory';
 
 export class GridSupplier {
     static getGrid(gridType: string): Grid {

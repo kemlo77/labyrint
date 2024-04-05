@@ -1,14 +1,10 @@
-import { Coordinate } from '../coordinate';
-import { Cell } from './cell/cell';
-import { TiltedSquareCell } from './cell/tiltedsquarecell';
-import { Grid } from './grid';
+import { Coordinate } from '../../coordinate';
+import { Cell } from '../cell/cell';
+import { TiltedSquareCell } from '../cell/tiltedsquarecell';
+import { Grid } from '../grid';
 import { GridFactory } from './gridfactory';
 
-export class TiltedSquareVariantFactory extends GridFactory {
-
-    constructor() {
-        super();
-    }
+export class TiltedSquareVariantFactory implements GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);

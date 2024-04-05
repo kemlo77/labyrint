@@ -4,7 +4,7 @@ import { TiltedSquareCell } from '../cell/tiltedsquarecell';
 import { Grid } from '../grid';
 import { GridFactory } from './gridfactory';
 
-export class TiltedSquareGridFactory implements GridFactory {
+export class DiagonalSquareGridFactory implements GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);

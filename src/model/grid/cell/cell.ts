@@ -8,6 +8,7 @@ export abstract class Cell {
     private _visited: boolean = false;
     private _neighbours: Cell[] = [];
     private _connectedNeighbours: Cell[] = [];
+    protected _corners: Coordinate[];
 
     constructor(center: Coordinate, width: number) {
         this._center = center;
@@ -83,10 +84,45 @@ export abstract class Cell {
         }
     }
 
-    abstract get closedBorders(): Segment[];
+    get corners(): Coordinate[] {
+        return [... this._corners];
+    }
 
-    abstract get borders(): Segment[];
+    get borders(): Segment[] {
+        const newBorders: Segment[] = [];
+        for (let i: number = 0; i < this._corners.length; i++) {
+            const lastCorner: boolean = i === this._corners.length - 1;
+            if (lastCorner) {
+                break;
+            }
+            newBorders.push(new Segment(this._corners[i], this._corners[i + 1]));
+        }
+        newBorders.push(new Segment(this._corners[this._corners.length - 1], this._corners[0]));
+        return newBorders;
+    }
 
-    abstract get corners(): Coordinate[];
+    get closedBorders(): Segment[] {
+        const closedBorders: Segment[] = [];
+        const allConnectedNeighbourBorders: Segment[] =
+            this.connectedNeighbours.reduce((acc, neighbour) => acc.concat(neighbour.borders), []);
+
+        for (const border of this.borders) {
+            let borderIsOpen: boolean = false;
+
+            for (const neighbourBorder of allConnectedNeighbourBorders) {
+                const distance: number = border.midpoint.distanceTo(neighbourBorder.midpoint);
+                const borderIsCommonWithConnectedNeighbour: boolean = distance < 0.1;
+                if (borderIsCommonWithConnectedNeighbour) {
+                    borderIsOpen = true;
+                    break;
+                }
+            }
+
+            if (!borderIsOpen) {
+                closedBorders.push(border);
+            }
+        }
+        return closedBorders;
+    }
 
 }

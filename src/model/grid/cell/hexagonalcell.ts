@@ -4,7 +4,7 @@ import { Coordinate } from '../../coordinate';
 export class HexagonalCell extends Cell {
 
     constructor(center: Coordinate, width: number) {
-        super(center, width);
+        super(center);
         this._corners = this.createCornersForHexagon(center, width);
     }
 

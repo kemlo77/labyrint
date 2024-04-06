@@ -4,7 +4,7 @@ import { Coordinate } from '../../coordinate';
 export class TiltedSquareCell extends Cell {
 
     constructor(center: Coordinate, width: number) {
-        super(center, width);
+        super(center);
         this._corners = this.createCorners(center, width);
     }
 

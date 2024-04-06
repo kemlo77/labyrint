@@ -35,11 +35,11 @@ export class FlatTopTriangularCell extends Cell {
     }
 
     get corners(): Coordinate[] {
-        return [
-            this.lowerCorner,
-            this.rightCorner,
-            this.leftCorner
-        ];
+        return [this.lowerCorner, this.rightCorner, this.leftCorner];
+    }
+
+    get borders(): Segment[] {
+        return [this.upperBorder, this.rightBorder, this.leftBorder];
     }
 
     get closedBorders(): Segment[] {

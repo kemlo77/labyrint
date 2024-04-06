@@ -34,6 +34,10 @@ export class PointyTopTriangularCell extends Cell {
         this.leftBorder = new Segment(this.upperCorner, this.leftCorner);
     }
 
+    get borders(): Segment[] {
+        return [this.lowerBorder, this.rightBorder, this.leftBorder];
+    }
+
     get corners(): Coordinate[] {
         return [
             this.upperCorner,

@@ -1,9 +1,6 @@
 import { Segment } from '../../segment';
 import { Cell } from './cell';
 import { Coordinate } from '../../coordinate';
-import { CellTest } from './celltypealiases';
-
-
 
 export class SquareCell extends Cell {
 
@@ -37,32 +34,31 @@ export class SquareCell extends Cell {
         this.leftBorder = new Segment(this.upperLeftCorner, this.lowerLeftCorner);
     }
 
+    get borders(): Segment[] {
+        return [this.upperBorder, this.rightBorder, this.lowerBorder, this.leftBorder];
+    }
+
     get closedBorders(): Segment[] {
         const closedBorders: Segment[] = [];
+        const allConnectedNeighbourBorders: Segment[] =
+            this.connectedNeighbours.reduce((acc, neighbour) => acc.concat(neighbour.borders), []);
 
-        const isLocatedInCenterOrBelow: CellTest = neighbourCell => neighbourCell.center.y <= this.center.y;
-        const isLocatedInCenterOrToTheLeft: CellTest = neighbourCell => neighbourCell.center.x <= this.center.x;
-        const isLocatedInCenterOrAbove: CellTest = neighbourCell => neighbourCell.center.y >= this.center.y;
-        const isLocatedInCenterOrToTheRight: CellTest = neighbourCell => neighbourCell.center.x >= this.center.x;
+        for (const border of this.borders) {
+            let borderIsOpen: boolean = false;
 
-        const hasNoConnectedCellAbove: boolean = this.connectedNeighbours.every(isLocatedInCenterOrBelow);
-        const hasNoConnectedCellToTheRight: boolean = this.connectedNeighbours.every(isLocatedInCenterOrToTheLeft);
-        const hasNoConnectedCellBelow: boolean = this.connectedNeighbours.every(isLocatedInCenterOrAbove);
-        const hasNoConnectedCellToTheLeft: boolean = this.connectedNeighbours.every(isLocatedInCenterOrToTheRight);
+            for (const neighbourBorder of allConnectedNeighbourBorders) {
+                const distance: number = border.midpoint.distanceTo(neighbourBorder.midpoint);
+                const borderIsCommonWithConnectedNeighbour: boolean = distance < 0.1;
+                if (borderIsCommonWithConnectedNeighbour) {
+                    borderIsOpen = true;
+                    break;
+                }
+            }
 
-        if (hasNoConnectedCellAbove) {
-            closedBorders.push(this.upperBorder);
+            if (!borderIsOpen) {
+                closedBorders.push(border);
+            }
         }
-        if (hasNoConnectedCellToTheRight) {
-            closedBorders.push(this.rightBorder);
-        }
-        if (hasNoConnectedCellBelow) {
-            closedBorders.push(this.lowerBorder);
-        }
-        if (hasNoConnectedCellToTheLeft) {
-            closedBorders.push(this.leftBorder);
-        }
-
         return closedBorders;
     }
 

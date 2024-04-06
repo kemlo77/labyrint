@@ -85,6 +85,8 @@ export abstract class Cell {
 
     abstract get closedBorders(): Segment[];
 
+    abstract get borders(): Segment[];
+
     abstract get corners(): Coordinate[];
 
 }

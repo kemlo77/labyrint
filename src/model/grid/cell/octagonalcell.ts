@@ -61,6 +61,19 @@ export class OctagonalCell extends Cell {
         this.lowRightBorder = new Segment(this.lowerQ4Corner, this.upperQ4Corner);
     }
 
+    get borders(): Segment[] {
+        return [
+            this.rightBorder,
+            this.upRightBorder,
+            this.upperBorder,
+            this.upLeftBorder,
+            this.leftBorder,
+            this.lowLeftBorder,
+            this.lowerBorder,
+            this.lowRightBorder
+        ];
+    }
+
     get closedBorders(): Segment[] {
         const closedBorders: Segment[] = [];
 

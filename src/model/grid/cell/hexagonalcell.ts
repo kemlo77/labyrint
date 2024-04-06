@@ -56,6 +56,18 @@ export class HexagonalCell extends Cell {
             this.upperLeftCorner
         ];
     }
+
+    get borders(): Segment[] {
+        return [
+            this.upperRightBorder,
+            this.upperLeftBorder,
+            this.centerRightBorder,
+            this.centerLeftBorder,
+            this.lowerRightBorder,
+            this.lowerLeftBorder
+        ];
+    }
+
     get closedBorders(): Segment[] {
         //TODO returnera dom borders som inte har en connected neighbour
         const closedBorders: Segment[] = [];

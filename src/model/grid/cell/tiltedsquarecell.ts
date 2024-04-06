@@ -36,6 +36,9 @@ export class TiltedSquareCell extends Cell {
         this.upperLeftBorder = new Segment(this.leftCorner, this.upperCorner);
     }
 
+    get borders(): Segment[] {
+        return [this.upperRightBorder, this.lowerRightBorder, this.lowerLeftBorder, this.upperLeftBorder];
+    }
 
     get closedBorders(): Segment[] {
         const closedBorders: Segment[] = [];

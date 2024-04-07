@@ -1,7 +1,7 @@
-import { Cell } from '../cell/cell';
 import { Coordinate } from '../../coordinate';
+import { Cell } from '../cell/cell';
+import { CellFactory } from '../cell/cellfactory';
 import { Grid } from '../grid';
-import { HexagonalCell } from '../cell/hexagonalcell';
 import { GridFactory } from './gridfactory';
 import { MatrixOperations } from '../../../service/matrixoperations';
 import { CellAction, CellTest } from '../cell/celltypealiases';
@@ -32,7 +32,7 @@ export class HexagonalGridFactory implements GridFactory {
                 }
                 const yCoordinate: number = cellHeight * (rowIndex + 1);
                 const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                rowOfCells.push(new HexagonalCell(center, cellWidth));
+                rowOfCells.push(CellFactory.createCell(center, cellWidth, 'hexagonal'));
             }
             grid.push(rowOfCells);
         }

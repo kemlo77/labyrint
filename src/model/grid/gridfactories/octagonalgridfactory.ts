@@ -1,7 +1,6 @@
 import { Coordinate } from '../../coordinate';
 import { Cell } from '../cell/cell';
-import { OctagonalCell } from '../cell/octagonalcell';
-import { TiltedSquareCell } from '../cell/tiltedsquarecell';
+import { CellFactory } from '../cell/cellfactory';
 import { Grid } from '../grid';
 import { GridFactory } from './gridfactory';
 
@@ -24,14 +23,14 @@ export class OctagonalGridFactory implements GridFactory {
                     const xCoordinate: number = cellWidth * (columnIndex + 1);
                     const yCoordinate: number = cellWidth * (rowIndex / 2 + 1);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(new OctagonalCell(center, cellWidth));
+                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'octagonal'));
                 } else {
                     const tiltedSquareCellWidth: number =
                         cellWidth - this.sideLengthOfOctagonFromInradius(cellWidth / 2);
                     const xCoordinate: number = cellWidth * (columnIndex + 3 / 2);
                     const yCoordinate: number = cellWidth * (rowIndex / 2 + 1);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(new TiltedSquareCell(center, tiltedSquareCellWidth));
+                    rowOfCells.push(CellFactory.createCell(center, tiltedSquareCellWidth, 'tilted-square'));
                 }
 
             }

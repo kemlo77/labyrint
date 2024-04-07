@@ -1,8 +1,9 @@
 import { Coordinate } from '../../coordinate';
 import { Cell } from '../cell/cell';
+import { CellFactory } from '../cell/cellfactory';
 import { Grid } from '../grid';
-import { SquareCell } from '../cell/squarecell';
 import { GridFactory } from './gridfactory';
+
 
 export class SquareGridFactory implements GridFactory {
 
@@ -25,7 +26,7 @@ export class SquareGridFactory implements GridFactory {
                 const xCoordinate: number = startOffsetX + cellWidth * columnIndex;
                 const yCoordinate: number = startOffsetY + cellWidth * rowIndex;
                 const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                rowOfCells.push(new SquareCell(center, cellWidth));
+                rowOfCells.push(CellFactory.createCell(center, cellWidth, 'square'));
             }
             cellGrid.push(rowOfCells);
         }

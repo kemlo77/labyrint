@@ -1,10 +1,9 @@
-
-import { Cell } from '../cell/cell';
-import { Grid } from '../grid';
 import { Coordinate } from '../../coordinate';
-import { PointyTopTriangularCell } from '../cell/pointytoptriangularcell';
-import { FlatTopTriangularCell } from '../cell/flattoptriangularcell';
+import { Cell } from '../cell/cell';
+import { CellFactory } from '../cell/cellfactory';
+import { Grid } from '../grid';
 import { GridFactory } from './gridfactory';
+
 
 export class TriangularGridFactory implements GridFactory {
 
@@ -32,11 +31,11 @@ export class TriangularGridFactory implements GridFactory {
                 if (this.cellHasPointyTop(columnIndex, rowIndex)) {
                     const yCoordinate: number = cellHeight * (1 + rowIndex);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(new PointyTopTriangularCell(center, cellWidth));
+                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'pointy-top-triangular'));
                 } else {
                     const yCoordinate: number = cellHeight * (4 / 3 + rowIndex);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(new FlatTopTriangularCell(center, cellWidth));
+                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'flat-top-triangular'));
                 }
             }
             grid.push(rowOfCells);

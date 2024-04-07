@@ -1,16 +1,17 @@
 import { Segment } from '../../segment';
 import { Coordinate } from '../../coordinate';
 
-export abstract class Cell {
+export class Cell {
 
     private _center: Coordinate;
     private _visited: boolean = false;
     private _neighbours: Cell[] = [];
     private _connectedNeighbours: Cell[] = [];
-    protected _corners: Coordinate[];
+    private _corners: Coordinate[];
 
-    constructor(center: Coordinate) {
+    constructor(center: Coordinate, corners: Coordinate[]) {
         this._center = center;
+        this._corners = corners;
     }
 
     get center(): Coordinate {

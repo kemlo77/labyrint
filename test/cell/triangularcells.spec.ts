@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { PointyTopTriangularCell } from '../../src/model/grid/cell/pointytoptriangularcell';
+import { FlatTopTriangularCell } from '../../src/model/grid/cell/flattoptriangularcell';
 import { Coordinate } from '../../src/model/coordinate';
 import { Segment } from '../../src/model/segment';
 
@@ -33,21 +34,28 @@ describe('PointyTopTriangularCell', () => {
     });
 
     it('should have 2 borders when one neighbour', () => {
-        const neighbour: PointyTopTriangularCell = new PointyTopTriangularCell(new Coordinate(0, -20), 10);
-        cell.addNeighbour(neighbour);
-        cell.establishConnectionTo(neighbour);
-        const borders: Segment[] = cell.closedBorders;
+        const firstCell: PointyTopTriangularCell = new PointyTopTriangularCell(new Coordinate(0, 26 / 3), 30);
+        const secondCell: FlatTopTriangularCell = new FlatTopTriangularCell(new Coordinate(0, -26 / 3), 30);
+        firstCell.addNeighbour(secondCell);
+        secondCell.addNeighbour(firstCell);
+        firstCell.establishConnectionTo(secondCell);
+        const borders: Segment[] = firstCell.closedBorders;
         expect(borders.length).to.equal(2);
     });
 
     it('should have 1 border when two neighbours', () => {
-        const neighbour1: PointyTopTriangularCell = new PointyTopTriangularCell(new Coordinate(10, 5), 10);
-        const neighbour2: PointyTopTriangularCell = new PointyTopTriangularCell(new Coordinate(-10, 5), 10);
-        cell.addNeighbour(neighbour1);
-        cell.addNeighbour(neighbour2);
-        cell.establishConnectionTo(neighbour1);
-        cell.establishConnectionTo(neighbour2);
-        const borders: Segment[] = cell.closedBorders;
+        const firstCell: PointyTopTriangularCell = new PointyTopTriangularCell(new Coordinate(0, 26 / 3), 30);
+        const secondCell: FlatTopTriangularCell = new FlatTopTriangularCell(new Coordinate(0, -26 / 3), 30);
+        const thirdCell: FlatTopTriangularCell = new FlatTopTriangularCell(new Coordinate(15, 26 * 2 / 3), 30);
+
+        firstCell.addNeighbour(secondCell);
+        secondCell.addNeighbour(firstCell);
+        firstCell.addNeighbour(thirdCell);
+        thirdCell.addNeighbour(firstCell);
+        firstCell.establishConnectionTo(secondCell);
+        firstCell.establishConnectionTo(thirdCell);
+
+        const borders: Segment[] = firstCell.closedBorders;
         expect(borders.length).to.equal(1);
     });
 

@@ -5,12 +5,17 @@ import { SquareGridFactory } from './gridfactories/squaregridfactory';
 import { DiagonalSquareGridFactory } from './gridfactories/diagonalsquaregridfactory';
 import { DiagonalSquareVariantFactory } from './gridfactories/diagonalsquarevariantfactory';
 import { TriangularGridFactory } from './gridfactories/triangulargridfactory';
+import { RunningBondGridFactory } from './gridfactories/runningbondgridfactory';
 
 export class GridSupplier {
     static getGrid(gridType: string): Grid {
 
         if (gridType === 'square') {
             return new SquareGridFactory().createGrid(69, 43, 15);
+        }
+
+        if (gridType === 'runningBond') {
+            return new RunningBondGridFactory().createGrid(20, 8, 25);
         }
 
         if (gridType === 'hexagonal') {

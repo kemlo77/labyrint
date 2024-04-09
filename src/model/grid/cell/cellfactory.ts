@@ -10,6 +10,8 @@ export class CellFactory {
                 return CellFactory.createPointyTopTriangularCell(center, width);
             case 'square':
                 return CellFactory.createSquareCell(center, width);
+            case 'double-square-rectangle':
+                return CellFactory.createDoubleSquareRectangleCell(center, width);
             case 'tilted-square':
                 return CellFactory.createTiltedSquareCell(center, width);
             case 'hexagonal':
@@ -66,6 +68,30 @@ export class CellFactory {
         const lowerRightCorner: Coordinate = new Coordinate(center.x + halfWidth, center.y - halfWidth);
         const lowerLeftCorner: Coordinate = new Coordinate(center.x - halfWidth, center.y - halfWidth);
         return [upperRightCorner, upperLeftCorner, lowerLeftCorner, lowerRightCorner];
+    }
+
+    private static createDoubleSquareRectangleCell(center: Coordinate, width: number): Cell {
+        const corners: Coordinate[] = CellFactory.createCornersForDoubleSquareRectangle(center, width);
+        return new Cell(center, corners);
+    }
+
+    private static createCornersForDoubleSquareRectangle(center: Coordinate, width: number): Coordinate[] {
+        const halfWidth: number = width / 2;
+        const halfHeight: number = width;
+        const middleRightCorner: Coordinate = new Coordinate(center.x + halfWidth, center.y);
+        const upperRightCorner: Coordinate = new Coordinate(center.x + halfWidth, center.y + halfHeight);
+        const upperLeftCorner: Coordinate = new Coordinate(center.x - halfWidth, center.y + halfHeight);
+        const middleLeftCorner: Coordinate = new Coordinate(center.x - halfWidth, center.y);
+        const lowerLeftCorner: Coordinate = new Coordinate(center.x - halfWidth, center.y - halfHeight);
+        const lowerRightCorner: Coordinate = new Coordinate(center.x + halfWidth, center.y - halfHeight);
+        return [
+            middleRightCorner, 
+            upperRightCorner, 
+            upperLeftCorner, 
+            middleLeftCorner, 
+            lowerLeftCorner, 
+            lowerRightCorner
+        ];
     }
 
     private static createTiltedSquareCell(center: Coordinate, width: number): Cell {

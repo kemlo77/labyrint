@@ -25,12 +25,13 @@ export class OctagonalGridFactory extends GridFactory {
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
                     rowOfCells.push(CellFactory.createCell(center, cellWidth, 'octagonal'));
                 } else {
-                    const tiltedSquareCellWidth: number =
+                    const tiltedSquareCellDiagonalLength: number =
                         cellWidth - this.sideLengthOfOctagonFromInradius(cellWidth / 2);
+                    const squareWidth: number = tiltedSquareCellDiagonalLength / Math.sqrt(2);
                     const xCoordinate: number = cellWidth * (columnIndex + 3 / 2);
                     const yCoordinate: number = cellWidth * (rowIndex / 2 + 1);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(CellFactory.createCell(center, tiltedSquareCellWidth, 'tilted-square'));
+                    rowOfCells.push(CellFactory.createCell(center, squareWidth, 'square', 45));
                 }
 
             }

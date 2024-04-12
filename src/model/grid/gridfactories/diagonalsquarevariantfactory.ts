@@ -15,6 +15,7 @@ export class DiagonalSquareVariantFactory extends GridFactory {
     }
 
     private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
+        const squareWidth: number = cellWidth / Math.sqrt(2);
         const startOffsetX: number = cellWidth;
         const startOffsetY: number = cellWidth / 2 * (numberOfColumns + 1);
         const cellGrid: Cell[][] = [];
@@ -26,7 +27,7 @@ export class DiagonalSquareVariantFactory extends GridFactory {
                 const xCoordinate: number = startOffsetX + cellWidth * columnIndex / 2 + cellWidth * rowIndex / 2;
                 const yCoordinate: number = startOffsetY - cellWidth * columnIndex / 2 + cellWidth * rowIndex / 2;
                 const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                rowOfCells.push(CellFactory.createCell(center, cellWidth, 'tilted-square'));
+                rowOfCells.push(CellFactory.createCell(center, squareWidth, 'square', 45));
             }
             cellGrid.push(rowOfCells);
         }

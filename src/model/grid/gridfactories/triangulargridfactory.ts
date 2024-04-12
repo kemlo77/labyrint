@@ -31,11 +31,11 @@ export class TriangularGridFactory extends GridFactory {
                 if (this.cellHasPointyTop(columnIndex, rowIndex)) {
                     const yCoordinate: number = cellHeight * (1 + rowIndex);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'pointy-top-triangular'));
+                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'equilateral-triangular', 0));
                 } else {
                     const yCoordinate: number = cellHeight * (4 / 3 + rowIndex);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'flat-top-triangular'));
+                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'equilateral-triangular', 180));
                 }
             }
             grid.push(rowOfCells);

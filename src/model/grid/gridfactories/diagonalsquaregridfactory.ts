@@ -16,6 +16,7 @@ export class DiagonalSquareGridFactory extends GridFactory {
 
     private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
         const cellGrid: Cell[][] = [];
+        const squareWidth: number = cellWidth / Math.sqrt(2);
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
             const rowOfCells: Cell[] = [];
             for (let rowIndex: number = 0; rowIndex < numberOfRows * 2 - 1; rowIndex++) {
@@ -23,12 +24,12 @@ export class DiagonalSquareGridFactory extends GridFactory {
                     const xCoordinate: number = cellWidth * (columnIndex + 1);
                     const yCoordinate: number = cellWidth * (rowIndex / 2 + 1);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'tilted-square'));
+                    rowOfCells.push(CellFactory.createCell(center, squareWidth, 'square', 45));
                 } else {
                     const xCoordinate: number = cellWidth * (columnIndex + 3 / 2);
                     const yCoordinate: number = cellWidth * (rowIndex / 2 + 1);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'tilted-square'));
+                    rowOfCells.push(CellFactory.createCell(center, squareWidth, 'square', 45));
                 }
 
             }

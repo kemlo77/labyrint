@@ -2,50 +2,33 @@ import { Coordinate } from '../../coordinate';
 import { Cell } from './cell';
 
 export class CellFactory {
-    static createCell(center: Coordinate, width: number, type: string): Cell {
+    static createCell(center: Coordinate, width: number, type: string, angleInDegrees: number = 0): Cell {
         switch (type) {
-            case 'flat-top-triangular':
-                return CellFactory.createFlatTopTriangularCell(center, width);
-            case 'pointy-top-triangular':
-                return CellFactory.createPointyTopTriangularCell(center, width);
+            case 'equilateral-triangular':
+                return CellFactory.createEquilateralTriangleCell(center, width, angleInDegrees);
+            case 'isosceles-right-triangular':
+                return CellFactory.createIsoscelesRightTriangleCell(center, width, angleInDegrees);
             case 'square':
-                return CellFactory.createSquareCell(center, width);
+                return CellFactory.createSquareCell(center, width, angleInDegrees);
             case 'double-square-rectangle':
-                return CellFactory.createDoubleSquareRectangleCell(center, width);
-            case 'tilted-square':
-                return CellFactory.createTiltedSquareCell(center, width);
+                return CellFactory.createDoubleSquareRectangleCell(center, width, angleInDegrees);
             case 'hexagonal':
-                return CellFactory.createHexagonalCell(center, width);
+                return CellFactory.createHexagonalCell(center, width, angleInDegrees);
             case 'octagonal':
-                return CellFactory.createOctagonalCell(center, width);
+                return CellFactory.createOctagonalCell(center, width, angleInDegrees);
             default:
                 throw new Error('Unknown cell type');
         }
     }
 
-    private static createFlatTopTriangularCell(center: Coordinate, width: number): Cell {
-        const triangleCorners: Coordinate[] = CellFactory.createCornersForFlatTopTriangle(center, width);
+    private static createEquilateralTriangleCell(center: Coordinate, width: number, angleInDegrees: number): Cell {
+        const triangleCorners: Coordinate[] =
+            CellFactory.createCornersForEquilateralTriangle(center, width)
+                .map(corner => corner.rotateAroundCenter(angleInDegrees, center));
         return new Cell(center, triangleCorners);
     }
 
-    private static createCornersForFlatTopTriangle(center: Coordinate, width: number): Coordinate[] {
-        const height: number = width * Math.sqrt(3) / 2;
-        const thirdHeight: number = height / 3;
-        const halfWidth: number = width / 2;
-
-        const lowerCorner: Coordinate = new Coordinate(center.x, center.y - thirdHeight * 2);
-        const rightCorner: Coordinate = new Coordinate(center.x + halfWidth, center.y + thirdHeight);
-        const leftCorner: Coordinate = new Coordinate(center.x - halfWidth, center.y + thirdHeight);
-        return [lowerCorner, rightCorner, leftCorner];
-    }
-
-    private static createPointyTopTriangularCell(center: Coordinate, width: number): Cell {
-        const triangleCorners: Coordinate[] = CellFactory.createCornersForPointyTopTriangle(center, width);
-        return new Cell(center, triangleCorners);
-    }
-
-
-    private static createCornersForPointyTopTriangle(center: Coordinate, width: number): Coordinate[] {
+    private static createCornersForEquilateralTriangle(center: Coordinate, width: number): Coordinate[] {
         const height: number = width * Math.sqrt(3) / 2;
         const thirdHeight: number = height / 3;
         const halfWidth: number = width / 2;
@@ -56,8 +39,26 @@ export class CellFactory {
         return [upperCorner, rightCorner, leftCorner];
     }
 
-    private static createSquareCell(center: Coordinate, width: number): Cell {
-        const corners: Coordinate[] = CellFactory.createCornersForSquare(center, width);
+    private static createIsoscelesRightTriangleCell(center: Coordinate, width: number, angleInDegrees: number): Cell {
+        const triangleCorners: Coordinate[] =
+            CellFactory.createCornersForIsoscelesRightTriangle(center, width)
+                .map(corner => corner.rotateAroundCenter(angleInDegrees, center));
+        return new Cell(center, triangleCorners);
+    }
+
+    private static createCornersForIsoscelesRightTriangle(center: Coordinate, width: number): Coordinate[] {
+        const thirdWidth: number = width / 3;
+        const thirdHeight: number = width / 3;
+        const upperCorner: Coordinate = new Coordinate(center.x - thirdWidth, center.y + 2 * thirdHeight);
+        const rightCorner: Coordinate = new Coordinate(center.x + 2 * thirdWidth, center.y - thirdHeight);
+        const lowerCorner: Coordinate = new Coordinate(center.x - thirdHeight, center.y - thirdHeight);
+        return [rightCorner, upperCorner, lowerCorner];
+    }
+
+    private static createSquareCell(center: Coordinate, width: number, angleInDegrees: number): Cell {
+        const corners: Coordinate[] =
+            CellFactory.createCornersForSquare(center, width)
+                .map(corner => corner.rotateAroundCenter(angleInDegrees, center));
         return new Cell(center, corners);
     }
 
@@ -70,8 +71,10 @@ export class CellFactory {
         return [upperRightCorner, upperLeftCorner, lowerLeftCorner, lowerRightCorner];
     }
 
-    private static createDoubleSquareRectangleCell(center: Coordinate, width: number): Cell {
-        const corners: Coordinate[] = CellFactory.createCornersForDoubleSquareRectangle(center, width);
+    private static createDoubleSquareRectangleCell(center: Coordinate, width: number, angleInDegrees: number): Cell {
+        const corners: Coordinate[] =
+            CellFactory.createCornersForDoubleSquareRectangle(center, width)
+                .map(corner => corner.rotateAroundCenter(angleInDegrees, center));
         return new Cell(center, corners);
     }
 
@@ -85,32 +88,21 @@ export class CellFactory {
         const lowerLeftCorner: Coordinate = new Coordinate(center.x - halfWidth, center.y - halfHeight);
         const lowerRightCorner: Coordinate = new Coordinate(center.x + halfWidth, center.y - halfHeight);
         return [
-            middleRightCorner, 
-            upperRightCorner, 
-            upperLeftCorner, 
-            middleLeftCorner, 
-            lowerLeftCorner, 
+            middleRightCorner,
+            upperRightCorner,
+            upperLeftCorner,
+            middleLeftCorner,
+            lowerLeftCorner,
             lowerRightCorner
         ];
     }
 
-    private static createTiltedSquareCell(center: Coordinate, width: number): Cell {
-        const corners: Coordinate[] = CellFactory.createCornersForTiltedSquare(center, width);
-        return new Cell(center, corners);
-    }
 
 
-    private static createCornersForTiltedSquare(center: Coordinate, width: number): Coordinate[] {
-        const halfWidth: number = width / 2;
-        const upperCorner: Coordinate = new Coordinate(center.x, center.y + halfWidth);
-        const rightCorner: Coordinate = new Coordinate(center.x + halfWidth, center.y);
-        const lowerCorner: Coordinate = new Coordinate(center.x, center.y - halfWidth);
-        const leftCorner: Coordinate = new Coordinate(center.x - halfWidth, center.y);
-        return [upperCorner, rightCorner, lowerCorner, leftCorner];
-    }
-
-    private static createHexagonalCell(center: Coordinate, width: number): Cell {
-        const corners: Coordinate[] = CellFactory.createCornersForHexagon(center, width);
+    private static createHexagonalCell(center: Coordinate, width: number, angleInDegrees: number): Cell {
+        const corners: Coordinate[] =
+            CellFactory.createCornersForHexagon(center, width)
+                .map(corner => corner.rotateAroundCenter(angleInDegrees, center));
         return new Cell(center, corners);
     }
 
@@ -127,8 +119,10 @@ export class CellFactory {
         return [upperRight, upperCenter, upperLeft, lowerLeft, lowerCenter, lowerRight];
     }
 
-    private static createOctagonalCell(center: Coordinate, width: number): Cell {
-        const corners: Coordinate[] = CellFactory.createCornersForOctagon(center, width);
+    private static createOctagonalCell(center: Coordinate, width: number, angleInDegrees: number): Cell {
+        const corners: Coordinate[] =
+            CellFactory.createCornersForOctagon(center, width)
+                .map(corner => corner.rotateAroundCenter(angleInDegrees, center));
         return new Cell(center, corners);
     }
 

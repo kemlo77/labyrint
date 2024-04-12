@@ -62,7 +62,7 @@ describe('Cell', () => {
     it('getting random unvisited neighbour', () => {
         const cell1: Cell = CellFactory.createCell(new Coordinate(10, 10), 2, 'square');
         const cell2: Cell = CellFactory.createCell(new Coordinate(20, 20), 2, 'square');
-        cell1.addNeighbour(cell2);
+        cell1.establishNeighbourRelationTo(cell2);
         expect(cell1.randomUnvisitedNeighbour).to.equal(cell2);
     });
 
@@ -89,18 +89,15 @@ describe('Cell', () => {
     });
 
     it('should have 3 borders when one neighbour', () => {
-        squareCell1.addNeighbour(squareCell2);
-        squareCell2.addNeighbour(squareCell1);
+        squareCell1.establishNeighbourRelationTo(squareCell2);
         squareCell1.establishConnectionTo(squareCell2);
         expect(squareCell1.closedBorders.length).to.equal(3);
         expect(squareCell2.closedBorders.length).to.equal(3);
     });
 
     it('should have 2 closed borders when two neighbours', () => {
-        squareCell1.addNeighbour(squareCell2);
-        squareCell2.addNeighbour(squareCell1);
-        squareCell1.addNeighbour(squareCell3);
-        squareCell3.addNeighbour(squareCell1);
+        squareCell1.establishNeighbourRelationTo(squareCell2);
+        squareCell1.establishNeighbourRelationTo(squareCell3);
         squareCell2.establishConnectionTo(squareCell1);
         squareCell2.establishConnectionTo(squareCell3);
 

@@ -69,8 +69,7 @@ export class TriangularGridFactory extends GridFactory {
 
                 if (notOnLastRow && cellHasFlatTop) {
                     const neighbourCellBelow: Cell = grid[columnIndex][rowIndex + 1];
-                    currentCell.addNeighbour(neighbourCellBelow);
-                    neighbourCellBelow.addNeighbour(currentCell);
+                    currentCell.establishNeighbourRelationTo(neighbourCellBelow);
                 }
             }
         }

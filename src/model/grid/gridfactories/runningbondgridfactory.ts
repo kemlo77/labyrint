@@ -113,15 +113,13 @@ export class RunningBondGridFactory extends GridFactory {
                 if (oddColumnIndex) {
                     const cell: Cell = grid[columnIndex][rowIndex];
                     const upperRowLeftNeighbour: Cell = grid[columnIndex - 1][rowIndex - 1];
-                    cell.addNeighbour(upperRowLeftNeighbour);
-                    upperRowLeftNeighbour.addNeighbour(cell);
+                    cell.establishNeighbourRelationTo(upperRowLeftNeighbour);
                 }
 
                 if (oddColumnIndex && notOnTheLastColumn) {
                     const cell: Cell = grid[columnIndex][rowIndex];
                     const upperRowRightNeighbour: Cell = grid[columnIndex + 1][rowIndex - 1];
-                    cell.addNeighbour(upperRowRightNeighbour);
-                    upperRowRightNeighbour.addNeighbour(cell);
+                    cell.establishNeighbourRelationTo(upperRowRightNeighbour);
                 }
 
             }

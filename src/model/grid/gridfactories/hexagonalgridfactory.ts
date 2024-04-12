@@ -53,7 +53,7 @@ export class HexagonalGridFactory extends GridFactory {
                 const neighbourDistance: number = cellWidth * 1.01;
                 const cellIsWithinNeighbouringDistance: CellTest =
                     (cell) => currentCell.center.distanceTo(cell.center) < neighbourDistance;
-                const addCellAsNeighbour: CellAction = (cell) => currentCell.addNeighbour(cell);
+                const addCellAsNeighbour: CellAction = (cell) => currentCell.establishNeighbourRelationTo(cell);
                 const notOnTheLastRow: boolean = rowIndex !== transposedGrid.length - 1;
                 const notOnTheFirstRow: boolean = rowIndex !== 0;
 

@@ -11,8 +11,7 @@ export abstract class GridFactory {
                 if (notOnTheLastColumn) {
                     const cell: Cell = grid[columnIndex][rowIndex];
                     const nextColumnNeighbour: Cell = grid[columnIndex + 1][rowIndex];
-                    cell.addNeighbour(nextColumnNeighbour);
-                    nextColumnNeighbour.addNeighbour(cell);
+                    cell.establishNeighbourRelationTo(nextColumnNeighbour);
                 }
             }
         }
@@ -25,8 +24,7 @@ export abstract class GridFactory {
                 if (notOnTheLastRow) {
                     const cell: Cell = grid[columnIndex][rowIndex];
                     const nextRowNeighbour: Cell = grid[columnIndex][rowIndex + 1];
-                    cell.addNeighbour(nextRowNeighbour);
-                    nextRowNeighbour.addNeighbour(cell);
+                    cell.establishNeighbourRelationTo(nextRowNeighbour);
                 }
             }
         }

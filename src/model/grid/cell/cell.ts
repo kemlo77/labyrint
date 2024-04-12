@@ -57,8 +57,20 @@ export class Cell {
         return this.unvisitedNeighbours[randomIndex];
     }
 
-    addNeighbour(cell: Cell): void {
+    establishNeighbourRelationTo(cell: Cell): void {
+        this.addNeighbour(cell);
+        cell.addNeighbour(this);
+    }
+
+    private addNeighbour(cell: Cell): void {
+        if (this.isNeighbourWith(cell)) {
+            return;
+        }
         this._neighbours.push(cell);
+    }
+
+    isNeighbourWith(cell: Cell): boolean {
+        return this._neighbours.includes(cell);
     }
 
     get connectedNeighbours(): Cell[] {

@@ -53,14 +53,10 @@ export class DiagonalSquareGridFactory extends GridFactory {
                 const leftLowerCell: Cell = grid[columnIndex][rowIndex + 1];
                 const rightLowerCell: Cell = grid[columnIndex + 1][rowIndex + 1];
 
-                currentCell.addNeighbour(leftUpperCell);
-                leftUpperCell.addNeighbour(currentCell);
-                currentCell.addNeighbour(rightUpperCell);
-                rightUpperCell.addNeighbour(currentCell);
-                currentCell.addNeighbour(leftLowerCell);
-                leftLowerCell.addNeighbour(currentCell);
-                currentCell.addNeighbour(rightLowerCell);
-                rightLowerCell.addNeighbour(currentCell);
+                currentCell.establishNeighbourRelationTo(leftUpperCell);
+                currentCell.establishNeighbourRelationTo(rightUpperCell);
+                currentCell.establishNeighbourRelationTo(leftLowerCell);
+                currentCell.establishNeighbourRelationTo(rightLowerCell);
             }
         }
 

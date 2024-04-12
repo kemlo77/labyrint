@@ -61,38 +61,32 @@ export class OctagonalGridFactory extends GridFactory {
 
                 if (notOnTheLastRow) {
                     const neighbourOctagonalCellBelow: Cell = grid[columnIndex][rowIndex + 2];
-                    currentCell.addNeighbour(neighbourOctagonalCellBelow);
-                    neighbourOctagonalCellBelow.addNeighbour(currentCell);
+                    currentCell.establishNeighbourRelationTo(neighbourOctagonalCellBelow);
                 }
 
                 if (notOnTheLastColumn) {
                     const neighbourOctagonalCellToTheRight: Cell = grid[columnIndex + 1][rowIndex];
-                    currentCell.addNeighbour(neighbourOctagonalCellToTheRight);
-                    neighbourOctagonalCellToTheRight.addNeighbour(currentCell);
+                    currentCell.establishNeighbourRelationTo(neighbourOctagonalCellToTheRight);
                 }
 
                 if (notOnTheFirstRow && notOnTheLastColumn) {
                     const neighbourTiltedSquareCellUpRight: Cell = grid[columnIndex][rowIndex - 1];
-                    currentCell.addNeighbour(neighbourTiltedSquareCellUpRight);
-                    neighbourTiltedSquareCellUpRight.addNeighbour(currentCell);
+                    currentCell.establishNeighbourRelationTo(neighbourTiltedSquareCellUpRight);
                 }
 
                 if (notOnTheFirstRow && notOnTheFirstColumn) {
                     const neighbourTiltedSquareCellUpLeft: Cell = grid[columnIndex - 1][rowIndex - 1];
-                    currentCell.addNeighbour(neighbourTiltedSquareCellUpLeft);
-                    neighbourTiltedSquareCellUpLeft.addNeighbour(currentCell);
+                    currentCell.establishNeighbourRelationTo(neighbourTiltedSquareCellUpLeft);
                 }
 
                 if (notOnTheLastRow && notOnTheLastColumn) {
                     const neighbourTiltedSquareCellDownLeft: Cell = grid[columnIndex][rowIndex + 1];
-                    currentCell.addNeighbour(neighbourTiltedSquareCellDownLeft);
-                    neighbourTiltedSquareCellDownLeft.addNeighbour(currentCell);
+                    currentCell.establishNeighbourRelationTo(neighbourTiltedSquareCellDownLeft);
                 }
 
                 if (notOnTheLastRow && notOnTheFirstColumn) {
                     const neighbourTiltedSquareCellDownRight: Cell = grid[columnIndex - 1][rowIndex + 1];
-                    currentCell.addNeighbour(neighbourTiltedSquareCellDownRight);
-                    neighbourTiltedSquareCellDownRight.addNeighbour(currentCell);
+                    currentCell.establishNeighbourRelationTo(neighbourTiltedSquareCellDownRight);
                 }
 
             }

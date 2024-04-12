@@ -6,7 +6,7 @@ import { GridFactory } from './gridfactory';
 import { MatrixOperations } from '../../../service/matrixoperations';
 import { CellAction, CellTest } from '../cell/celltypealiases';
 
-export class HexagonalGridFactory implements GridFactory {
+export class HexagonalGridFactory extends GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
@@ -41,7 +41,7 @@ export class HexagonalGridFactory implements GridFactory {
 
     private interconnectCellsInGrid(grid: Cell[][]): void {
         this.connectCellsDiagonally(grid);
-        this.connectCellsHorizontally(grid);
+        this.interConnectCellsInRows(grid);
     }
 
     private connectCellsDiagonally(grid: Cell[][]): void {
@@ -74,15 +74,5 @@ export class HexagonalGridFactory implements GridFactory {
         }
     }
 
-    private connectCellsHorizontally(grid: Cell[][]): void {
-        for (let columnIndex: number = 1; columnIndex < grid.length; columnIndex++) {
-            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
-                const cell: Cell = grid[columnIndex][rowIndex];
-                const neighbourCell: Cell = grid[columnIndex - 1][rowIndex];
-                cell.addNeighbour(neighbourCell);
-                neighbourCell.addNeighbour(cell);
-            }
-        }
-    }
 
 }

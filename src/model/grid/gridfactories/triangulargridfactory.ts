@@ -5,7 +5,7 @@ import { Grid } from '../grid';
 import { GridFactory } from './gridfactory';
 
 
-export class TriangularGridFactory implements GridFactory {
+export class TriangularGridFactory extends GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellMatrix: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
@@ -54,30 +54,25 @@ export class TriangularGridFactory implements GridFactory {
     }
 
     private interconnectGrid(grid: Cell[][]): void {
+        this.interConnectCellsInRows(grid);
+        this.interconnectSomeCellsInColumns(grid);
+    }
+
+
+    private interconnectSomeCellsInColumns(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
 
                 const currentCell: Cell = grid[columnIndex][rowIndex];
                 const notOnLastRow: boolean = rowIndex !== grid[columnIndex].length - 1;
-                const notInFirstColumn: boolean = columnIndex !== 0;
                 const cellHasFlatTop: boolean = this.cellHasFlatTop(columnIndex, rowIndex);
 
-                if (notInFirstColumn) {
-                    const neighbourCellToTheLeft: Cell = grid[columnIndex - 1][rowIndex];
-                    currentCell.addNeighbour(neighbourCellToTheLeft);
-                    neighbourCellToTheLeft.addNeighbour(currentCell);
-                }
-
-                //TODO: Undersök varför det inte är cellHasPointyTop här?
                 if (notOnLastRow && cellHasFlatTop) {
                     const neighbourCellBelow: Cell = grid[columnIndex][rowIndex + 1];
                     currentCell.addNeighbour(neighbourCellBelow);
                     neighbourCellBelow.addNeighbour(currentCell);
                 }
-
-
             }
         }
     }
-
 }

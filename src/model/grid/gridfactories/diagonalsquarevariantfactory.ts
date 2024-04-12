@@ -4,7 +4,7 @@ import { CellFactory } from '../cell/cellfactory';
 import { Grid } from '../grid';
 import { GridFactory } from './gridfactory';
 
-export class DiagonalSquareVariantFactory implements GridFactory {
+export class DiagonalSquareVariantFactory extends GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
@@ -35,26 +35,8 @@ export class DiagonalSquareVariantFactory implements GridFactory {
     }
 
     private interconnectCellsInGrid(grid: Cell[][]): void {
-        for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
-            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
-                const notOnTheLastRow: boolean = rowIndex !== grid[columnIndex].length - 1;
-                const notOnTheLastColumn: boolean = columnIndex !== grid.length - 1;
-
-                if (notOnTheLastRow) {
-                    const cell: Cell = grid[columnIndex][rowIndex];
-                    const nextRowNeighbour: Cell = grid[columnIndex][rowIndex + 1];
-                    cell.addNeighbour(nextRowNeighbour);
-                    nextRowNeighbour.addNeighbour(cell);
-                }
-
-                if (notOnTheLastColumn) {
-                    const cell: Cell = grid[columnIndex][rowIndex];
-                    const nextColumnNeighbour: Cell = grid[columnIndex + 1][rowIndex];
-                    cell.addNeighbour(nextColumnNeighbour);
-                    nextColumnNeighbour.addNeighbour(cell);
-                }
-            }
-        }
+        this.interConnectCellsInRows(grid);
+        this.interConnectCellsInColumns(grid);
     }
 
 

@@ -4,7 +4,7 @@ import { CellFactory } from '../cell/cellfactory';
 import { Grid } from '../grid';
 import { GridFactory } from './gridfactory';
 
-export class OctagonalGridFactory implements GridFactory {
+export class OctagonalGridFactory extends GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);

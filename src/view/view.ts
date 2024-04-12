@@ -61,6 +61,14 @@ export class View implements Observer {
         });
     }
 
+    private drawAllNeighbourRelations(): void {
+        this._model.grid.allCells.forEach(cell => {
+            cell.neighbours.forEach(neighbour => {
+                this._canvasPainter.drawLine(cell.center, neighbour.center, 1, BLUE_COLOR);
+            });
+        });
+    }
+
     private drawStartCell(): void {
         this._canvasPainter.fillPolygon(this._model.grid.startCell.corners, LIGHT_GREEN_COLOR, LIGHT_GREEN_COLOR);
     }

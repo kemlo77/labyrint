@@ -15,7 +15,7 @@ export class GridSupplier {
         }
 
         if (gridType === 'runningBond') {
-            return new RunningBondGridFactory().createGrid(20, 8, 25);
+            return new RunningBondGridFactory().createGrid(69, 21, 15);
         }
 
         if (gridType === 'hexagonal') {

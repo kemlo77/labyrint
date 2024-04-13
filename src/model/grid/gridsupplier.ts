@@ -10,6 +10,10 @@ import { RunningBondGridFactory } from './gridfactories/runningbondgridfactory';
 export class GridSupplier {
     static getGrid(gridType: string): Grid {
 
+        if (gridType === 'test-grid') {
+            return new SquareGridFactory().createGrid(3, 3, 15);
+        }
+
         if (gridType === 'square') {
             return new SquareGridFactory().createGrid(69, 43, 15);
         }

@@ -18,16 +18,8 @@ export class Grid {
         return this._startCell;
     }
 
-    protected set startCell(cell: Cell) {
-        this._startCell = cell;
-    }
-
     get endCell(): Cell {
         return this._endCell;
-    }
-
-    protected set endCell(cell: Cell) {
-        this._endCell = cell;
     }
 
     get allCells(): Cell[] {

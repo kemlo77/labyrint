@@ -10,7 +10,7 @@ export class HexagonalGridFactory extends GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
-        this.interconnectCellsInGrid(cellGrid);
+        this.interconnectCellsInGrid(cellGrid, cellWidth);
         const startCell: Cell = cellGrid[0][0];
         startCell.visited = true;
         const endCell: Cell = cellGrid[numberOfColumns - 1][numberOfRows - 1];
@@ -39,13 +39,12 @@ export class HexagonalGridFactory extends GridFactory {
         return grid;
     }
 
-    private interconnectCellsInGrid(grid: Cell[][]): void {
-        this.connectCellsDiagonally(grid);
+    private interconnectCellsInGrid(grid: Cell[][], cellWidth: number): void {
+        this.connectCellsDiagonally(grid, cellWidth);
         this.interConnectCellsInRows(grid);
     }
 
-    private connectCellsDiagonally(grid: Cell[][]): void {
-        const cellWidth: number = grid[0][0].width;
+    private connectCellsDiagonally(grid: Cell[][], cellWidth: number): void {
         const transposedGrid: Cell[][] = MatrixOperations.transpose<Cell>(grid);
         for (let rowIndex: number = 0; rowIndex < transposedGrid.length; rowIndex++) {
             for (let columnIndex: number = 0; columnIndex < transposedGrid[rowIndex].length; columnIndex++) {

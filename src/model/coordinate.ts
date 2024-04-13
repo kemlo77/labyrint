@@ -9,6 +9,9 @@ export class Coordinate {
     }
 
     rotateClockwise(angleInDegrees: number): Coordinate {
+        if (angleInDegrees === 0) {
+            return this;
+        }
         const angle: number = angleInDegrees * Math.PI / 180;
         const tempX: number = this.x;
         const tempY: number = this.y;
@@ -30,6 +33,10 @@ export class Coordinate {
         const translated: Coordinate = this.translate(-center.x, -center.y);
         const rotated: Coordinate = translated.rotateClockwise(angleInDegrees);
         return rotated.translate(center.x, center.y);
+    }
+
+    equals(coordinate: Coordinate): boolean {
+        return this.x === coordinate.x && this.y === coordinate.y;
     }
 
 }

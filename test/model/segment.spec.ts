@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { Coordinate } from '../src/model/coordinate';
-import { Segment } from '../src/model/segment';
+import { Coordinate } from '../../src/model/coordinate';
+import { Segment } from '../../src/model/segment';
 
 describe('Segment', () => {
 

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { SquareGridFactory } from '../src/model/grid/gridfactories/squaregridfactory';
-import { Cell } from '../src/model/grid/cell/cell';
-import { Grid } from '../src/model/grid/grid';
+import { SquareGridFactory } from '../../../../src/model/grid/gridfactories/squaregridfactory';
+import { Cell } from '../../../../src/model/grid/cell/cell';
+import { Grid } from '../../../../src/model/grid/grid';
 
 describe('SquareGridFactory', () => {
 

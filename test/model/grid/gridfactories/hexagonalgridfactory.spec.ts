@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { HexagonalGridFactory } from '../src/model/grid/gridfactories/hexagonalgridfactory';
-import { Grid } from '../src/model/grid/grid';
+import { HexagonalGridFactory } from '../../../../src/model/grid/gridfactories/hexagonalgridfactory';
+import { Grid } from '../../../../src/model/grid/grid';
 
 describe('HexagonalGridFactory', () => {
 

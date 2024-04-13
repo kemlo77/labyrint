@@ -18,20 +18,6 @@ export class Cell {
         return this._center;
     }
 
-    get width(): number {
-        const xCoordinates: number[] = this._corners.map(corner => corner.x);
-        const xMin: number = Math.min(...xCoordinates);
-        const xMax: number = Math.max(...xCoordinates);
-        return xMax - xMin;
-    }
-
-    get height(): number {
-        const yCoordinates: number[] = this._corners.map(corner => corner.y);
-        const yMin: number = Math.min(...yCoordinates);
-        const yMax: number = Math.max(...yCoordinates);
-        return yMax - yMin;
-    }
-
     get visited(): boolean {
         return this._visited;
     }
@@ -39,6 +25,7 @@ export class Cell {
     set visited(visited: boolean) {
         this._visited = visited;
     }
+
 
     get neighbours(): Cell[] {
         return this._neighbours;
@@ -63,23 +50,16 @@ export class Cell {
     }
 
     private addNeighbour(cell: Cell): void {
-        if (this.isNeighbourWith(cell)) {
+        if (this._neighbours.includes(cell)) {
             return;
         }
         this._neighbours.push(cell);
-    }
-
-    isNeighbourWith(cell: Cell): boolean {
-        return this._neighbours.includes(cell);
     }
 
     get connectedNeighbours(): Cell[] {
         return this._connectedNeighbours;
     }
 
-    removeEstablishedConnections(): void {
-        this._connectedNeighbours = [];
-    }
 
     establishConnectionTo(cell: Cell): void {
         this.addConnection(cell);
@@ -87,7 +67,14 @@ export class Cell {
     }
 
     private addConnection(toCell: Cell): void {
+        if (this._connectedNeighbours.includes(toCell)) {
+            return;
+        }
         this._connectedNeighbours.push(toCell);
+    }
+
+    removeEstablishedConnections(): void {
+        this._connectedNeighbours = [];
     }
 
     removeConnectionsToCell(): void {
@@ -99,11 +86,9 @@ export class Cell {
     }
 
     private removeConnection(toCell: Cell): void {
-        const index: number = this._connectedNeighbours.indexOf(toCell);
-        if (index > -1) {
-            this._connectedNeighbours.splice(index, 1);
-        }
+        this._connectedNeighbours = this._connectedNeighbours.filter(cell => cell !== toCell);
     }
+
 
     get corners(): Coordinate[] {
         return [... this._corners];

@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import { Cell } from '../../src/model/grid/cell/cell';
-import { Coordinate } from '../../src/model/coordinate';
-import { CellFactory } from '../../src/model/grid/cell/cellfactory';
-import { Segment } from '../../src/model/segment';
+import { Cell } from '../../../../src/model/grid/cell/cell';
+import { Coordinate } from '../../../../src/model/coordinate';
+import { CellFactory } from '../../../../src/model/grid/cell/cellfactory';
+import { Segment } from '../../../../src/model/segment';
 
 describe('Cell', () => {
 
@@ -19,6 +19,22 @@ describe('Cell', () => {
         squareCell3 = CellFactory.createCell(center3, 10, 'square');
     });
 
+    it('establishing neighbour relation between two cells', () => {
+        squareCell1.establishNeighbourRelationTo(squareCell2);
+        expect(squareCell1.neighbours.length).to.equal(1);
+    });
+
+    it('trying to establish neighbour relation twice', () => {
+        squareCell1.establishNeighbourRelationTo(squareCell2);
+        squareCell1.establishNeighbourRelationTo(squareCell2);
+        expect(squareCell1.neighbours.length).to.equal(1);
+    });
+
+    it('visiting a cell', () => {
+        squareCell1.visited = true;
+        expect(squareCell1.visited).to.equal(true);
+    });
+
     it('interconnecting two cells', () => {
         const cell1: Cell = CellFactory.createCell(new Coordinate(10, 10), 2, 'square');
         const cell2: Cell = CellFactory.createCell(new Coordinate(20, 20), 2, 'square');
@@ -29,6 +45,15 @@ describe('Cell', () => {
         expect(cell2.hasNoUnvisitedNeighbours).to.equal(true);
         expect(cell1.connectedNeighbours[0]).to.equal(cell2);
         expect(cell2.connectedNeighbours[0]).to.equal(cell1);
+    });
+
+    it('interconnecting two cells twice', () => {
+        const cell1: Cell = CellFactory.createCell(new Coordinate(10, 10), 2, 'square');
+        const cell2: Cell = CellFactory.createCell(new Coordinate(20, 20), 2, 'square');
+        cell1.establishConnectionTo(cell2);
+        cell1.establishConnectionTo(cell2);
+        expect(cell1.connectedNeighbours.length).to.equal(1);
+        expect(cell2.connectedNeighbours.length).to.equal(1);
     });
 
     it('removing connection between two cells', () => {
@@ -73,14 +98,10 @@ describe('Cell', () => {
 
     it('should have correct corners', () => {
         const corners: Coordinate[] = squareCell1.corners;
-        expect(corners[0].x).to.be.equal(10);
-        expect(corners[0].y).to.equal(10);
-        expect(corners[1].x).to.equal(0);
-        expect(corners[1].y).to.equal(10);
-        expect(corners[2].x).to.equal(0);
-        expect(corners[2].y).to.equal(0);
-        expect(corners[3].x).to.equal(10);
-        expect(corners[3].y).to.equal(0);
+        expect(corners[0].equals(new Coordinate(10, 10))).to.equal(true);
+        expect(corners[1].equals(new Coordinate(0, 10))).to.equal(true);
+        expect(corners[2].equals(new Coordinate(0, 0))).to.equal(true);
+        expect(corners[3].equals(new Coordinate(10, 0))).to.equal(true);
     });
 
     it('should have 4 borders when no neighbours', () => {

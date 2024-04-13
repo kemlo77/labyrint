@@ -31,7 +31,7 @@ export class GridSupplier {
         }
 
         if (gridType === 'diagonalSquare') {
-            return new DiagonalSquareGridFactory().createGrid(41, 25, 25);
+            return new DiagonalSquareGridFactory().createGrid(31, 19, 23);
         }
 
         if (gridType === 'diagonalSquareVariant') {

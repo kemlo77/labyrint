@@ -15,7 +15,7 @@ export class DiagonalSquareVariantFactory extends GridFactory {
     }
 
     private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
-        const squareWidth: number = cellWidth / Math.sqrt(2);
+        const squareWidth: number = cellWidth / Math.SQRT2;
         const startOffsetX: number = cellWidth;
         const startOffsetY: number = cellWidth / 2 * (numberOfColumns + 1);
         const cellGrid: Cell[][] = [];

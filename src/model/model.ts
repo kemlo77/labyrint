@@ -1,6 +1,6 @@
 import { Grid } from './grid/grid';
-import { Observer } from '../observer';
-import { Subject } from '../subject';
+import { Observer } from '../view/observer';
+import { Subject } from './subject';
 import { GridSupplier } from './grid/gridsupplier';
 import { Segment } from './segment';
 import { RecursiveBacktrackerAlgorithm } from './algorithm/recursivebacktracker';

@@ -2,24 +2,14 @@ import { Coordinate } from '../../coordinate';
 import { Cell } from './cell';
 
 export class CellFactory {
+
+    private constructor() {
+        throw new Error('This class cannot be instantiated');
+    }
+
     static createCell(center: Coordinate, width: number, type: string, angleInDegrees: number = 0): Cell {
-        let shapeCorners: Coordinate[];
-        switch (type) {
-            case 'equilateral-triangular':
-                shapeCorners = CellFactory.createCornersForEquilateralTriangle(center, width); break;
-            case 'isosceles-right-triangular':
-                shapeCorners = CellFactory.createCornersForIsoscelesRightTriangle(center, width); break;
-            case 'square':
-                shapeCorners = CellFactory.createCornersForSquare(center, width); break;
-            case 'double-square-rectangle':
-                shapeCorners = CellFactory.createCornersForDoubleSquareRectangle(center, width); break;
-            case 'hexagonal':
-                shapeCorners = CellFactory.createCornersForHexagon(center, width); break;
-            case 'octagonal':
-                shapeCorners = CellFactory.createCornersForOctagon(center, width); break;
-            default:
-                throw new Error('Unknown cell type'); break;
-        }
+        const shapeCorners: Coordinate[] = CellFactory.createCornersForShape(center, width, type);
+
         if (angleInDegrees === 0) {
             return new Cell(center, shapeCorners);
         }
@@ -27,6 +17,28 @@ export class CellFactory {
         const rotatedCorners: Coordinate[] = shapeCorners
             .map(corner => corner.rotateAroundCenter(angleInDegrees, center));
         return new Cell(center, rotatedCorners);
+    }
+
+    private static createCornersForShape(center: Coordinate, width: number, type: string): Coordinate[] {
+        if (type === 'equilateral-triangular') {
+            return CellFactory.createCornersForEquilateralTriangle(center, width);
+        }
+        if (type === 'isosceles-right-triangular') {
+            return CellFactory.createCornersForIsoscelesRightTriangle(center, width);
+        }
+        if (type === 'square') {
+            return CellFactory.createCornersForSquare(center, width);
+        }
+        if (type === 'double-square-rectangle') {
+            return CellFactory.createCornersForDoubleSquareRectangle(center, width);
+        }
+        if (type === 'hexagonal') {
+            return CellFactory.createCornersForHexagon(center, width);
+        }
+        if (type === 'octagonal') {
+            return CellFactory.createCornersForOctagon(center, width);
+        }
+        throw new Error('Unknown cell type');
     }
 
     private static createCornersForEquilateralTriangle(center: Coordinate, width: number): Coordinate[] {

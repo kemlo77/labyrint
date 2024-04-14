@@ -8,6 +8,11 @@ import { TriangularGridFactory } from './gridfactories/triangulargridfactory';
 import { RunningBondGridFactory } from './gridfactories/runningbondgridfactory';
 
 export class GridSupplier {
+
+    private constructor() {
+        throw new Error('This class cannot be instantiated');
+    }
+
     static getGrid(gridType: string): Grid {
 
         if (gridType === 'test-grid') {

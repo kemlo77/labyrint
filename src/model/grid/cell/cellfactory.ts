@@ -20,6 +20,10 @@ export class CellFactory {
             default:
                 throw new Error('Unknown cell type'); break;
         }
+        if (angleInDegrees === 0) {
+            return new Cell(center, shapeCorners);
+        }
+
         const rotatedCorners: Coordinate[] = shapeCorners
             .map(corner => corner.rotateAroundCenter(angleInDegrees, center));
         return new Cell(center, rotatedCorners);

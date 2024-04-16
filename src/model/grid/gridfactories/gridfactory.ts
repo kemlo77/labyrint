@@ -1,8 +1,25 @@
+import { Coordinate } from '../../coordinate';
+import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
+import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
 
 export abstract class GridFactory {
     abstract createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid;
+
+    protected createSequenceOfCells( 
+        startCoordinate: Coordinate, 
+        stepVector: Vector,
+        cellsToCreate: number,
+        createCell: CellCreator
+    ): Cell[] {
+        const cellSequence: Cell [] = [];
+        for (let stepNumber: number = 0; stepNumber < cellsToCreate; stepNumber++) {
+            const newCellCenter: Coordinate = startCoordinate.newRelativeCoordinate(stepVector, stepNumber);
+            cellSequence.push(createCell(newCellCenter));
+        }
+        return cellSequence;
+    }
 
     protected interConnectCellsInRows(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {

@@ -1,3 +1,5 @@
+import { Vector } from './vector';
+
 export class Coordinate {
 
     constructor(readonly x: number, readonly y: number) {
@@ -33,6 +35,12 @@ export class Coordinate {
         const translated: Coordinate = this.translate(-center.x, -center.y);
         const rotated: Coordinate = translated.rotateClockwise(angleInDegrees);
         return rotated.translate(center.x, center.y);
+    }
+
+    newRelativeCoordinate(stepVector: Vector, steps: number): Coordinate {
+        const xCoordinate: number = this.x + stepVector.x * steps;    
+        const yCoordinate: number = this.y + stepVector.y * steps;
+        return new Coordinate(xCoordinate, yCoordinate);
     }
 
     equals(coordinate: Coordinate): boolean {

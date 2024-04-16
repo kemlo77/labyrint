@@ -1,6 +1,8 @@
 import { Coordinate } from '../../coordinate';
+import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
+import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
 import { GridFactory } from './gridfactory';
 
@@ -16,22 +18,27 @@ export class SquareGridFactory extends GridFactory {
     }
 
     private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
+        //TODO: Should have a coordinate as input parameter do define where firstCellCenter should be
         const startOffsetX: number = cellWidth;
         const startOffsetY: number = cellWidth;
-        const cellGrid: Cell[][] = [];
+        const firstCellCenter: Coordinate = new Coordinate(startOffsetX, startOffsetY);
 
+        const xDirectionStepVector: Vector = new Vector(cellWidth, 0);
+        const yDirectionStepVector: Vector = new Vector(0, cellWidth);
+        const createSquareCell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square');
+
+        const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
-            const rowOfCells: Cell[] = [];
-            for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
-                const xCoordinate: number = startOffsetX + cellWidth * columnIndex;
-                const yCoordinate: number = startOffsetY + cellWidth * rowIndex;
-                const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                rowOfCells.push(CellFactory.createCell(center, cellWidth, 'square'));
-            }
-            cellGrid.push(rowOfCells);
+            const columnStartCenter: Coordinate = 
+                firstCellCenter.newRelativeCoordinate(xDirectionStepVector, columnIndex);
+            
+            const cellSequence: Cell[] = 
+                this.createSequenceOfCells(columnStartCenter, yDirectionStepVector, numberOfRows, createSquareCell);
+            cellColumns.push(cellSequence);
         }
 
-        return cellGrid;
+        return cellColumns;
     }
 
     private interconnectCellsInGrid(grid: Cell[][]): void {

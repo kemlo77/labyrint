@@ -29,14 +29,14 @@ describe('Coordinate', () => {
         expect(coordinate.equals(otherCoordinate)).to.equal(true);
     });
 
-    it('should rotate clockwise', () => {
-        const rotatedCoordinate: Coordinate = coordinate.rotateClockwise(90);
-        expect(rotatedCoordinate.x).to.be.closeTo(4, 0.0001);
-        expect(rotatedCoordinate.y).to.be.closeTo(-3, 0.0001);
+    it('should rotate counterclockwise', () => {
+        const rotatedCoordinate: Coordinate = coordinate.rotateCounterclockwise(90);
+        expect(rotatedCoordinate.x).to.be.closeTo(-4, 0.0001);
+        expect(rotatedCoordinate.y).to.be.closeTo(3, 0.0001);
     });
 
     it('should not rotate clockwise when angle is 0', () => {
-        const rotatedCoordinate: Coordinate = coordinate.rotateClockwise(0);
+        const rotatedCoordinate: Coordinate = coordinate.rotateCounterclockwise(0);
         expect(rotatedCoordinate.x).to.equal(3);
         expect(rotatedCoordinate.y).to.equal(4);
     });
@@ -57,7 +57,7 @@ describe('Coordinate', () => {
     it('should rotate around center', () => {
         const center: Coordinate = new Coordinate(1, 1);
         const rotatedCoordinate: Coordinate = coordinate.rotateAroundCenter(90, center);
-        expect(rotatedCoordinate.x).to.be.closeTo(4, 0.0001);
-        expect(rotatedCoordinate.y).to.be.closeTo(-1, 0.0001);
+        expect(rotatedCoordinate.x).to.be.closeTo(-2, 0.0001);
+        expect(rotatedCoordinate.y).to.be.closeTo(3, 0.0001);
     });
 });

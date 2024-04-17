@@ -51,14 +51,14 @@ export class DiagonalSquareGridFactory extends GridFactory {
     private attachTopRightCornerTrianglex(existingCell: Cell, cellWidth: number): Cell {
         const xOffset: number = + cellWidth * 2 / 3;
         const yOffset: number = - cellWidth * 2 / 3;
-        const rotation: number = 270;
+        const rotation: number = 90;
         return this.generateAndAttachCornerTriangle(existingCell, cellWidth, xOffset, yOffset, rotation);
     }
 
     private createAndAttachBottomLeftCornerTriangle(existingCell: Cell, cellWidth: number): Cell {
         const xOffset: number = - cellWidth * 2 / 3;
         const yOffset: number = + cellWidth * 2 / 3;
-        const rotation: number = 90;
+        const rotation: number = 270;
         return this.generateAndAttachCornerTriangle(existingCell, cellWidth, xOffset, yOffset, rotation);
     }
 
@@ -89,7 +89,7 @@ export class DiagonalSquareGridFactory extends GridFactory {
         const hypotenuseLength: number = cellWidth * Math.SQRT2;
         const xOffset: number = hypotenuseLength / 2;
         const yOffset: number = - hypotenuseLength / 3;
-        const rotation: number = 135;
+        const rotation: number = 225;
         return this.generateAndAttachTriangles(cellsConnectingTo, cellWidth, xOffset, yOffset, rotation);
     }
 
@@ -97,7 +97,7 @@ export class DiagonalSquareGridFactory extends GridFactory {
         const hypotenuseLength: number = cellWidth * Math.SQRT2;
         const xOffset: number = hypotenuseLength / 2;
         const yOffset: number = hypotenuseLength / 3;
-        const rotation: number = 315;
+        const rotation: number = 45;
 
         return this.generateAndAttachTriangles(cellsConnectingTo, cellWidth, xOffset, yOffset, rotation);
     }
@@ -106,7 +106,7 @@ export class DiagonalSquareGridFactory extends GridFactory {
         const hypotenuseLength: number = cellWidth * Math.SQRT2;
         const xOffset: number = - hypotenuseLength / 3;
         const yOffset: number = hypotenuseLength / 2;
-        const rotation: number = 225;
+        const rotation: number = 135;
 
         return this.generateAndAttachTriangles(cellsConnectingTo, cellWidth, xOffset, yOffset, rotation);
     }
@@ -115,7 +115,7 @@ export class DiagonalSquareGridFactory extends GridFactory {
         const hypotenuseLength: number = cellWidth * Math.SQRT2;
         const xOffset: number = hypotenuseLength / 3;
         const yOffset: number = hypotenuseLength / 2;
-        const rotation: number = 45;
+        const rotation: number = 315;
 
         return this.generateAndAttachTriangles(cellsConnectingTo, cellWidth, xOffset, yOffset, rotation);
     }

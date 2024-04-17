@@ -44,7 +44,7 @@ export class GridSupplier {
         }
 
         if (gridType === 'diagonalSquareVariant') {
-            return new DiagonalSquareVariantFactory().createGrid(32, 32, 20);
+            return new DiagonalSquareVariantFactory().createGrid(30, 30, 15);
         }
 
         throw new Error('Invalid grid type');

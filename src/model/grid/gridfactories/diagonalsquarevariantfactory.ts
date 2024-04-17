@@ -1,6 +1,8 @@
 import { Coordinate } from '../../coordinate';
+import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
+import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
 import { GridFactory } from './gridfactory';
 
@@ -15,24 +17,27 @@ export class DiagonalSquareVariantFactory extends GridFactory {
     }
 
     private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
-        const squareWidth: number = cellWidth / Math.SQRT2;
-        const startOffsetX: number = cellWidth;
-        const startOffsetY: number = cellWidth / 2 * (numberOfColumns + 1);
-        const cellGrid: Cell[][] = [];
+        //TODO: vinkel och startpunkt borde vara input-parameter
+        const angle: number = 45;
+        const firstCellCenter: Coordinate = new Coordinate(cellWidth * numberOfColumns * Math.SQRT2 / 2, cellWidth);
 
+        const defaultXStepDirection: Vector = new Vector(cellWidth, 0);
+        const defaultYStepDirection: Vector = new Vector(0, cellWidth);
+        const angledXStepDirection: Vector = defaultXStepDirection.newRotatedVector(angle);        
+        const angledYStepDirection: Vector = defaultYStepDirection.newRotatedVector(angle);
+        const createTiltedSquareCell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', angle);
+
+        const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
-            const rowOfCells: Cell[] = [];
-            for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
-
-                const xCoordinate: number = startOffsetX + cellWidth * columnIndex / 2 + cellWidth * rowIndex / 2;
-                const yCoordinate: number = startOffsetY - cellWidth * columnIndex / 2 + cellWidth * rowIndex / 2;
-                const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                rowOfCells.push(CellFactory.createCell(center, squareWidth, 'square', 45));
-            }
-            cellGrid.push(rowOfCells);
+            const columnStartCenter: Coordinate =
+                firstCellCenter.newRelativeCoordinate(angledXStepDirection, columnIndex);
+            const cellSequence: Cell[] =
+            this.createSequenceOfCells(columnStartCenter, angledYStepDirection, numberOfRows, createTiltedSquareCell);
+            cellColumns.push(cellSequence);
         }
 
-        return cellGrid;
+        return cellColumns;
     }
 
     private interconnectCellsInGrid(grid: Cell[][]): void {

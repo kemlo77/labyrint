@@ -18,22 +18,28 @@ export class DiagonalSquareVariantFactory extends GridFactory {
 
     private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
         //TODO: vinkel och startpunkt borde vara input-parameter
+        const halfDiagonal: number = numberOfColumns * cellWidth * Math.SQRT2 / 2;
+        const insertionPoint: Coordinate = new Coordinate(halfDiagonal + cellWidth, cellWidth);
         const angle: number = 45;
-        const firstCellCenter: Coordinate = new Coordinate(cellWidth * numberOfColumns * Math.SQRT2 / 2, cellWidth);
+
+        let stepDirectionToFirstCellCenter: Vector = new Vector(cellWidth/2, cellWidth/2);
+        
+        stepDirectionToFirstCellCenter = stepDirectionToFirstCellCenter.newRotatedVector(angle);
+        const firstCellCenter: Coordinate =insertionPoint.newRelativeCoordinate(stepDirectionToFirstCellCenter, 1);
 
         const defaultXStepDirection: Vector = new Vector(cellWidth, 0);
         const defaultYStepDirection: Vector = new Vector(0, cellWidth);
-        const angledXStepDirection: Vector = defaultXStepDirection.newRotatedVector(angle);        
-        const angledYStepDirection: Vector = defaultYStepDirection.newRotatedVector(angle);
-        const createTiltedSquareCell: CellCreator =
+        const rotatedXStepDirection: Vector = defaultXStepDirection.newRotatedVector(angle);        
+        const rotatedYStepDirection: Vector = defaultYStepDirection.newRotatedVector(angle);
+        const createRotatedSquareCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', angle);
 
         const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
             const columnStartCenter: Coordinate =
-                firstCellCenter.newRelativeCoordinate(angledXStepDirection, columnIndex);
+                firstCellCenter.newRelativeCoordinate(rotatedXStepDirection, columnIndex);
             const cellSequence: Cell[] =
-            this.createSequenceOfCells(columnStartCenter, angledYStepDirection, numberOfRows, createTiltedSquareCell);
+            this.createSequenceOfCells(columnStartCenter, rotatedYStepDirection, numberOfRows, createRotatedSquareCell);
             cellColumns.push(cellSequence);
         }
 

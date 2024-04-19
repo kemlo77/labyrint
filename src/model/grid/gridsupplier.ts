@@ -20,7 +20,7 @@ export class GridSupplier {
         }
 
         if (gridType === 'square') {
-            return new SquareGridFactory().createGrid(69, 43, 15);
+            return new SquareGridFactory().createGrid(34, 21, 30);
         }
 
         if (gridType === 'runningBond') {
@@ -40,7 +40,7 @@ export class GridSupplier {
         }
 
         if (gridType === 'diagonalSquare') {
-            return new DiagonalSquareGridFactory().createGrid(31, 19, 23);
+            return new DiagonalSquareGridFactory().createGrid(34, 21, 30);
         }
 
         if (gridType === 'diagonalSquareVariant') {

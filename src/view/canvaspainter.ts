@@ -60,4 +60,10 @@ export class CanvasPainter {
         this._canvasCtx.stroke();
     }
 
+    public drawText(text: string, position: Coordinate, fontSize: number, color: string): void {
+        this._canvasCtx.fillStyle = color;
+        this._canvasCtx.font = `${fontSize}px Arial`;
+        this._canvasCtx.fillText(text, position.x - fontSize / 4, position.y + fontSize / 4);
+    }
+
 }

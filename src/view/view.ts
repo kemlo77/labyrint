@@ -69,6 +69,12 @@ export class View implements Observer {
         });
     }
 
+    private drawNumberOfNeighbours(): void {
+        this._model.grid.allDisconnectedCells.forEach(cell => {
+            this._canvasPainter.drawText(cell.neighbours.length.toString(), cell.center, 10, BLACK_COLOR);
+        });
+    }
+
     private drawStartCell(): void {
         this._canvasPainter.fillPolygon(this._model.grid.startCell.corners, LIGHT_GREEN_COLOR, LIGHT_GREEN_COLOR);
     }

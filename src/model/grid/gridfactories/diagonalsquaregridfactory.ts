@@ -1,45 +1,51 @@
-import { MatrixOperations } from '../../../service/matrixoperations';
 import { Coordinate } from '../../coordinate';
+import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
+import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
 import { GridFactory } from './gridfactory';
 
 export class DiagonalSquareGridFactory extends GridFactory {
 
-    createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
+    createGrid(numberOfColumns: number, numberOfRows: number, diagonalWidth: number): Grid {
+        const cellWidth: number = diagonalWidth / Math.SQRT2;
         const cellGrid: Cell[][] = this.createTiltedSquareCellGrid(numberOfColumns, numberOfRows, cellWidth);
         this.connectTiltedSquareCellsToNeighbourCells(cellGrid);
         const topLeftCell: Cell = cellGrid[0][0];
         const topRightCell: Cell = cellGrid[cellGrid.length - 1][0];
         const bottomLeftCell: Cell = cellGrid[0][cellGrid[0].length - 1];
-        const bottomRightCell: Cell = cellGrid[numberOfColumns - 1][2 * (numberOfRows - 1)];
+        const bottomRightCell: Cell = cellGrid[(numberOfColumns - 1) * 2][numberOfRows - 2];
+        let startCell: Cell = topLeftCell;
+        let endCell: Cell = bottomRightCell;
 
 
-        const transposedGrid: Cell[][] = MatrixOperations.transpose(cellGrid);
-        const topRowCells: Cell[] = transposedGrid[0];
-        const bottomRowCells: Cell[] = transposedGrid[transposedGrid.length - 1];
-        const leftRowCells: Cell[] = cellGrid[0].filter((cell, index) => index % 2 === 0);
-        const rightRowCells: Cell[] = cellGrid[cellGrid.length - 1].filter((cell, index) => index % 2 === 0);
+        const topRowCells: Cell[] = cellGrid.map(row => row[0]).filter((cell, index) => index % 2 === 1);
+        const bottomRowCells: Cell[] = cellGrid.map(row => row[row.length - 1])
+            .filter((cell, index) => index % 2 === 1);
+        const leftColumnCells: Cell[] = cellGrid[0];
+        const rightColumnCells: Cell[] = cellGrid[cellGrid.length - 1];
 
         const newTopRow: Cell[] = this.createAndAttachTopRowTriangles(topRowCells, cellWidth);
         const newBottomRow: Cell[] = this.createAndAttachBottomRowTriangles(bottomRowCells, cellWidth);
-        const newLeftRow: Cell[] = this.createAndAttachLeftRowTriangles(leftRowCells, cellWidth);
-        const newRightRow: Cell[] = this.createAndAttachRightRowTriangles(rightRowCells, cellWidth);
+        const newLeftColumn: Cell[] = this.createAndAttachLeftRowTriangles(leftColumnCells, cellWidth);
+        const newRightColumn: Cell[] = this.createAndAttachRightRowTriangles(rightColumnCells, cellWidth);
         cellGrid.push(newTopRow);
         cellGrid.push(newBottomRow);
-        cellGrid.unshift(newLeftRow);
-        cellGrid.push(newRightRow);
+        cellGrid.unshift(newLeftColumn);
+        cellGrid.push(newRightColumn);
 
-        const cornerCellWidth: number = cellWidth / Math.SQRT2;
-        const newTopLeftCell: Cell = this.createAndAttachTopLeftCornerTriangle(topLeftCell, cornerCellWidth);
-        const newTopRightCell: Cell = this.attachTopRightCornerTrianglex(topRightCell, cornerCellWidth);
-        const newBottomLeftCell: Cell = this.createAndAttachBottomLeftCornerTriangle(bottomLeftCell, cornerCellWidth);
-        const newBottomRightCell: Cell = this.createAndAttachTopRightCornerTriangle(bottomRightCell, cornerCellWidth);
-        cellGrid.push([newTopLeftCell, newTopRightCell, newBottomLeftCell, newBottomRightCell]);
+        // const cornerCellWidth: number = cellWidth / Math.SQRT2;
+        // const newTopLeftCell: Cell = this.createAndAttachTopLeftCornerTriangle(topLeftCell, cornerCellWidth);
+        // const newTopRightCell: Cell = this.attachTopRightCornerTrianglex(topRightCell, cornerCellWidth);
+        // const newBottomLeftCell: Cell = this.createAndAttachBottomLeftCornerTriangle(bottomLeftCell, cornerCellWidth);
+        // const newBottomRightCell: Cell = this.createAndAttachTopRightCornerTriangle(bottomRightCell, cornerCellWidth);
+        // cellGrid.push([newTopLeftCell, newTopRightCell, newBottomLeftCell, newBottomRightCell]);
+        // startCell = newTopLeftCell;
+        // endCell = newBottomRightCell;
 
         const cells: Cell[] = cellGrid.flat();
-        return new Grid(cells, newTopLeftCell, newBottomRightCell);
+        return new Grid(cells, startCell, endCell);
     }
 
     private createAndAttachTopLeftCornerTriangle(existingCell: Cell, cellWidth: number): Cell {
@@ -150,50 +156,72 @@ export class DiagonalSquareGridFactory extends GridFactory {
 
 
     private createTiltedSquareCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
-        const cellGrid: Cell[][] = [];
 
         const squareDiagonalLength: number = cellWidth * Math.SQRT2;
-        for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
-            const rowOfCells: Cell[] = [];
-            for (let rowIndex: number = 0; rowIndex < numberOfRows * 2 - 1; rowIndex++) {
-                if (rowIndex % 2 === 0) {
-                    const xCoordinate: number = squareDiagonalLength * (columnIndex + 1);
-                    const yCoordinate: number = squareDiagonalLength * (rowIndex / 2 + 1);
-                    const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'square', 45));
-                } else {
-                    const xCoordinate: number = squareDiagonalLength * (columnIndex + 3 / 2);
-                    const yCoordinate: number = squareDiagonalLength * (rowIndex / 2 + 1);
-                    const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'square', 45));
-                }
+        const startOffsetX: number = squareDiagonalLength;
+        const startOffsetY: number = squareDiagonalLength;
+        const firstCellCenter: Coordinate = new Coordinate(startOffsetX, startOffsetY);
+        const xDirectionStep: Vector = new Vector(squareDiagonalLength / 2, 0);
+        const yDirectionStep: Vector = new Vector(0, squareDiagonalLength);
+        const oddColumnExtraStep: Vector = new Vector(0, squareDiagonalLength / 2);
+        const createSquareCell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', 45);
+
+
+        const cellColumns: Cell[][] = [];
+        for (let columnIndex: number = 0; columnIndex < numberOfColumns * 2 - 1; columnIndex++) {
+
+            const evenColumn: boolean = columnIndex % 2 === 0;
+            const columnStartPoint: Coordinate = firstCellCenter.newRelativeCoordinate(xDirectionStep, columnIndex);
+
+            if (evenColumn) {
+                const oddColumnStartPoint: Coordinate = columnStartPoint.newRelativeCoordinate(oddColumnExtraStep, 1);
+                const cellSequence: Cell[] =
+                    this.createSequenceOfCells(oddColumnStartPoint, yDirectionStep, numberOfRows - 1, createSquareCell);
+                cellColumns.push(cellSequence);
+
+            } else {
+                const cellSequence: Cell[] =
+                    this.createSequenceOfCells(columnStartPoint, yDirectionStep, numberOfRows, createSquareCell);
+                cellColumns.push(cellSequence);
 
             }
-            cellGrid.push(rowOfCells);
+
         }
-        return cellGrid;
+        return cellColumns;
     }
 
     private connectTiltedSquareCellsToNeighbourCells(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
-                const evenRow: boolean = rowIndex % 2 === 0;
-                const onTheLastColumn: boolean = columnIndex === grid.length - 1;
+                const evenColumn: boolean = columnIndex % 2 === 0;
 
-                if (evenRow || onTheLastColumn) {
+                if (evenColumn) {
                     continue;
                 }
 
+                const notOnLastRow: boolean = rowIndex !== grid[columnIndex].length - 1;
+                const notOnTheFirstRow: boolean = rowIndex !== 0;
                 const currentCell: Cell = grid[columnIndex][rowIndex];
-                const leftUpperCell: Cell = grid[columnIndex][rowIndex - 1];
-                const rightUpperCell: Cell = grid[columnIndex + 1][rowIndex - 1];
-                const leftLowerCell: Cell = grid[columnIndex][rowIndex + 1];
-                const rightLowerCell: Cell = grid[columnIndex + 1][rowIndex + 1];
 
-                currentCell.establishNeighbourRelationTo(leftUpperCell);
-                currentCell.establishNeighbourRelationTo(rightUpperCell);
-                currentCell.establishNeighbourRelationTo(leftLowerCell);
-                currentCell.establishNeighbourRelationTo(rightLowerCell);
+                if (notOnLastRow) {
+                    const leftLowerCell: Cell = grid[columnIndex - 1][rowIndex];
+                    const rightLowerCell: Cell = grid[columnIndex + 1][rowIndex];
+                    currentCell.establishNeighbourRelationTo(leftLowerCell);
+                    currentCell.establishNeighbourRelationTo(rightLowerCell);
+
+                }
+
+                if (notOnTheFirstRow) {
+                    const leftUpperCell: Cell = grid[columnIndex - 1][rowIndex - 1];
+                    const rightUpperCell: Cell = grid[columnIndex + 1][rowIndex - 1];
+
+
+
+                    currentCell.establishNeighbourRelationTo(leftUpperCell);
+                    currentCell.establishNeighbourRelationTo(rightUpperCell);
+                }
+
             }
         }
 

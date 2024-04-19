@@ -9,27 +9,28 @@ import { GridFactory } from './gridfactory';
 export class DiagonalSquareVariantFactory extends GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
-        const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
-        this.interconnectCellsInGrid(cellGrid);
-        const startCell: Cell = cellGrid[0][0];
-        const endCell: Cell = cellGrid[numberOfColumns - 1][numberOfRows - 1];
-        return new Grid(cellGrid, startCell, endCell);
+        const cellMatrix: Cell[][] = this.createCellMatrix(numberOfColumns, numberOfRows, cellWidth);
+        this.establishNeighbourRelationsInMatrix(cellMatrix);
+        const startCell: Cell = cellMatrix[0][0];
+        const endCell: Cell = cellMatrix[numberOfColumns - 1][numberOfRows - 1];
+        const cells: Cell[] = cellMatrix.flat();
+        return new Grid(cells, startCell, endCell);
     }
 
-    private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
+    private createCellMatrix(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
         //TODO: vinkel och startpunkt borde vara input-parameter
         const halfDiagonal: number = numberOfColumns * cellWidth * Math.SQRT2 / 2;
         const insertionPoint: Coordinate = new Coordinate(halfDiagonal + cellWidth, cellWidth);
         const angle: number = 45;
 
-        let stepDirectionToFirstCellCenter: Vector = new Vector(cellWidth/2, cellWidth/2);
-        
+        let stepDirectionToFirstCellCenter: Vector = new Vector(cellWidth / 2, cellWidth / 2);
+
         stepDirectionToFirstCellCenter = stepDirectionToFirstCellCenter.newRotatedVector(angle);
-        const firstCellCenter: Coordinate =insertionPoint.newRelativeCoordinate(stepDirectionToFirstCellCenter, 1);
+        const firstCellCenter: Coordinate = insertionPoint.newRelativeCoordinate(stepDirectionToFirstCellCenter, 1);
 
         const defaultXStepDirection: Vector = new Vector(cellWidth, 0);
         const defaultYStepDirection: Vector = new Vector(0, cellWidth);
-        const rotatedXStepDirection: Vector = defaultXStepDirection.newRotatedVector(angle);        
+        const rotatedXStepDirection: Vector = defaultXStepDirection.newRotatedVector(angle);
         const rotatedYStepDirection: Vector = defaultYStepDirection.newRotatedVector(angle);
         const createRotatedSquareCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', angle);
@@ -39,16 +40,21 @@ export class DiagonalSquareVariantFactory extends GridFactory {
             const columnStartCenter: Coordinate =
                 firstCellCenter.newRelativeCoordinate(rotatedXStepDirection, columnIndex);
             const cellSequence: Cell[] =
-            this.createSequenceOfCells(columnStartCenter, rotatedYStepDirection, numberOfRows, createRotatedSquareCell);
+                this.createSequenceOfCells(
+                    columnStartCenter,
+                    rotatedYStepDirection,
+                    numberOfRows,
+                    createRotatedSquareCell
+                );
             cellColumns.push(cellSequence);
         }
 
         return cellColumns;
     }
 
-    private interconnectCellsInGrid(grid: Cell[][]): void {
-        this.interConnectCellsInRows(grid);
-        this.interConnectCellsInColumns(grid);
+    private establishNeighbourRelationsInMatrix(grid: Cell[][]): void {
+        this.establishNeighbourRelationsInRows(grid);
+        this.establishNeighbourRelationsInColumns(grid);
     }
 
 

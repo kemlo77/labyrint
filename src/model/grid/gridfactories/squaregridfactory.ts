@@ -10,14 +10,15 @@ import { GridFactory } from './gridfactory';
 export class SquareGridFactory extends GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
-        const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
-        this.interconnectCellsInGrid(cellGrid);
-        const startCell: Cell = cellGrid[0][0];
-        const endCell: Cell = cellGrid[numberOfColumns - 1][numberOfRows - 1];
-        return new Grid(cellGrid, startCell, endCell);
+        const cellMatrix: Cell[][] = this.createCellMatrix(numberOfColumns, numberOfRows, cellWidth);
+        this.establishNeighbourRelationsInMatrix(cellMatrix);
+        const startCell: Cell = cellMatrix[0][0];
+        const endCell: Cell = cellMatrix[numberOfColumns - 1][numberOfRows - 1];
+        const cells: Cell[] = cellMatrix.flat();
+        return new Grid(cells, startCell, endCell);
     }
 
-    private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
+    private createCellMatrix(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
         //TODO: Should have a coordinate as input parameter do define where firstCellCenter should be
         const startOffsetX: number = cellWidth;
         const startOffsetY: number = cellWidth;
@@ -30,10 +31,10 @@ export class SquareGridFactory extends GridFactory {
 
         const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
-            const columnStartCenter: Coordinate = 
+            const columnStartCenter: Coordinate =
                 firstCellCenter.newRelativeCoordinate(xDirectionStepVector, columnIndex);
-            
-            const cellSequence: Cell[] = 
+
+            const cellSequence: Cell[] =
                 this.createSequenceOfCells(columnStartCenter, yDirectionStepVector, numberOfRows, createSquareCell);
             cellColumns.push(cellSequence);
         }
@@ -41,9 +42,9 @@ export class SquareGridFactory extends GridFactory {
         return cellColumns;
     }
 
-    private interconnectCellsInGrid(grid: Cell[][]): void {
-        this.interConnectCellsInRows(grid);
-        this.interConnectCellsInColumns(grid);
+    private establishNeighbourRelationsInMatrix(grid: Cell[][]): void {
+        this.establishNeighbourRelationsInRows(grid);
+        this.establishNeighbourRelationsInColumns(grid);
     }
 
 }

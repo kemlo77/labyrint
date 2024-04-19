@@ -9,15 +9,16 @@ import { CellAction, CellTest } from '../cell/celltypealiases';
 export class HexagonalGridFactory extends GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
-        const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
-        this.interconnectCellsInGrid(cellGrid, cellWidth);
-        const startCell: Cell = cellGrid[0][0];
+        const cellMatrix: Cell[][] = this.createCellMatrix(numberOfColumns, numberOfRows, cellWidth);
+        this.establishNeighbourRelationsInMatrix(cellMatrix, cellWidth);
+        const startCell: Cell = cellMatrix[0][0];
         startCell.visited = true;
-        const endCell: Cell = cellGrid[numberOfColumns - 1][numberOfRows - 1];
-        return new Grid(cellGrid, startCell, endCell);
+        const endCell: Cell = cellMatrix[numberOfColumns - 1][numberOfRows - 1];
+        const cells: Cell[] = cellMatrix.flat();
+        return new Grid(cells, startCell, endCell);
     }
 
-    private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
+    private createCellMatrix(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
         const cellHeight: number = cellWidth * Math.sqrt(3) / 2;
         const rowOffset: number = cellWidth / 2;
 
@@ -39,12 +40,12 @@ export class HexagonalGridFactory extends GridFactory {
         return grid;
     }
 
-    private interconnectCellsInGrid(grid: Cell[][], cellWidth: number): void {
-        this.connectCellsDiagonally(grid, cellWidth);
-        this.interConnectCellsInRows(grid);
+    private establishNeighbourRelationsInMatrix(grid: Cell[][], cellWidth: number): void {
+        this.establishNeighbourRelationsDiagonally(grid, cellWidth);
+        this.establishNeighbourRelationsInRows(grid);
     }
 
-    private connectCellsDiagonally(grid: Cell[][], cellWidth: number): void {
+    private establishNeighbourRelationsDiagonally(grid: Cell[][], cellWidth: number): void {
         const transposedGrid: Cell[][] = MatrixOperations.transpose<Cell>(grid);
         for (let rowIndex: number = 0; rowIndex < transposedGrid.length; rowIndex++) {
             for (let columnIndex: number = 0; columnIndex < transposedGrid[rowIndex].length; columnIndex++) {

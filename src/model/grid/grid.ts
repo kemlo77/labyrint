@@ -1,14 +1,13 @@
-import { MatrixOperations } from '../../service/matrixoperations';
 import { Cell } from './cell/cell';
 
 export class Grid {
 
-    private _cellMatrix: Cell[][];
+    private _cells: Cell[];
     private _startCell: Cell;
     private _endCell: Cell;
 
-    constructor(interconnectedCells: Cell[][], startCell: Cell, endCell: Cell) {
-        this._cellMatrix = interconnectedCells;
+    constructor(interconnectedCells: Cell[], startCell: Cell, endCell: Cell) {
+        this._cells = interconnectedCells;
         this._startCell = startCell;
         this._startCell.visited = true;
         this._endCell = endCell;
@@ -23,7 +22,7 @@ export class Grid {
     }
 
     get allCells(): Cell[] {
-        return this._cellMatrix.flat().filter(cell => cell.neighbours.length > 0);
+        return [...this._cells];
     }
 
     get allDisconnectedCells(): Cell[] {
@@ -61,11 +60,5 @@ export class Grid {
                 cell.removeConnectionsToCell();
             });
     }
-
-    public printNeighboursPerCell(): void {
-        const transposedMatrix: Cell[][] = MatrixOperations.transpose<Cell>(this._cellMatrix);
-        MatrixOperations.printMatrix<Cell>(transposedMatrix, cell => cell.neighbours.length);
-    }
-
 
 }

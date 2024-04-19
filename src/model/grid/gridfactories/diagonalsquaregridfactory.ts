@@ -15,9 +15,10 @@ export class DiagonalSquareGridFactory extends GridFactory {
         const bottomLeftCell: Cell = cellGrid[0][cellGrid[0].length - 1];
         const bottomRightCell: Cell = cellGrid[numberOfColumns - 1][2 * (numberOfRows - 1)];
 
-        const topRowCells: Cell[] = MatrixOperations.transpose(cellGrid)[0];
-        const bottomRowCells: Cell[] = MatrixOperations
-            .transpose(cellGrid)[MatrixOperations.transpose(cellGrid).length - 1];
+
+        const transposedGrid: Cell[][] = MatrixOperations.transpose(cellGrid);
+        const topRowCells: Cell[] = transposedGrid[0];
+        const bottomRowCells: Cell[] = transposedGrid[transposedGrid.length - 1];
         const leftRowCells: Cell[] = cellGrid[0].filter((cell, index) => index % 2 === 0);
         const rightRowCells: Cell[] = cellGrid[cellGrid.length - 1].filter((cell, index) => index % 2 === 0);
 
@@ -37,8 +38,8 @@ export class DiagonalSquareGridFactory extends GridFactory {
         const newBottomRightCell: Cell = this.createAndAttachTopRightCornerTriangle(bottomRightCell, cornerCellWidth);
         cellGrid.push([newTopLeftCell, newTopRightCell, newBottomLeftCell, newBottomRightCell]);
 
-
-        return new Grid(cellGrid, newTopLeftCell, newBottomRightCell);
+        const cells: Cell[] = cellGrid.flat();
+        return new Grid(cells, newTopLeftCell, newBottomRightCell);
     }
 
     private createAndAttachTopLeftCornerTriangle(existingCell: Cell, cellWidth: number): Cell {

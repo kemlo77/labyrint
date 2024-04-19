@@ -89,6 +89,13 @@ export class Cell {
         this._connectedNeighbours = this._connectedNeighbours.filter(cell => cell !== toCell);
     }
 
+    hasCommonBorderWith(cell: Cell): boolean {
+        return this.borders.some(border => {
+            return cell.borders.some(otherBorder => {
+                return border.midpoint.distanceTo(otherBorder.midpoint) < 0.1;
+            });
+        });
+    }
 
     get corners(): Coordinate[] {
         return [... this._corners];

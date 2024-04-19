@@ -8,18 +8,18 @@ import { GridFactory } from './gridfactory';
 export class TriangularGridFactory extends GridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
-        const cellMatrix: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
-        this.interconnectGrid(cellMatrix);
+        const cellMatrix: Cell[][] = this.createCellMatrix(numberOfColumns, numberOfRows, cellWidth);
+        this.establishNeighbourRelationsInMatrix(cellMatrix);
 
         const startCell: Cell = cellMatrix[0][0];
         startCell.visited = true;
         const endCell: Cell = cellMatrix[numberOfColumns - 1][numberOfRows - 1];
-
-        return new Grid(cellMatrix, startCell, endCell);
+        const cells: Cell[] = cellMatrix.flat();
+        return new Grid(cells, startCell, endCell);
     }
 
 
-    private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
+    private createCellMatrix(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
         const cellHeight: number = Math.sqrt(3) / 2 * cellWidth;
 
         const grid: Cell[][] = [];
@@ -28,23 +28,19 @@ export class TriangularGridFactory extends GridFactory {
             for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
                 const xCoordinate: number = cellWidth * (1 + columnIndex / 2);
 
-                if (this.cellHasPointyTop(columnIndex, rowIndex)) {
-                    const yCoordinate: number = cellHeight * (1 + rowIndex);
-                    const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'equilateral-triangular', 0));
-                } else {
+                if (this.cellHasFlatTop(columnIndex, rowIndex)) {
                     const yCoordinate: number = cellHeight * (4 / 3 + rowIndex);
                     const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
                     rowOfCells.push(CellFactory.createCell(center, cellWidth, 'equilateral-triangular', 180));
+                } else {
+                    const yCoordinate: number = cellHeight * (1 + rowIndex);
+                    const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
+                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'equilateral-triangular', 0));
                 }
             }
             grid.push(rowOfCells);
         }
         return grid;
-    }
-
-    private cellHasPointyTop(columnIndex: number, rowIndex: number): boolean {
-        return !this.cellHasFlatTop(columnIndex, rowIndex);
     }
 
     private cellHasFlatTop(columnIndex: number, rowIndex: number): boolean {
@@ -53,24 +49,27 @@ export class TriangularGridFactory extends GridFactory {
         return (evenRowIndex && evenColumnIndex) || (!evenRowIndex && !evenColumnIndex);
     }
 
-    private interconnectGrid(grid: Cell[][]): void {
-        this.interConnectCellsInRows(grid);
-        this.interconnectSomeCellsInColumns(grid);
+    private establishNeighbourRelationsInMatrix(grid: Cell[][]): void {
+        this.establishNeighbourRelationsInRows(grid);
+        this.establishSomeNeighbourRelationsInColumns(grid);
     }
 
 
-    private interconnectSomeCellsInColumns(grid: Cell[][]): void {
+    private establishSomeNeighbourRelationsInColumns(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
 
-                const currentCell: Cell = grid[columnIndex][rowIndex];
-                const notOnLastRow: boolean = rowIndex !== grid[columnIndex].length - 1;
-                const cellHasFlatTop: boolean = this.cellHasFlatTop(columnIndex, rowIndex);
+                const onLastRow: boolean = rowIndex === grid[columnIndex].length - 1;
+                if (onLastRow) {
+                    continue;
+                }
 
-                if (notOnLastRow && cellHasFlatTop) {
-                    const neighbourCellBelow: Cell = grid[columnIndex][rowIndex + 1];
+                const currentCell: Cell = grid[columnIndex][rowIndex];
+                const neighbourCellBelow: Cell = grid[columnIndex][rowIndex + 1];
+                if (currentCell.hasCommonBorderWith(neighbourCellBelow)) {
                     currentCell.establishNeighbourRelationTo(neighbourCellBelow);
                 }
+
             }
         }
     }

@@ -11,7 +11,8 @@ export class OctagonalGridFactory extends GridFactory {
         this.connectOctagonalCellsToNeighbourCells(cellGrid);
         const startCell: Cell = cellGrid[0][0];
         const endCell: Cell = cellGrid[numberOfColumns - 1][2 * (numberOfRows - 1)];
-        return new Grid(cellGrid, startCell, endCell);
+        const cells: Cell[] = cellGrid.flat();
+        return new Grid(cells, startCell, endCell);
     }
 
     private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {

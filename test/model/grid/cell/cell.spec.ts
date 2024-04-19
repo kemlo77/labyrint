@@ -127,4 +127,12 @@ describe('Cell', () => {
         expect(squareCell3.closedBorders.length).to.equal(3);
     });
 
+    it('should have common border with neighbour', () => {
+        expect(squareCell1.hasCommonBorderWith(squareCell2)).to.equal(true);
+    });
+
+    it('should not have common border with non-neighbour', () => {
+        expect(squareCell1.hasCommonBorderWith(squareCell3)).to.equal(false);
+    });
+
 });

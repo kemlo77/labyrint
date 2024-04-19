@@ -16,4 +16,9 @@ describe('Segment', () => {
         expect(segment.midpoint.y).to.equal(4);
     });
 
+    it('should return an accurate length', () => {
+        const segment: Segment = new Segment(new Coordinate(0, 0), new Coordinate(3, 4));
+        expect(segment.length).to.equal(5);
+    });
+
 });

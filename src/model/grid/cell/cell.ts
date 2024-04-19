@@ -92,9 +92,13 @@ export class Cell {
     hasCommonBorderWith(cell: Cell): boolean {
         return this.borders.some(border => {
             return cell.borders.some(otherBorder => {
-                return border.midpoint.distanceTo(otherBorder.midpoint) < 0.1;
+                return this.bordersAreAdjacent(border, otherBorder);
             });
         });
+    }
+
+    private bordersAreAdjacent(border: Segment, otherBorder: Segment): boolean {
+        return border.midpoint.distanceTo(otherBorder.midpoint) < 0.1;
     }
 
     get corners(): Coordinate[] {
@@ -123,9 +127,7 @@ export class Cell {
             let borderIsOpen: boolean = false;
 
             for (const neighbourBorder of allConnectedNeighbourBorders) {
-                const distance: number = border.midpoint.distanceTo(neighbourBorder.midpoint);
-                const borderIsCommonWithConnectedNeighbour: boolean = distance < 0.1;
-                if (borderIsCommonWithConnectedNeighbour) {
+                if (this.bordersAreAdjacent(border, neighbourBorder)) {
                     borderIsOpen = true;
                     break;
                 }

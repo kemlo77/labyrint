@@ -1,4 +1,5 @@
 import { Coordinate } from '../../coordinate';
+import { Segment } from '../../segment';
 import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
@@ -8,11 +9,13 @@ import { GridFactory } from './gridfactory';
 
 export class DiagonalSquareGridFactory extends GridFactory {
 
-    createGrid(numberOfColumns: number, numberOfRows: number, diagonalWidth: number): Grid {
-        const cellWidth: number = diagonalWidth / Math.SQRT2;
+    createGrid(numberOfColumns: number, numberOfRows: number, diagonalCellWidth: number): Grid {
+        const cellWidth: number = diagonalCellWidth / Math.SQRT2;
         const cellGrid: Cell[][] = this.createTiltedSquareCellGrid(numberOfColumns, numberOfRows, cellWidth);
         this.connectTiltedSquareCellsToNeighbourCells(cellGrid);
         const topLeftCell: Cell = cellGrid[0][0];
+        const topLeftCornerCells: Cell[] = [cellGrid[0][0], cellGrid[1][0]]
+            ;
         const topRightCell: Cell = cellGrid[cellGrid.length - 1][0];
         const bottomLeftCell: Cell = cellGrid[0][cellGrid[0].length - 1];
         const bottomRightCell: Cell = cellGrid[(numberOfColumns - 1) * 2][numberOfRows - 2];
@@ -35,61 +38,48 @@ export class DiagonalSquareGridFactory extends GridFactory {
         cellGrid.unshift(newLeftColumn);
         cellGrid.push(newRightColumn);
 
-        // const cornerCellWidth: number = cellWidth / Math.SQRT2;
-        // const newTopLeftCell: Cell = this.createAndAttachTopLeftCornerTriangle(topLeftCell, cornerCellWidth);
+        const newTopLeftCell: Cell = this.createAndAttachTopLeftCornerTriangle(topLeftCornerCells);
         // const newTopRightCell: Cell = this.attachTopRightCornerTrianglex(topRightCell, cornerCellWidth);
         // const newBottomLeftCell: Cell = this.createAndAttachBottomLeftCornerTriangle(bottomLeftCell, cornerCellWidth);
         // const newBottomRightCell: Cell = this.createAndAttachTopRightCornerTriangle(bottomRightCell, cornerCellWidth);
-        // cellGrid.push([newTopLeftCell, newTopRightCell, newBottomLeftCell, newBottomRightCell]);
-        // startCell = newTopLeftCell;
+        cellGrid.push([newTopLeftCell]);
+        startCell = newTopLeftCell;
         // endCell = newBottomRightCell;
 
         const cells: Cell[] = cellGrid.flat();
         return new Grid(cells, startCell, endCell);
     }
 
-    private createAndAttachTopLeftCornerTriangle(existingCell: Cell, cellWidth: number): Cell {
-        const xOffset: number = - cellWidth * 2 / 3;
-        const yOffset: number = - cellWidth * 2 / 3;
-        const rotation: number = 0;
-        return this.generateAndAttachCornerTriangle(existingCell, cellWidth, xOffset, yOffset, rotation);
-    }
+    private createAndAttachTopLeftCornerTriangle(existingCells: Cell[]): Cell {
 
-    private attachTopRightCornerTrianglex(existingCell: Cell, cellWidth: number): Cell {
-        const xOffset: number = + cellWidth * 2 / 3;
-        const yOffset: number = - cellWidth * 2 / 3;
-        const rotation: number = 90;
-        return this.generateAndAttachCornerTriangle(existingCell, cellWidth, xOffset, yOffset, rotation);
-    }
+        const firstCellCenter: Coordinate = existingCells[0].center;
+        const existingCellsBorderLength: number = existingCells[0].borders[0].length;
 
-    private createAndAttachBottomLeftCornerTriangle(existingCell: Cell, cellWidth: number): Cell {
-        const xOffset: number = - cellWidth * 2 / 3;
-        const yOffset: number = + cellWidth * 2 / 3;
-        const rotation: number = 270;
-        return this.generateAndAttachCornerTriangle(existingCell, cellWidth, xOffset, yOffset, rotation);
-    }
+        // identify interesting corners
+        const rotatedCorners: Coordinate[] =
+            existingCells
+                .map(cell => cell.corners).flat()
+                .map(corner => corner.rotateAroundCenter(-45, firstCellCenter));
+        const leftCorners: Coordinate[] = rotatedCorners.filter(corner => corner.x < firstCellCenter.x);
+        const rotatedUpperCorner: Coordinate = leftCorners.sort((a, b) => a.y - b.y)[0];
+        const rotatedLowerCorner: Coordinate = leftCorners.sort((a, b) => b.y - a.y)[0];
+        const originalUpperCorner: Coordinate = rotatedUpperCorner.rotateAroundCenter(45, firstCellCenter);
+        const originalLowerCorner: Coordinate = rotatedLowerCorner.rotateAroundCenter(45, firstCellCenter);
 
-    private createAndAttachTopRightCornerTriangle(existingCell: Cell, cellWidth: number): Cell {
-        const xOffset: number = + cellWidth * 2 / 3;
-        const yOffset: number = + cellWidth * 2 / 3;
-        const rotation: number = 180;
-        return this.generateAndAttachCornerTriangle(existingCell, cellWidth, xOffset, yOffset, rotation);
-    }
+        //calculate other corners
+        const midPoint: Coordinate = new Segment(originalUpperCorner, originalLowerCorner).midpoint;
+        const cornerDirection: Vector = new Vector(-existingCellsBorderLength / Math.SQRT2, -existingCellsBorderLength / Math.SQRT2);
+        const corner: Coordinate = midPoint.newRelativeCoordinate(cornerDirection, 1);
 
-    private generateAndAttachCornerTriangle(
-        existingCell: Cell,
-        cellWidth: number,
-        xOffset: number,
-        yOffset: number,
-        rotation: number
-    ): Cell {
-        const triangleCenter: Coordinate =
-            new Coordinate(existingCell.center.x + xOffset, existingCell.center.y + yOffset);
-        const newCell: Cell = CellFactory.createCell(triangleCenter, cellWidth, 'isosceles-right-triangular', rotation);
-        newCell.establishNeighbourRelationTo(existingCell);
-        return newCell;
-    }
+        const center: Coordinate = midPoint.newRelativeCoordinate(cornerDirection, 1 / 3);
 
+        const newTriangle: Cell = new Cell(center, [originalUpperCorner, corner, originalLowerCorner, midPoint]);
+        newTriangle.establishNeighbourRelationTo(existingCells[0]);
+        newTriangle.establishNeighbourRelationTo(existingCells[1]);
+
+        return newTriangle;
+
+    }
 
 
     private createAndAttachTopRowTriangles(cellsConnectingTo: Cell[], cellWidth: number): Cell[] {

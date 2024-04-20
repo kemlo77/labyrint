@@ -13,13 +13,13 @@ export class DiagonalSquareGridFactory extends GridFactory {
         const cellWidth: number = diagonalCellWidth / Math.SQRT2;
         const cellGrid: Cell[][] = this.createTiltedSquareCellGrid(numberOfColumns, numberOfRows, cellWidth);
         this.connectTiltedSquareCellsToNeighbourCells(cellGrid);
-        const topLeftCell: Cell = cellGrid[0][0];
-        const topLeftCornerCells: Cell[] = [cellGrid[0][0], cellGrid[1][0]]
-            ;
+        const topLeftCell1: Cell = cellGrid[0][0];
+        const topLeftCell2: Cell = cellGrid[1][0];
+        ;
         const topRightCell: Cell = cellGrid[cellGrid.length - 1][0];
         const bottomLeftCell: Cell = cellGrid[0][cellGrid[0].length - 1];
         const bottomRightCell: Cell = cellGrid[(numberOfColumns - 1) * 2][numberOfRows - 2];
-        let startCell: Cell = topLeftCell;
+        let startCell: Cell = topLeftCell1;
         let endCell: Cell = bottomRightCell;
 
 
@@ -38,7 +38,7 @@ export class DiagonalSquareGridFactory extends GridFactory {
         cellGrid.unshift(newLeftColumn);
         cellGrid.push(newRightColumn);
 
-        const newTopLeftCell: Cell = this.createAndAttachTopLeftCornerTriangle(topLeftCornerCells);
+        const newTopLeftCell: Cell = this.createAndAttachTopLeftCornerTriangle(topLeftCell1, topLeftCell2);
         // const newTopRightCell: Cell = this.attachTopRightCornerTrianglex(topRightCell, cornerCellWidth);
         // const newBottomLeftCell: Cell = this.createAndAttachBottomLeftCornerTriangle(bottomLeftCell, cornerCellWidth);
         // const newBottomRightCell: Cell = this.createAndAttachTopRightCornerTriangle(bottomRightCell, cornerCellWidth);
@@ -50,35 +50,21 @@ export class DiagonalSquareGridFactory extends GridFactory {
         return new Grid(cells, startCell, endCell);
     }
 
-    private createAndAttachTopLeftCornerTriangle(existingCells: Cell[]): Cell {
+    private createAndAttachTopLeftCornerTriangle(firstCell: Cell, secondCell: Cell): Cell {
 
-        const firstCellCenter: Coordinate = existingCells[0].center;
-        const existingCellsBorderLength: number = existingCells[0].borders[0].length;
+        const commonCorners: Coordinate[] = firstCell.commonCornersWith(secondCell);
+        const insertionCorner: Coordinate =
+            commonCorners[0].x < commonCorners[1].x ? commonCorners[0] : commonCorners[1];
+        const newCellWidth: number = firstCell.borders[0].length * Math.SQRT2;
 
-        // identify interesting corners
-        const rotatedCorners: Coordinate[] =
-            existingCells
-                .map(cell => cell.corners).flat()
-                .map(corner => corner.rotateAroundCenter(-45, firstCellCenter));
-        const leftCorners: Coordinate[] = rotatedCorners.filter(corner => corner.x < firstCellCenter.x);
-        const rotatedUpperCorner: Coordinate = leftCorners.sort((a, b) => a.y - b.y)[0];
-        const rotatedLowerCorner: Coordinate = leftCorners.sort((a, b) => b.y - a.y)[0];
-        const originalUpperCorner: Coordinate = rotatedUpperCorner.rotateAroundCenter(45, firstCellCenter);
-        const originalLowerCorner: Coordinate = rotatedLowerCorner.rotateAroundCenter(45, firstCellCenter);
+        const cornerDirection: Vector = new Vector(-newCellWidth / 2, -newCellWidth / 2);
+        const cellCenter: Coordinate = insertionCorner.newRelativeCoordinate(cornerDirection, 1 / 3);
 
-        //calculate other corners
-        const midPoint: Coordinate = new Segment(originalUpperCorner, originalLowerCorner).midpoint;
-        const cornerDirection: Vector = new Vector(-existingCellsBorderLength / Math.SQRT2, -existingCellsBorderLength / Math.SQRT2);
-        const corner: Coordinate = midPoint.newRelativeCoordinate(cornerDirection, 1);
-
-        const center: Coordinate = midPoint.newRelativeCoordinate(cornerDirection, 1 / 3);
-
-        const newTriangle: Cell = new Cell(center, [originalUpperCorner, corner, originalLowerCorner, midPoint]);
-        newTriangle.establishNeighbourRelationTo(existingCells[0]);
-        newTriangle.establishNeighbourRelationTo(existingCells[1]);
-
-        return newTriangle;
-
+        const newCell: Cell =
+            CellFactory.createCell(cellCenter, newCellWidth, 'isosceles-right-triangular-with-split-hypotenuse');
+        newCell.establishNeighbourRelationTo(firstCell);
+        newCell.establishNeighbourRelationTo(secondCell);
+        return newCell;
     }
 
 

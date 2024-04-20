@@ -26,6 +26,9 @@ export class CellFactory {
         if (type === 'isosceles-right-triangular') {
             return CellFactory.createCornersForIsoscelesRightTriangle(center, width);
         }
+        if (type === 'isosceles-right-triangular-with-split-hypotenuse') {
+            return CellFactory.createCornersForIsoscelesRightTriangleSplitHypotenuse(center, width);
+        }
         if (type === 'square') {
             return CellFactory.createCornersForSquare(center, width);
         }
@@ -60,6 +63,19 @@ export class CellFactory {
         const rightCorner: Coordinate = new Coordinate(center.x + 2 * thirdWidth, center.y - thirdHeight);
         const lowerCorner: Coordinate = new Coordinate(center.x - thirdHeight, center.y - thirdHeight);
         return [rightCorner, upperCorner, lowerCorner];
+    }
+
+    private static createCornersForIsoscelesRightTriangleSplitHypotenuse(
+        center: Coordinate,
+        width: number
+    ): Coordinate[] {
+        const thirdWidth: number = width / 3;
+        const thirdHeight: number = width / 3;
+        const upperCorner: Coordinate = new Coordinate(center.x - thirdWidth, center.y + 2 * thirdHeight);
+        const midHypotenuse: Coordinate = new Coordinate(center.x + thirdWidth / 2, center.y + thirdHeight / 2);
+        const rightCorner: Coordinate = new Coordinate(center.x + 2 * thirdWidth, center.y - thirdHeight);
+        const lowerCorner: Coordinate = new Coordinate(center.x - thirdHeight, center.y - thirdHeight);
+        return [rightCorner, midHypotenuse, upperCorner, lowerCorner];
     }
 
     private static createCornersForSquare(center: Coordinate, width: number): Coordinate[] {

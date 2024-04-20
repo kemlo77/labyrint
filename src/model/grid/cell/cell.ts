@@ -97,6 +97,18 @@ export class Cell {
         });
     }
 
+    commonCornersWith(cell: Cell): Coordinate[] {
+        const commonCorners: Coordinate[] = [];
+        for (const corner of this._corners) {
+            for (const otherCorner of cell.corners) {
+                if (corner.distanceTo(otherCorner) < 0.1) {
+                    commonCorners.push(corner);
+                }
+            }
+        }
+        return commonCorners;
+    }
+
     private bordersAreAdjacent(border: Segment, otherBorder: Segment): boolean {
         return border.midpoint.distanceTo(otherBorder.midpoint) < 0.1;
     }

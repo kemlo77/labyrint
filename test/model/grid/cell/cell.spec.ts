@@ -135,4 +135,14 @@ describe('Cell', () => {
         expect(squareCell1.hasCommonBorderWith(squareCell3)).to.equal(false);
     });
 
+    it('should have common corners with neighbour', () => {
+        const commonCorners: Coordinate[] = squareCell1.commonCornersWith(squareCell2);
+        expect(commonCorners.length).to.equal(2);
+    });
+
+    it('should not have common corners with non-neighbour', () => {
+        const commonCorners: Coordinate[] = squareCell1.commonCornersWith(squareCell3);
+        expect(commonCorners.length).to.equal(0);
+    });
+
 });

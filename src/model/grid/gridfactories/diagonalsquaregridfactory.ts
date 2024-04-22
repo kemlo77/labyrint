@@ -1,5 +1,4 @@
 import { Coordinate } from '../../coordinate';
-import { Segment } from '../../segment';
 import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
@@ -9,18 +8,24 @@ import { GridFactory } from './gridfactory';
 
 export class DiagonalSquareGridFactory extends GridFactory {
 
-    createGrid(numberOfColumns: number, numberOfRows: number, diagonalCellWidth: number): Grid {
+    createGrid(numberOfColumns: number, numberOfRows: number, diagonalCellWidth: number,
+        insertionPoint: Coordinate): Grid {
         const cellWidth: number = diagonalCellWidth / Math.SQRT2;
-        const cellGrid: Cell[][] = this.createTiltedSquareCellGrid(numberOfColumns, numberOfRows, cellWidth);
+        const cellGrid: Cell[][] =
+            this.createTiltedSquareCellGrid(numberOfColumns, numberOfRows, cellWidth, insertionPoint);
         this.connectTiltedSquareCellsToNeighbourCells(cellGrid);
+
         const topLeftCell1: Cell = cellGrid[0][0];
         const topLeftCell2: Cell = cellGrid[1][0];
-        ;
-        const topRightCell: Cell = cellGrid[cellGrid.length - 1][0];
-        const bottomLeftCell: Cell = cellGrid[0][cellGrid[0].length - 1];
-        const bottomRightCell: Cell = cellGrid[(numberOfColumns - 1) * 2][numberOfRows - 2];
-        let startCell: Cell = topLeftCell1;
-        let endCell: Cell = bottomRightCell;
+
+        const topRightCell1: Cell = cellGrid[cellGrid.length - 2][0];
+        const topRightCell2: Cell = cellGrid[cellGrid.length - 1][0];
+
+        const bottomLeftCell1: Cell = cellGrid[0][cellGrid[0].length - 1];
+        const bottomLeftCell2: Cell = cellGrid[1][cellGrid[1].length - 1];
+
+        const bottomRightCell1: Cell = cellGrid[cellGrid.length - 2][cellGrid[cellGrid.length - 2].length - 1];
+        const bottomRightCell2: Cell = cellGrid[cellGrid.length - 1][cellGrid[cellGrid.length - 1].length - 1];
 
 
         const topRowCells: Cell[] = cellGrid.map(row => row[0]).filter((cell, index) => index % 2 === 1);
@@ -29,114 +34,36 @@ export class DiagonalSquareGridFactory extends GridFactory {
         const leftColumnCells: Cell[] = cellGrid[0];
         const rightColumnCells: Cell[] = cellGrid[cellGrid.length - 1];
 
-        const newTopRow: Cell[] = this.createAndAttachTopRowTriangles(topRowCells, cellWidth);
-        const newBottomRow: Cell[] = this.createAndAttachBottomRowTriangles(bottomRowCells, cellWidth);
-        const newLeftColumn: Cell[] = this.createAndAttachLeftRowTriangles(leftColumnCells, cellWidth);
-        const newRightColumn: Cell[] = this.createAndAttachRightRowTriangles(rightColumnCells, cellWidth);
+        const newTopRow: Cell[] = this.createAndAttachTopRowTriangles(topRowCells);
+        const newBottomRow: Cell[] = this.createAndAttachBottomRowTriangles(bottomRowCells);
+        const newLeftColumn: Cell[] = this.createAndAttachLeftRowTriangles(leftColumnCells);
+        const newRightColumn: Cell[] = this.createAndAttachRightRowTriangles(rightColumnCells);
         cellGrid.push(newTopRow);
         cellGrid.push(newBottomRow);
         cellGrid.unshift(newLeftColumn);
         cellGrid.push(newRightColumn);
 
         const newTopLeftCell: Cell = this.createAndAttachTopLeftCornerTriangle(topLeftCell1, topLeftCell2);
-        // const newTopRightCell: Cell = this.attachTopRightCornerTrianglex(topRightCell, cornerCellWidth);
-        // const newBottomLeftCell: Cell = this.createAndAttachBottomLeftCornerTriangle(bottomLeftCell, cornerCellWidth);
-        // const newBottomRightCell: Cell = this.createAndAttachTopRightCornerTriangle(bottomRightCell, cornerCellWidth);
-        cellGrid.push([newTopLeftCell]);
-        startCell = newTopLeftCell;
-        // endCell = newBottomRightCell;
+        const newTopRightCell: Cell = this.createAndAttachTopRightCornerTriangle(topRightCell1, topRightCell2);
+        const newBottomLeftCell: Cell = this.createAndAttachBottomLeftCornerTriangle(bottomLeftCell1, bottomLeftCell2);
+        const newBottomRightCell: Cell =
+            this.createAndAttachBottomRightCornerTriangle(bottomRightCell1, bottomRightCell2);
+        cellGrid.push([newTopLeftCell, newTopRightCell, newBottomLeftCell, newBottomRightCell]);
+
+        const startCell: Cell = newTopLeftCell;
+        const endCell: Cell = newBottomRightCell;
 
         const cells: Cell[] = cellGrid.flat();
         return new Grid(cells, startCell, endCell);
     }
 
-    private createAndAttachTopLeftCornerTriangle(firstCell: Cell, secondCell: Cell): Cell {
-
-        const commonCorners: Coordinate[] = firstCell.commonCornersWith(secondCell);
-        const insertionCorner: Coordinate =
-            commonCorners[0].x < commonCorners[1].x ? commonCorners[0] : commonCorners[1];
-        const newCellWidth: number = firstCell.borders[0].length * Math.SQRT2;
-
-        const cornerDirection: Vector = new Vector(-newCellWidth / 2, -newCellWidth / 2);
-        const cellCenter: Coordinate = insertionCorner.newRelativeCoordinate(cornerDirection, 1 / 3);
-
-        const newCell: Cell =
-            CellFactory.createCell(cellCenter, newCellWidth, 'isosceles-right-triangular-with-split-hypotenuse');
-        newCell.establishNeighbourRelationTo(firstCell);
-        newCell.establishNeighbourRelationTo(secondCell);
-        return newCell;
-    }
-
-
-    private createAndAttachTopRowTriangles(cellsConnectingTo: Cell[], cellWidth: number): Cell[] {
-        const hypotenuseLength: number = cellWidth * Math.SQRT2;
-        const xOffset: number = hypotenuseLength / 2;
-        const yOffset: number = - hypotenuseLength / 3;
-        const rotation: number = 225;
-        return this.generateAndAttachTriangles(cellsConnectingTo, cellWidth, xOffset, yOffset, rotation);
-    }
-
-    private createAndAttachBottomRowTriangles(cellsConnectingTo: Cell[], cellWidth: number): Cell[] {
-        const hypotenuseLength: number = cellWidth * Math.SQRT2;
-        const xOffset: number = hypotenuseLength / 2;
-        const yOffset: number = hypotenuseLength / 3;
-        const rotation: number = 45;
-
-        return this.generateAndAttachTriangles(cellsConnectingTo, cellWidth, xOffset, yOffset, rotation);
-    }
-
-    private createAndAttachLeftRowTriangles(cellsConnectingTo: Cell[], cellWidth: number): Cell[] {
-        const hypotenuseLength: number = cellWidth * Math.SQRT2;
-        const xOffset: number = - hypotenuseLength / 3;
-        const yOffset: number = hypotenuseLength / 2;
-        const rotation: number = 135;
-
-        return this.generateAndAttachTriangles(cellsConnectingTo, cellWidth, xOffset, yOffset, rotation);
-    }
-
-    private createAndAttachRightRowTriangles(cellsConnectingTo: Cell[], cellWidth: number): Cell[] {
-        const hypotenuseLength: number = cellWidth * Math.SQRT2;
-        const xOffset: number = hypotenuseLength / 3;
-        const yOffset: number = hypotenuseLength / 2;
-        const rotation: number = 315;
-
-        return this.generateAndAttachTriangles(cellsConnectingTo, cellWidth, xOffset, yOffset, rotation);
-    }
-
-    private generateAndAttachTriangles(
-        cellsConnectingTo: Cell[],
-        triangleCellWidth: number,
-        xOffset: number,
-        yOffset: number,
-        rotation: number
-    ): Cell[] {
-        const generatedCells: Cell[] = [];
-
-        for (let i: number = 0; i < cellsConnectingTo.length; i++) {
-            const isOnLastCell: boolean = i === cellsConnectingTo.length - 1;
-            if (isOnLastCell) {
-                continue;
-            }
-            const cell1: Cell = cellsConnectingTo[i];
-            const cell2: Cell = cellsConnectingTo[i + 1];
-            const triangleCenter: Coordinate = new Coordinate(cell1.center.x + xOffset, cell1.center.y + yOffset);
-            const newCell: Cell =
-                CellFactory.createCell(triangleCenter, triangleCellWidth, 'isosceles-right-triangular', rotation);
-            newCell.establishNeighbourRelationTo(cell1);
-            newCell.establishNeighbourRelationTo(cell2);
-            generatedCells.push(newCell);
-        }
-        return generatedCells;
-    }
-
-
-
-    private createTiltedSquareCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
+    private createTiltedSquareCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number,
+        insertionPoint: Coordinate): Cell[][] {
 
         const squareDiagonalLength: number = cellWidth * Math.SQRT2;
-        const startOffsetX: number = squareDiagonalLength;
-        const startOffsetY: number = squareDiagonalLength;
-        const firstCellCenter: Coordinate = new Coordinate(startOffsetX, startOffsetY);
+
+        const firstCellCenter: Coordinate =
+            new Coordinate(insertionPoint.x + squareDiagonalLength / 2, insertionPoint.y + squareDiagonalLength / 2);
         const xDirectionStep: Vector = new Vector(squareDiagonalLength / 2, 0);
         const yDirectionStep: Vector = new Vector(0, squareDiagonalLength);
         const oddColumnExtraStep: Vector = new Vector(0, squareDiagonalLength / 2);
@@ -191,18 +118,121 @@ export class DiagonalSquareGridFactory extends GridFactory {
                 if (notOnTheFirstRow) {
                     const leftUpperCell: Cell = grid[columnIndex - 1][rowIndex - 1];
                     const rightUpperCell: Cell = grid[columnIndex + 1][rowIndex - 1];
-
-
-
                     currentCell.establishNeighbourRelationTo(leftUpperCell);
                     currentCell.establishNeighbourRelationTo(rightUpperCell);
                 }
 
             }
         }
-
-
     }
+
+
+    private createAndAttachTopLeftCornerTriangle(firstCell: Cell, secondCell: Cell): Cell {
+        const cornerDirection: Vector = Vector.upLeftUnitVector;
+        return this.createAndAttachCornerTriangle(firstCell, secondCell, cornerDirection);
+    }
+
+    private createAndAttachTopRightCornerTriangle(firstCell: Cell, secondCell: Cell): Cell {
+        const cornerDirection: Vector = Vector.upRightUnitVector;
+        return this.createAndAttachCornerTriangle(firstCell, secondCell, cornerDirection);
+    }
+
+    private createAndAttachBottomLeftCornerTriangle(firstCell: Cell, secondCell: Cell): Cell {
+        const cornerDirection: Vector = Vector.downLeftUnitVector;
+        return this.createAndAttachCornerTriangle(firstCell, secondCell, cornerDirection);
+    }
+
+    private createAndAttachBottomRightCornerTriangle(firstCell: Cell, secondCell: Cell): Cell {
+        const cornerDirection: Vector = Vector.downRightUnitVector;
+        return this.createAndAttachCornerTriangle(firstCell, secondCell, cornerDirection);
+    }
+
+    private createAndAttachCornerTriangle(firstCell: Cell, secondCell: Cell, cornerDirection: Vector): Cell {
+        const triangleDefaultDirection: Vector = Vector.upLeftUnitVector;
+        const angleDifference: number = triangleDefaultDirection.hasAngleTo(cornerDirection);
+        const commonCorners: Coordinate[] = firstCell.commonCornersWith(secondCell);
+        const insertionCorner: Coordinate =
+            this.coordinateFurthestAlongVector(cornerDirection, commonCorners[0], commonCorners[1]);
+        const oldCellsWidth: number = firstCell.borders[0].length;
+        const newCellWidth: number = oldCellsWidth * Math.SQRT2;
+
+
+        const cellCenter: Coordinate =
+            insertionCorner.newRelativeCoordinate(cornerDirection, oldCellsWidth / 3);
+
+        const newCell: Cell = CellFactory.createCell(
+            cellCenter,
+            newCellWidth,
+            'isosceles-right-triangular-with-split-hypotenuse',
+            angleDifference
+        );
+
+        newCell.establishNeighbourRelationTo(firstCell);
+        newCell.establishNeighbourRelationTo(secondCell);
+        return newCell;
+    }
+
+    private coordinateFurthestAlongVector(vector: Vector, coord1: Coordinate, coord2: Coordinate): Coordinate {
+        const distance: number = coord1.distanceTo(coord2);
+        const newCoordinateAlongVector: Coordinate = coord1.newRelativeCoordinate(vector, distance);
+        if (newCoordinateAlongVector.distanceTo(coord2) < 1) {
+            return coord2;
+        }
+        return coord1;
+    }
+
+
+
+    private createAndAttachTopRowTriangles(cellsConnectingTo: Cell[]): Cell[] {
+        const insertionDirection: Vector = Vector.upUnitVector;
+        return this.generateAndAttachTriangles(cellsConnectingTo, insertionDirection);
+    }
+
+    private createAndAttachBottomRowTriangles(cellsConnectingTo: Cell[]): Cell[] {
+        const insertionDirection: Vector = Vector.downUnitVector;
+        return this.generateAndAttachTriangles(cellsConnectingTo, insertionDirection);
+    }
+
+    private createAndAttachLeftRowTriangles(cellsConnectingTo: Cell[]): Cell[] {
+        const insertionDirection: Vector = Vector.leftUnitVector;
+        return this.generateAndAttachTriangles(cellsConnectingTo, insertionDirection);
+    }
+
+    private createAndAttachRightRowTriangles(cellsConnectingTo: Cell[]): Cell[] {
+        const insertionDirection: Vector = Vector.rightUnitVector;
+        return this.generateAndAttachTriangles(cellsConnectingTo, insertionDirection);
+    }
+
+    private generateAndAttachTriangles(cellsConnectingTo: Cell[], insertionDirection: Vector): Cell[] {
+        const triangleDefaultDirection: Vector = Vector.downRightUnitVector;
+        const angleDiff: number = triangleDefaultDirection.hasAngleTo(insertionDirection);
+        const triangleCellWidth: number = cellsConnectingTo[0].borders[0].length;
+
+        const generatedCells: Cell[] = [];
+        for (let i: number = 0; i < cellsConnectingTo.length; i++) {
+            const isOnLastCell: boolean = i === cellsConnectingTo.length - 1;
+            if (isOnLastCell) {
+                continue;
+            }
+            const cell1: Cell = cellsConnectingTo[i];
+            const cell2: Cell = cellsConnectingTo[i + 1];
+            const commonCellsCorners: Coordinate[] = cell1.commonCornersWith(cell2);
+            const insertionCorner: Coordinate = commonCellsCorners[0];
+            const distanceToTriangleCenter: number = triangleCellWidth * Math.SQRT2 / 3;
+            const triangleCenter: Coordinate =
+                insertionCorner.newRelativeCoordinate(insertionDirection, distanceToTriangleCenter);
+            const newCell: Cell =
+                CellFactory.createCell(triangleCenter, triangleCellWidth, 'isosceles-right-triangular', angleDiff);
+            newCell.establishNeighbourRelationTo(cell1);
+            newCell.establishNeighbourRelationTo(cell2);
+            generatedCells.push(newCell);
+        }
+        return generatedCells;
+    }
+
+
+
+
 
 
 

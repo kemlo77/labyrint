@@ -6,7 +6,8 @@ import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
 
 export abstract class GridFactory {
-    abstract createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid;
+    abstract createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number,
+        insertionPoint?: Coordinate): Grid;
 
     protected createSequenceOfCells(
         startCoordinate: Coordinate,

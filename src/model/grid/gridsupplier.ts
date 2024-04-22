@@ -6,6 +6,7 @@ import { DiagonalSquareGridFactory } from './gridfactories/diagonalsquaregridfac
 import { DiagonalSquareVariantFactory } from './gridfactories/diagonalsquarevariantfactory';
 import { TriangularGridFactory } from './gridfactories/triangulargridfactory';
 import { RunningBondGridFactory } from './gridfactories/runningbondgridfactory';
+import { Coordinate } from '../coordinate';
 
 export class GridSupplier {
 
@@ -14,6 +15,8 @@ export class GridSupplier {
     }
 
     static getGrid(gridType: string): Grid {
+
+        const insertionPoint: Coordinate = new Coordinate(15, 15);
 
         if (gridType === 'test-grid') {
             return new SquareGridFactory().createGrid(3, 3, 15);
@@ -40,7 +43,7 @@ export class GridSupplier {
         }
 
         if (gridType === 'diagonalSquare') {
-            return new DiagonalSquareGridFactory().createGrid(34, 21, 30);
+            return new DiagonalSquareGridFactory().createGrid(34, 21, 30, insertionPoint);
         }
 
         if (gridType === 'diagonalSquareVariant') {

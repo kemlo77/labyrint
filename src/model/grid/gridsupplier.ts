@@ -19,11 +19,11 @@ export class GridSupplier {
         const insertionPoint: Coordinate = new Coordinate(15, 15);
 
         if (gridType === 'test-grid') {
-            return new SquareGridFactory().createGrid(3, 3, 15);
+            return new SquareGridFactory().createGrid(3, 3, 15, insertionPoint);
         }
 
         if (gridType === 'square') {
-            return new SquareGridFactory().createGrid(34, 21, 30);
+            return new SquareGridFactory().createGrid(34, 21, 30, insertionPoint);
         }
 
         if (gridType === 'runningBond') {

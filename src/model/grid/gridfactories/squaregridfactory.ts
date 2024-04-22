@@ -9,8 +9,8 @@ import { GridFactory } from './gridfactory';
 
 export class SquareGridFactory extends GridFactory {
 
-    createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
-        const cellMatrix: Cell[][] = this.createCellMatrix(numberOfColumns, numberOfRows, cellWidth);
+    createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number, insertionPoint: Coordinate): Grid {
+        const cellMatrix: Cell[][] = this.createCellMatrix(numberOfColumns, numberOfRows, cellWidth, insertionPoint);
         this.establishNeighbourRelationsInMatrix(cellMatrix);
         const startCell: Cell = cellMatrix[0][0];
         const endCell: Cell = cellMatrix[numberOfColumns - 1][numberOfRows - 1];
@@ -18,11 +18,10 @@ export class SquareGridFactory extends GridFactory {
         return new Grid(cells, startCell, endCell);
     }
 
-    private createCellMatrix(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
-        //TODO: Should have a coordinate as input parameter do define where firstCellCenter should be
-        const startOffsetX: number = cellWidth;
-        const startOffsetY: number = cellWidth;
-        const firstCellCenter: Coordinate = new Coordinate(startOffsetX, startOffsetY);
+    private createCellMatrix(numberOfColumns: number, numberOfRows: number, cellWidth: number,
+        insertionPoint: Coordinate): Cell[][] {
+        const firstCellCenter: Coordinate =
+            new Coordinate(insertionPoint.x + cellWidth / 2, insertionPoint.y + cellWidth / 2);
 
         const xDirectionStepVector: Vector = new Vector(cellWidth, 0);
         const yDirectionStepVector: Vector = new Vector(0, cellWidth);

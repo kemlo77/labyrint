@@ -23,18 +23,18 @@ export class SquareGridFactory extends GridFactory {
         const firstCellCenter: Coordinate =
             new Coordinate(insertionPoint.x + cellWidth / 2, insertionPoint.y + cellWidth / 2);
 
-        const xDirectionStepVector: Vector = new Vector(cellWidth, 0);
-        const yDirectionStepVector: Vector = new Vector(0, cellWidth);
+        const columnStep: Vector = Vector.rightUnitVector.scale(cellWidth);
+        const rowStep: Vector = Vector.downUnitVector.scale(cellWidth);
         const createSquareCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square');
 
         const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
             const columnStartCenter: Coordinate =
-                firstCellCenter.newRelativeCoordinate(xDirectionStepVector, columnIndex);
+                firstCellCenter.newRelativeCoordinate(columnStep, columnIndex);
 
             const cellSequence: Cell[] =
-                this.createSequenceOfCells(columnStartCenter, yDirectionStepVector, numberOfRows, createSquareCell);
+                this.createSequenceOfCells(columnStartCenter, rowStep, numberOfRows, createSquareCell);
             cellColumns.push(cellSequence);
         }
 

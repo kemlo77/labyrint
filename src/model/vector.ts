@@ -42,6 +42,10 @@ export class Vector {
         return new Vector(1 / Math.SQRT2, 1 / Math.SQRT2);
     }
 
+    scale(factor: number): Vector {
+        return new Vector(this.x * factor, this.y * factor);
+    }
+
 
     createVectorFromCoordinates(coordinate1: Coordinate, coordinate2: Coordinate): Vector {
         return new Vector(coordinate2.x - coordinate1.x, coordinate2.y - coordinate1.y);

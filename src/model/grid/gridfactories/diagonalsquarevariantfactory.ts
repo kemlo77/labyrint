@@ -28,21 +28,21 @@ export class DiagonalSquareVariantFactory extends GridFactory {
         stepDirectionToFirstCellCenter = stepDirectionToFirstCellCenter.newRotatedVector(angle);
         const firstCellCenter: Coordinate = insertionPoint.newRelativeCoordinate(stepDirectionToFirstCellCenter, 1);
 
-        const defaultXStepDirection: Vector = new Vector(cellWidth, 0);
-        const defaultYStepDirection: Vector = new Vector(0, cellWidth);
-        const rotatedXStepDirection: Vector = defaultXStepDirection.newRotatedVector(angle);
-        const rotatedYStepDirection: Vector = defaultYStepDirection.newRotatedVector(angle);
+        const defaultColumnStep: Vector = Vector.rightUnitVector.scale(cellWidth);
+        const defaultRowStep: Vector = Vector.downUnitVector.scale(cellWidth);
+        const angleAdjustedColumnStep: Vector = defaultColumnStep.newRotatedVector(angle);
+        const angleAdjustedRowStep: Vector = defaultRowStep.newRotatedVector(angle);
         const createRotatedSquareCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', angle);
 
         const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
             const columnStartCenter: Coordinate =
-                firstCellCenter.newRelativeCoordinate(rotatedXStepDirection, columnIndex);
+                firstCellCenter.newRelativeCoordinate(angleAdjustedColumnStep, columnIndex);
             const cellSequence: Cell[] =
                 this.createSequenceOfCells(
                     columnStartCenter,
-                    rotatedYStepDirection,
+                    angleAdjustedRowStep,
                     numberOfRows,
                     createRotatedSquareCell
                 );

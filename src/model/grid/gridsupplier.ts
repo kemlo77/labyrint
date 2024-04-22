@@ -17,9 +17,10 @@ export class GridSupplier {
     static getGrid(gridType: string): Grid {
 
         const insertionPoint: Coordinate = new Coordinate(15, 15);
+        const testInsertionPoint: Coordinate = new Coordinate(0, 0);
 
         if (gridType === 'test-grid') {
-            return new SquareGridFactory().createGrid(3, 3, 15, insertionPoint);
+            return new SquareGridFactory().createGrid(3, 3, 10, testInsertionPoint);
         }
 
         if (gridType === 'square') {

@@ -13,13 +13,13 @@ describe('Grid', () => {
     });
 
     it('should have the correct start cell', () => {
-        expect(grid.startCell.center.x).to.equal(15);
-        expect(grid.startCell.center.y).to.equal(15);
+        expect(grid.startCell.center.x).to.equal(5);
+        expect(grid.startCell.center.y).to.equal(5);
     });
 
     it('should have the correct end cell', () => {
-        expect(grid.endCell.center.x).to.equal(45);
-        expect(grid.endCell.center.y).to.equal(45);
+        expect(grid.endCell.center.x).to.equal(25);
+        expect(grid.endCell.center.y).to.equal(25);
     });
 
     it('should return all cells', () => {

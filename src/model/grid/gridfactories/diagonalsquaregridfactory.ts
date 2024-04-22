@@ -60,13 +60,14 @@ export class DiagonalSquareGridFactory extends GridFactory {
     private createTiltedSquareCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number,
         insertionPoint: Coordinate): Cell[][] {
 
-        const squareDiagonalLength: number = cellWidth * Math.SQRT2;
+        const diagonalLength: number = cellWidth * Math.SQRT2;
+        const halfDiagonalLength: number = diagonalLength / 2;
 
         const firstCellCenter: Coordinate =
-            new Coordinate(insertionPoint.x + squareDiagonalLength / 2, insertionPoint.y + squareDiagonalLength / 2);
-        const xDirectionStep: Vector = new Vector(squareDiagonalLength / 2, 0);
-        const yDirectionStep: Vector = new Vector(0, squareDiagonalLength);
-        const oddColumnExtraStep: Vector = new Vector(0, squareDiagonalLength / 2);
+            new Coordinate(insertionPoint.x + diagonalLength / 2, insertionPoint.y + diagonalLength / 2);
+        const columnStep: Vector = Vector.rightUnitVector.scale(halfDiagonalLength);
+        const rowStep: Vector = Vector.downUnitVector.scale(diagonalLength);
+        const oddColumnExtraStep: Vector = Vector.downUnitVector.scale(halfDiagonalLength);
         const createSquareCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', 45);
 
@@ -75,17 +76,17 @@ export class DiagonalSquareGridFactory extends GridFactory {
         for (let columnIndex: number = 0; columnIndex < numberOfColumns * 2 - 1; columnIndex++) {
 
             const evenColumn: boolean = columnIndex % 2 === 0;
-            const columnStartPoint: Coordinate = firstCellCenter.newRelativeCoordinate(xDirectionStep, columnIndex);
+            const columnStartPoint: Coordinate = firstCellCenter.newRelativeCoordinate(columnStep, columnIndex);
 
             if (evenColumn) {
                 const oddColumnStartPoint: Coordinate = columnStartPoint.newRelativeCoordinate(oddColumnExtraStep, 1);
                 const cellSequence: Cell[] =
-                    this.createSequenceOfCells(oddColumnStartPoint, yDirectionStep, numberOfRows - 1, createSquareCell);
+                    this.createSequenceOfCells(oddColumnStartPoint, rowStep, numberOfRows - 1, createSquareCell);
                 cellColumns.push(cellSequence);
 
             } else {
                 const cellSequence: Cell[] =
-                    this.createSequenceOfCells(columnStartPoint, yDirectionStep, numberOfRows, createSquareCell);
+                    this.createSequenceOfCells(columnStartPoint, rowStep, numberOfRows, createSquareCell);
                 cellColumns.push(cellSequence);
 
             }

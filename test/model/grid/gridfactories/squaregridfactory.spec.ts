@@ -1,14 +1,16 @@
 import { expect } from 'chai';
 import { SquareGridFactory } from '../../../../src/model/grid/gridfactories/squaregridfactory';
 import { Cell } from '../../../../src/model/grid/cell/cell';
+import { Coordinate } from '../../../../src/model/coordinate';
 
 describe('SquareGridFactory', () => {
 
     let cellMatrix: Cell[][];
 
     beforeEach(() => {
+        const insertionPoint: Coordinate = new Coordinate(0, 0);
         const squaregridfactory: SquareGridFactory = new SquareGridFactory();
-        cellMatrix = squaregridfactory['createCellMatrix'](3, 3, 10);
+        cellMatrix = squaregridfactory['createCellMatrix'](3, 3, 10, insertionPoint);
         squaregridfactory['establishNeighbourRelationsInMatrix'](cellMatrix);
     });
 
@@ -20,20 +22,20 @@ describe('SquareGridFactory', () => {
 
     it('verifying top left cell', () => {
         const topLeftCell: Cell = cellMatrix[0][0];
-        expect(topLeftCell.center.x).to.equal(10);
-        expect(topLeftCell.center.y).to.equal(10);
+        expect(topLeftCell.center.x).to.equal(5);
+        expect(topLeftCell.center.y).to.equal(5);
     });
 
     it('verifying center cell', () => {
         const centerCell: Cell = cellMatrix[1][1];
-        expect(centerCell.center.x).to.equal(20);
-        expect(centerCell.center.y).to.equal(20);
+        expect(centerCell.center.x).to.equal(15);
+        expect(centerCell.center.y).to.equal(15);
     });
 
     it('verifying right center cell', () => {
-        const centerCell: Cell = cellMatrix[1][1];
-        expect(centerCell.center.x).to.equal(20);
-        expect(centerCell.center.y).to.equal(20);
+        const centerCell: Cell = cellMatrix[2][1];
+        expect(centerCell.center.x).to.equal(25);
+        expect(centerCell.center.y).to.equal(15);
     });
 
     it('totalNumberOfCells', () => {

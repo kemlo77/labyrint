@@ -4,37 +4,47 @@ import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
 import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
-import { GridFactory } from './gridfactory';
+import { FramedGridFactory } from './framedgridfactory';
+
+import { GridProperties } from './gridproperties';
 
 
-export class SquareGridFactory extends GridFactory {
+export class SquareGridFactory extends FramedGridFactory {
 
-    createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number, insertionPoint: Coordinate): Grid {
-        const cellMatrix: Cell[][] = this.createCellMatrix(numberOfColumns, numberOfRows, cellWidth, insertionPoint);
+    createGrid(gridProperties: GridProperties): Grid {
+        const cellMatrix: Cell[][] = this.createCellMatrix(gridProperties);
         this.establishNeighbourRelationsInMatrix(cellMatrix);
         const startCell: Cell = cellMatrix[0][0];
-        const endCell: Cell = cellMatrix[numberOfColumns - 1][numberOfRows - 1];
+        const endCell: Cell = cellMatrix[cellMatrix.length - 1][cellMatrix[0].length - 1];
         const cells: Cell[] = cellMatrix.flat();
         return new Grid(cells, startCell, endCell);
     }
 
-    private createCellMatrix(numberOfColumns: number, numberOfRows: number, cellWidth: number,
-        insertionPoint: Coordinate): Cell[][] {
-        const firstCellCenter: Coordinate =
-            new Coordinate(insertionPoint.x + cellWidth / 2, insertionPoint.y + cellWidth / 2);
+    private createCellMatrix(gridProperties: GridProperties): Cell[][] {
 
-        const columnStep: Vector = Vector.rightUnitVector.scale(cellWidth);
-        const rowStep: Vector = Vector.downUnitVector.scale(cellWidth);
-        const createSquareCell: CellCreator =
-            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square');
+        const cellWidth: number = gridProperties.cellWidth; //TODO: remove this line?
+
+        const stepDirectionToFirstCellCenter: Vector = new Vector(cellWidth / 2, cellWidth / 2);
+
+        const angleAdjustedStepDirectionToFirstCellCenter: Vector =
+            stepDirectionToFirstCellCenter.newRotatedVector(gridProperties.angle);
+        const firstCellCenter: Coordinate =
+            gridProperties.insertionPoint.newRelativeCoordinate(angleAdjustedStepDirectionToFirstCellCenter, 1);
+
+        const defaultColumnStep: Vector = Vector.rightUnitVector.scale(cellWidth);
+        const defaultRowStep: Vector = Vector.downUnitVector.scale(cellWidth);
+        const angleAdjustedColumnStep: Vector = defaultColumnStep.newRotatedVector(gridProperties.angle);
+        const angleAdjustedRowStep: Vector = defaultRowStep.newRotatedVector(gridProperties.angle);
+        const createRotatedSquareCell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', gridProperties.angle);
 
         const cellColumns: Cell[][] = [];
-        for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
+        for (let columnIndex: number = 0; columnIndex < gridProperties.horizontalEdgeSegments; columnIndex++) {
             const columnStartCenter: Coordinate =
-                firstCellCenter.newRelativeCoordinate(columnStep, columnIndex);
-
+                firstCellCenter.newRelativeCoordinate(angleAdjustedColumnStep, columnIndex);
             const cellSequence: Cell[] =
-                this.createSequenceOfCells(columnStartCenter, rowStep, numberOfRows, createSquareCell);
+                this.createSequenceOfCells(columnStartCenter, angleAdjustedRowStep, gridProperties.verticalEdgeSegments,
+                    createRotatedSquareCell);
             cellColumns.push(cellSequence);
         }
 

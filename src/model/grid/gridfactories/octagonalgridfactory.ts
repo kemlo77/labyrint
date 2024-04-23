@@ -2,9 +2,9 @@ import { Coordinate } from '../../coordinate';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
 import { Grid } from '../grid';
-import { GridFactory } from './gridfactory';
+import { UnframedGridFactory } from './unframedgridfactory';
 
-export class OctagonalGridFactory extends GridFactory {
+export class OctagonalGridFactory extends UnframedGridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);

@@ -3,11 +3,8 @@ import { Coordinate } from '../../coordinate';
 import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellCreator } from '../cell/celltypealiases';
-import { Grid } from '../grid';
 
 export abstract class GridFactory {
-    abstract createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number,
-        insertionPoint?: Coordinate): Grid;
 
     protected createSequenceOfCells(
         startCoordinate: Coordinate,

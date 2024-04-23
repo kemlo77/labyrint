@@ -3,10 +3,10 @@ import { HexagonalGridFactory } from './gridfactories/hexagonalgridfactory';
 import { OctagonalGridFactory } from './gridfactories/octagonalgridfactory';
 import { SquareGridFactory } from './gridfactories/squaregridfactory';
 import { DiagonalSquareGridFactory } from './gridfactories/diagonalsquaregridfactory';
-import { DiagonalSquareVariantFactory } from './gridfactories/diagonalsquarevariantfactory';
 import { TriangularGridFactory } from './gridfactories/triangulargridfactory';
 import { RunningBondGridFactory } from './gridfactories/runningbondgridfactory';
 import { Coordinate } from '../coordinate';
+import { GridProperties } from './gridfactories/gridproperties';
 
 export class GridSupplier {
 
@@ -20,15 +20,19 @@ export class GridSupplier {
         const testInsertionPoint: Coordinate = new Coordinate(0, 0);
 
         if (gridType === 'test-grid') {
-            return new SquareGridFactory().createGrid(3, 3, 10, testInsertionPoint);
+            const gridProperties: GridProperties = new GridProperties(testInsertionPoint, 3, 3, 10);
+            return new SquareGridFactory().createGrid(gridProperties);
         }
 
         if (gridType === 'square') {
-            return new SquareGridFactory().createGrid(34, 21, 30, insertionPoint);
+            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
+            return new SquareGridFactory().createGrid(gridProperties);
+
         }
 
         if (gridType === 'runningBond') {
-            return new RunningBondGridFactory().createGrid(69, 21, 15);
+            const gridProperties: GridProperties = new GridProperties(insertionPoint, 69, 21, 15);
+            return new RunningBondGridFactory().createGrid(gridProperties);
         }
 
         if (gridType === 'hexagonal') {
@@ -44,11 +48,14 @@ export class GridSupplier {
         }
 
         if (gridType === 'diagonalSquare') {
-            return new DiagonalSquareGridFactory().createGrid(34, 21, 30, insertionPoint);
+            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
+            return new DiagonalSquareGridFactory().createGrid(gridProperties);
         }
 
         if (gridType === 'diagonalSquareVariant') {
-            return new DiagonalSquareVariantFactory().createGrid(30, 30, 15);
+            const specialInsertionPoint: Coordinate = new Coordinate(30 * 15 * Math.SQRT2 / 2 + 15, 15);
+            const gridProperties: GridProperties = new GridProperties(specialInsertionPoint, 30, 30, 15, 45);
+            return new SquareGridFactory().createGrid(gridProperties);
         }
 
         throw new Error('Invalid grid type');

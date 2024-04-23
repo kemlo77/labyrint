@@ -4,13 +4,14 @@ import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
 import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
-import { GridFactory } from './gridfactory';
+import { FramedGridFactory } from './framedgridfactory';
+import { GridProperties } from './gridproperties';
 
-export class RunningBondGridFactory extends GridFactory {
+export class RunningBondGridFactory extends FramedGridFactory {
 
 
-    createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
-        const cellMatrix: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
+    createGrid(gridProperties: GridProperties): Grid {
+        const cellMatrix: Cell[][] = this.createCellGrid(gridProperties);
         this.establishNeighbourRelationsInMatrix(cellMatrix);
         const startCell: Cell = cellMatrix[0][0];
         const endCell: Cell = cellMatrix[cellMatrix.length - 1][cellMatrix[0].length - 1];
@@ -18,7 +19,13 @@ export class RunningBondGridFactory extends GridFactory {
         return new Grid(cells, startCell, endCell);
     }
 
-    private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
+    private createCellGrid(gridProperties: GridProperties): Cell[][] {
+
+        //Inline på dessa variabler?
+        const cellWidth: number = gridProperties.cellWidth;
+        const numberOfRows: number = gridProperties.verticalEdgeSegments;
+        const numberOfColumns: number = gridProperties.horizontalEdgeSegments;
+
         const startOffsetX: number = cellWidth;
         const startOffsetY: number = cellWidth;
         const cellHeight: number = cellWidth * 2;

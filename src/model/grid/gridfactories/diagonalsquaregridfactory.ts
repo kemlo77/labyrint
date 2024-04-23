@@ -4,15 +4,14 @@ import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
 import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
-import { GridFactory } from './gridfactory';
+import { FramedGridFactory } from './framedgridfactory';
+import { GridProperties } from './gridproperties';
 
-export class DiagonalSquareGridFactory extends GridFactory {
+export class DiagonalSquareGridFactory extends FramedGridFactory {
 
-    createGrid(numberOfColumns: number, numberOfRows: number, diagonalCellWidth: number,
-        insertionPoint: Coordinate): Grid {
-        const cellWidth: number = diagonalCellWidth / Math.SQRT2;
-        const cellGrid: Cell[][] =
-            this.createTiltedSquareCellGrid(numberOfColumns, numberOfRows, cellWidth, insertionPoint);
+    createGrid(gridProperties: GridProperties): Grid {
+
+        const cellGrid: Cell[][] = this.createTiltedSquareCellGrid(gridProperties);
         this.connectTiltedSquareCellsToNeighbourCells(cellGrid);
 
         const topLeftCell1: Cell = cellGrid[0][0];
@@ -57,14 +56,21 @@ export class DiagonalSquareGridFactory extends GridFactory {
         return new Grid(cells, startCell, endCell);
     }
 
-    private createTiltedSquareCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number,
-        insertionPoint: Coordinate): Cell[][] {
+    private createTiltedSquareCellGrid(gridProperties: GridProperties): Cell[][] {
 
+        //TODO: inline på dessa variabler?
+        const cellWidth: number = gridProperties.cellWidth / Math.SQRT2;
         const diagonalLength: number = cellWidth * Math.SQRT2;
         const halfDiagonalLength: number = diagonalLength / 2;
+        const numberOfColumns: number = gridProperties.horizontalEdgeSegments;
+        const numberOfRows: number = gridProperties.verticalEdgeSegments;
 
+        //TODO: skriv om med en funktion som tar in en vektor och en koordinat och returnerar en ny koordinat
         const firstCellCenter: Coordinate =
-            new Coordinate(insertionPoint.x + diagonalLength / 2, insertionPoint.y + diagonalLength / 2);
+            new Coordinate(
+                gridProperties.insertionPoint.x + diagonalLength / 2,
+                gridProperties.insertionPoint.y + diagonalLength / 2
+            );
         const columnStep: Vector = Vector.rightUnitVector.scale(halfDiagonalLength);
         const rowStep: Vector = Vector.downUnitVector.scale(diagonalLength);
         const oddColumnExtraStep: Vector = Vector.downUnitVector.scale(halfDiagonalLength);

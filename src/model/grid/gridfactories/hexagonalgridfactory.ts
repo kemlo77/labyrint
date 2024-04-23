@@ -2,11 +2,11 @@ import { Coordinate } from '../../coordinate';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
 import { Grid } from '../grid';
-import { GridFactory } from './gridfactory';
 import { MatrixOperations } from '../../../service/matrixoperations';
 import { CellAction, CellTest } from '../cell/celltypealiases';
+import { UnframedGridFactory } from './unframedgridfactory';
 
-export class HexagonalGridFactory extends GridFactory {
+export class HexagonalGridFactory extends UnframedGridFactory {
 
     createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
         const cellMatrix: Cell[][] = this.createCellMatrix(numberOfColumns, numberOfRows, cellWidth);

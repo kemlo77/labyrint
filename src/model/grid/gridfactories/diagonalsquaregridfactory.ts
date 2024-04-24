@@ -10,6 +10,10 @@ import { GridProperties } from './gridproperties';
 export class DiagonalSquareGridFactory extends FramedGridFactory {
 
     createGrid(gridProperties: GridProperties): Grid {
+        //TODO: Hantera rotation
+        //TODO: Hantera när antal rader är 1, eller antal kolumner är 1
+        //TODO: Splitta upp hörnet
+        //TODO: 
 
         const cellGrid: Cell[][] = this.createTiltedSquareCellGrid(gridProperties);
         this.connectTiltedSquareCellsToNeighbourCells(cellGrid);
@@ -42,15 +46,16 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
         cellGrid.unshift(newLeftColumn);
         cellGrid.push(newRightColumn);
 
-        const newTopLeftCell: Cell = this.createAndAttachTopLeftCornerTriangle(topLeftCell1, topLeftCell2);
-        const newTopRightCell: Cell = this.createAndAttachTopRightCornerTriangle(topRightCell1, topRightCell2);
-        const newBottomLeftCell: Cell = this.createAndAttachBottomLeftCornerTriangle(bottomLeftCell1, bottomLeftCell2);
-        const newBottomRightCell: Cell =
-            this.createAndAttachBottomRightCornerTriangle(bottomRightCell1, bottomRightCell2);
-        cellGrid.push([newTopLeftCell, newTopRightCell, newBottomLeftCell, newBottomRightCell]);
+        const newTopLeftCells: Cell[] = this.createAndAttachTopLeftCornerTriangles(topLeftCell1, topLeftCell2);
+        const newTopRightCells: Cell[] = this.createAndAttachTopRightCornerTriangles(topRightCell1, topRightCell2);
+        const newBottomLeftCells: Cell[] = 
+            this.createAndAttachBottomLeftCornerTriangles(bottomLeftCell1, bottomLeftCell2);
+        const newBottomRightCells: Cell[] =
+            this.createAndAttachBottomRightCornerTriangles(bottomRightCell1, bottomRightCell2);
+        cellGrid.push([newTopLeftCells, newTopRightCells, newBottomLeftCells, newBottomRightCells].flat());
 
-        const startCell: Cell = newTopLeftCell;
-        const endCell: Cell = newBottomRightCell;
+        const startCell: Cell = newTopLeftCells[0];
+        const endCell: Cell = newBottomRightCells[0];
 
         const cells: Cell[] = cellGrid.flat();
         return new Grid(cells, startCell, endCell);
@@ -134,49 +139,71 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
     }
 
 
-    private createAndAttachTopLeftCornerTriangle(firstCell: Cell, secondCell: Cell): Cell {
+    private createAndAttachTopLeftCornerTriangles(firstCell: Cell, secondCell: Cell): Cell[] {
         const cornerDirection: Vector = Vector.upLeftUnitVector;
-        return this.createAndAttachCornerTriangle(firstCell, secondCell, cornerDirection);
+        return this.createAndAttachCornerTriangles(firstCell, secondCell, cornerDirection);
     }
 
-    private createAndAttachTopRightCornerTriangle(firstCell: Cell, secondCell: Cell): Cell {
+    private createAndAttachTopRightCornerTriangles(firstCell: Cell, secondCell: Cell): Cell[] {
         const cornerDirection: Vector = Vector.upRightUnitVector;
-        return this.createAndAttachCornerTriangle(firstCell, secondCell, cornerDirection);
+        return this.createAndAttachCornerTriangles(firstCell, secondCell, cornerDirection);
     }
 
-    private createAndAttachBottomLeftCornerTriangle(firstCell: Cell, secondCell: Cell): Cell {
+    private createAndAttachBottomLeftCornerTriangles(firstCell: Cell, secondCell: Cell): Cell[] {
         const cornerDirection: Vector = Vector.downLeftUnitVector;
-        return this.createAndAttachCornerTriangle(firstCell, secondCell, cornerDirection);
+        return this.createAndAttachCornerTriangles(firstCell, secondCell, cornerDirection);
     }
 
-    private createAndAttachBottomRightCornerTriangle(firstCell: Cell, secondCell: Cell): Cell {
+    private createAndAttachBottomRightCornerTriangles(firstCell: Cell, secondCell: Cell): Cell[] {
         const cornerDirection: Vector = Vector.downRightUnitVector;
-        return this.createAndAttachCornerTriangle(firstCell, secondCell, cornerDirection);
+        return this.createAndAttachCornerTriangles(firstCell, secondCell, cornerDirection);
     }
 
-    private createAndAttachCornerTriangle(firstCell: Cell, secondCell: Cell, cornerDirection: Vector): Cell {
+    private createAndAttachCornerTriangles(firstCell: Cell, secondCell: Cell, cornerDirection: Vector): Cell[] {
+        const firstTriangleDirection: Vector = cornerDirection.newRotatedVector(135);
+        const secondTriangleDirection: Vector = cornerDirection.newRotatedVector(-135);
+        const firstCenterDirection: Vector = cornerDirection.newRotatedVector(-45);
+        const secondCenterDirection: Vector = cornerDirection.newRotatedVector(45);
+
         const triangleDefaultDirection: Vector = Vector.upLeftUnitVector;
-        const angleDifference: number = triangleDefaultDirection.hasAngleTo(cornerDirection);
+        const firstAngleDifference: number = triangleDefaultDirection.hasAngleTo(firstTriangleDirection);
+        const secondAngleDifference: number = triangleDefaultDirection.hasAngleTo(secondTriangleDirection);
         const commonCorners: Coordinate[] = firstCell.commonCornersWith(secondCell);
         const insertionCorner: Coordinate =
             this.coordinateFurthestAlongVector(cornerDirection, commonCorners[0], commonCorners[1]);
         const oldCellsWidth: number = firstCell.borders[0].length;
-        const newCellWidth: number = oldCellsWidth * Math.SQRT2;
 
 
-        const cellCenter: Coordinate =
-            insertionCorner.newRelativeCoordinate(cornerDirection, oldCellsWidth / 3);
+        const cellCenter1: Coordinate = 
+            insertionCorner.newRelativeCoordinate(firstCenterDirection, oldCellsWidth * Math.SQRT2  / 3);
+        const cellCenter2: Coordinate = 
+            insertionCorner.newRelativeCoordinate(secondCenterDirection, oldCellsWidth * Math.SQRT2 / 3);
 
-        const newCell: Cell = CellFactory.createCell(
-            cellCenter,
-            newCellWidth,
+        const newCell1: Cell = CellFactory.createCell(
+            cellCenter1,
+            oldCellsWidth,
             'isosceles-right-triangular-with-split-hypotenuse',
-            angleDifference
+            firstAngleDifference
         );
+        const newCell2: Cell = CellFactory.createCell(
+            cellCenter2,
+            oldCellsWidth,
+            'isosceles-right-triangular-with-split-hypotenuse',
+            secondAngleDifference
+        );
+        newCell1.establishNeighbourRelationTo(newCell2);
 
-        newCell.establishNeighbourRelationTo(firstCell);
-        newCell.establishNeighbourRelationTo(secondCell);
-        return newCell;
+        if (newCell1.hasCommonBorderWith(firstCell)) {
+            newCell1.establishNeighbourRelationTo(firstCell);
+        } else {
+            newCell1.establishNeighbourRelationTo(secondCell);
+        }
+        if (newCell2.hasCommonBorderWith(firstCell)) {
+            newCell2.establishNeighbourRelationTo(firstCell);
+        } else {
+            newCell2.establishNeighbourRelationTo(secondCell);
+        }
+        return [newCell1, newCell2];
     }
 
     private coordinateFurthestAlongVector(vector: Vector, coord1: Coordinate, coord2: Coordinate): Coordinate {

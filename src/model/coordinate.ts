@@ -37,8 +37,8 @@ export class Coordinate {
         return rotated.translate(center.x, center.y);
     }
 
-    newRelativeCoordinate(stepVector: Vector, steps: number): Coordinate {
-        const xCoordinate: number = this.x + stepVector.x * steps;    
+    newRelativeCoordinate(stepVector: Vector, steps: number = 1): Coordinate {
+        const xCoordinate: number = this.x + stepVector.x * steps;
         const yCoordinate: number = this.y + stepVector.y * steps;
         return new Coordinate(xCoordinate, yCoordinate);
     }

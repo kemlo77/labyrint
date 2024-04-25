@@ -22,7 +22,7 @@ export class RunningBondGridFactory extends FramedGridFactory {
     private createCellGrid(gridProperties: GridProperties): Cell[][] {
 
         //Inline på dessa variabler?
-        const cellWidth: number = gridProperties.cellWidth;
+        const cellWidth: number = gridProperties.edgeSegmentLength;
         const numberOfRows: number = gridProperties.verticalEdgeSegments;
         const numberOfColumns: number = gridProperties.horizontalEdgeSegments;
 

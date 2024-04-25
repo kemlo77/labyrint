@@ -22,28 +22,29 @@ export class SquareGridFactory extends FramedGridFactory {
 
     private createCellMatrix(gridProperties: GridProperties): Cell[][] {
 
-        const cellWidth: number = gridProperties.cellWidth; //TODO: remove this line?
+        const cellWidth: number = gridProperties.edgeSegmentLength; //TODO: remove this line?
+        const halfCellWidth: number = cellWidth / 2;
 
-        const stepDirectionToFirstCellCenter: Vector = new Vector(cellWidth / 2, cellWidth / 2);
+        const stepDirectionToFirstCellCenter: Vector = Vector.downRightUnitVector.scale(halfCellWidth)
+            .newRotatedVector(gridProperties.angle);
+        const columnStep: Vector = Vector.rightUnitVector.scale(cellWidth)
+            .newRotatedVector(gridProperties.angle);
+        const rowStep: Vector = Vector.downUnitVector.scale(cellWidth)
+            .newRotatedVector(gridProperties.angle);
 
-        const angleAdjustedStepDirectionToFirstCellCenter: Vector =
-            stepDirectionToFirstCellCenter.newRotatedVector(gridProperties.angle);
         const firstCellCenter: Coordinate =
-            gridProperties.insertionPoint.newRelativeCoordinate(angleAdjustedStepDirectionToFirstCellCenter, 1);
+            gridProperties.insertionPoint.newRelativeCoordinate(stepDirectionToFirstCellCenter);
 
-        const defaultColumnStep: Vector = Vector.rightUnitVector.scale(cellWidth);
-        const defaultRowStep: Vector = Vector.downUnitVector.scale(cellWidth);
-        const angleAdjustedColumnStep: Vector = defaultColumnStep.newRotatedVector(gridProperties.angle);
-        const angleAdjustedRowStep: Vector = defaultRowStep.newRotatedVector(gridProperties.angle);
         const createRotatedSquareCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', gridProperties.angle);
+
 
         const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < gridProperties.horizontalEdgeSegments; columnIndex++) {
             const columnStartCenter: Coordinate =
-                firstCellCenter.newRelativeCoordinate(angleAdjustedColumnStep, columnIndex);
+                firstCellCenter.newRelativeCoordinate(columnStep, columnIndex);
             const cellSequence: Cell[] =
-                this.createSequenceOfCells(columnStartCenter, angleAdjustedRowStep, gridProperties.verticalEdgeSegments,
+                this.createSequenceOfCells(columnStartCenter, rowStep, gridProperties.verticalEdgeSegments,
                     createRotatedSquareCell);
             cellColumns.push(cellSequence);
         }

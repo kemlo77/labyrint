@@ -1,6 +1,6 @@
 import { MatrixOperations } from '../../../service/matrixoperations';
 import { Coordinate } from '../../coordinate';
-import { downUnitVector, rightUnitVector, upUnitVector } from '../../unitvectors';
+import { downUnitVector, leftUnitVector, rightUnitVector, upUnitVector } from '../../unitvectors';
 import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
@@ -24,84 +24,84 @@ export class RunningBondGridFactory extends FramedGridFactory {
     private createCellGrid(gridProperties: GridProperties): Cell[][] {
 
         const cellWidth: number = gridProperties.edgeSegmentLength;
+        const numberOfcolumns: number = gridProperties.horizontalEdgeSegments;
         const numberOfRows: number = gridProperties.verticalEdgeSegments;
-        const numberOfColumns: number = gridProperties.horizontalEdgeSegments;
 
         const startOffsetX: number = cellWidth;
         const startOffsetY: number = cellWidth;
         const firstCellCenter: Coordinate = new Coordinate(startOffsetX, startOffsetY);
-        const oneStepRight: Vector = rightUnitVector.scale(cellWidth);
-        const aHalfStepDown: Vector = downUnitVector.scale(cellWidth / 2);
-        const aHalfStepUp: Vector = upUnitVector.scale(cellWidth / 2);
-        const twoStepsDown: Vector = downUnitVector.scale(cellWidth * 2);
+        const oneStepDown: Vector = downUnitVector.scale(cellWidth);
+        const aHalfStepRight: Vector = rightUnitVector.scale(cellWidth / 2);
+        const aHalfStepLeft: Vector = leftUnitVector.scale(cellWidth / 2);
+        const twoStepsRight: Vector = rightUnitVector.scale(cellWidth * 2);
 
         const cellMatrix: Cell[][] = [];
         const createSquareCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square');
         const createRectangularCell: CellCreator =
-            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'double-square-rectangle');
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'double-square-rectangle', 90);
 
-        cellMatrix.push(createFirstRowOfCells());
-        for (let rowIndex: number = 1; rowIndex < numberOfRows; rowIndex++) {
-            cellMatrix.push(createIntermediateRowOfCells(rowIndex));
+        cellMatrix.push(createFirstColumnOfCells());
+        for (let columnIndex: number = 1; columnIndex < numberOfcolumns; columnIndex++) {
+            cellMatrix.push(createIntermediateColumnOfCells(columnIndex));
         }
-        cellMatrix.push(createLastRowOfCells());
+        cellMatrix.push(createLastColumnOfCells());
 
-        return MatrixOperations.transpose<Cell>(cellMatrix);
+        return cellMatrix;
 
-        function createFirstRowOfCells(): Cell[] {
-            const firstRowOfCells: Cell[] = [];
-            for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
-                const evenColumn: boolean = columnIndex % 2 === 0;
+        function createFirstColumnOfCells(): Cell[] {
+            const cellColumn: Cell[] = [];
+            for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
+                const evenRow: boolean = rowIndex % 2 === 0;
 
-                let center: Coordinate = firstCellCenter.newRelativeCoordinate(oneStepRight, columnIndex);
+                let center: Coordinate = firstCellCenter.newRelativeCoordinate(oneStepDown, rowIndex);
 
-                if (evenColumn) {
-                    center = center.newRelativeCoordinate(aHalfStepDown);
-                    firstRowOfCells.push(createRectangularCell(center));
+                if (evenRow) {
+                    center = center.newRelativeCoordinate(aHalfStepRight);
+                    cellColumn.push(createRectangularCell(center));
                 } else {
-                    firstRowOfCells.push(createSquareCell(center));
+                    cellColumn.push(createSquareCell(center));
                 }
             }
-            return firstRowOfCells;
+            return cellColumn;
         }
 
-        function createIntermediateRowOfCells(rowIndex: number): Cell[] {
-            const intermediateRowOfCells: Cell[] = [];
-            for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
-                const evenColumn: boolean = columnIndex % 2 === 0;
+        function createIntermediateColumnOfCells(columnIndex: number): Cell[] {
+            const cellColumn: Cell[] = [];
+            for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
+                const evenRow: boolean = rowIndex % 2 === 0;
 
                 let center: Coordinate = new Coordinate(startOffsetX, startOffsetY)
-                    .newRelativeCoordinate(oneStepRight, columnIndex)
-                    .newRelativeCoordinate(twoStepsDown, rowIndex);
+                    .newRelativeCoordinate(oneStepDown, rowIndex)
+                    .newRelativeCoordinate(twoStepsRight, columnIndex);
 
-                if (evenColumn) {
-                    center = center.newRelativeCoordinate(aHalfStepDown);
+                if (evenRow) {
+                    center = center.newRelativeCoordinate(aHalfStepRight);
                 } else {
-                    center = center.newRelativeCoordinate(aHalfStepUp);
+                    center = center.newRelativeCoordinate(aHalfStepLeft);
                 }
-                intermediateRowOfCells.push(createRectangularCell(center));
+                cellColumn.push(createRectangularCell(center));
             }
-            return intermediateRowOfCells;
+            return cellColumn;
         }
 
-        function createLastRowOfCells(): Cell[] {
-            const lastRowOfCells: Cell[] = [];
-            for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
-                const evenColumn: boolean = columnIndex % 2 === 0;
+        function createLastColumnOfCells(): Cell[] {
+            const cellColumn: Cell[] = [];
+            for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
+                const evenRow: boolean = rowIndex % 2 === 0;
 
                 let center: Coordinate = new Coordinate(startOffsetX, startOffsetY)
-                    .newRelativeCoordinate(oneStepRight, columnIndex)
-                    .newRelativeCoordinate(twoStepsDown, numberOfRows);
+                    .newRelativeCoordinate(oneStepDown, rowIndex)
+                    .newRelativeCoordinate(twoStepsRight, numberOfcolumns);
 
-                if (evenColumn) {
-                    lastRowOfCells.push(createSquareCell(center));
+                if (evenRow) {
+                    cellColumn.push(createSquareCell(center));
                 } else {
-                    center = center.newRelativeCoordinate(aHalfStepUp);
-                    lastRowOfCells.push(createRectangularCell(center));
+                    center = center.newRelativeCoordinate(aHalfStepLeft);
+                    cellColumn.push(createRectangularCell(center));
                 }
             }
-            return lastRowOfCells;
+            return cellColumn;
         }
 
     }
@@ -115,26 +115,19 @@ export class RunningBondGridFactory extends FramedGridFactory {
     private establishNeighbourRelationsForRemainingCells(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
-                const notOnTheLastColumn: boolean = columnIndex !== grid.length - 1;
-                const onTheFirstRow: boolean = rowIndex === 0;
-                const oddColumnIndex: boolean = columnIndex % 2 === 1;
 
-                if (onTheFirstRow) {
+                const evenRowIndex: boolean = rowIndex % 2 === 0;
+                const onFirstColumn: boolean = columnIndex === 0;
+
+                if (onFirstColumn || evenRowIndex) {
                     continue;
                 }
 
-                if (oddColumnIndex) {
-                    const cell: Cell = grid[columnIndex][rowIndex];
-                    const upperRowLeftNeighbour: Cell = grid[columnIndex - 1][rowIndex - 1];
-                    cell.establishNeighbourRelationTo(upperRowLeftNeighbour);
-                }
-
-                if (oddColumnIndex && notOnTheLastColumn) {
-                    const cell: Cell = grid[columnIndex][rowIndex];
-                    const upperRowRightNeighbour: Cell = grid[columnIndex + 1][rowIndex - 1];
-                    cell.establishNeighbourRelationTo(upperRowRightNeighbour);
-                }
-
+                const cell: Cell = grid[columnIndex][rowIndex];
+                const upperRowLeftNeighbour: Cell = grid[columnIndex - 1][rowIndex - 1];
+                const lowerRowLeftNeighbour: Cell = grid[columnIndex - 1][rowIndex + 1];
+                cell.establishNeighbourRelationTo(upperRowLeftNeighbour);
+                cell.establishNeighbourRelationTo(lowerRowLeftNeighbour);
             }
         }
     }

@@ -31,7 +31,7 @@ export class GridSupplier {
         }
 
         if (gridType === 'runningBond') {
-            const gridProperties: GridProperties = new GridProperties(insertionPoint, 69, 21, 15);
+            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 10, 30);
             return new RunningBondGridFactory().createGrid(gridProperties);
         }
 

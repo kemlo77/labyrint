@@ -1,4 +1,5 @@
 import { Coordinate } from '../../coordinate';
+import { downRightUnitVector, downUnitVector, rightUnitVector } from '../../unitvectors';
 import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
@@ -22,14 +23,14 @@ export class SquareGridFactory extends FramedGridFactory {
 
     private createCellMatrix(gridProperties: GridProperties): Cell[][] {
 
-        const cellWidth: number = gridProperties.edgeSegmentLength; //TODO: remove this line?
-        const halfCellWidth: number = cellWidth / 2;
+        const cellWidth: number = gridProperties.edgeSegmentLength;
+        const diagonalLength: number = cellWidth * Math.SQRT2;
 
-        const stepDirectionToFirstCellCenter: Vector = Vector.downRightUnitVector.scale(halfCellWidth)
+        const stepDirectionToFirstCellCenter: Vector = downRightUnitVector.scale(diagonalLength / 2)
             .newRotatedVector(gridProperties.angle);
-        const columnStep: Vector = Vector.rightUnitVector.scale(cellWidth)
+        const columnStep: Vector = rightUnitVector.scale(cellWidth)
             .newRotatedVector(gridProperties.angle);
-        const rowStep: Vector = Vector.downUnitVector.scale(cellWidth)
+        const rowStep: Vector = downUnitVector.scale(cellWidth)
             .newRotatedVector(gridProperties.angle);
 
         const firstCellCenter: Coordinate =

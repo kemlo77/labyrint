@@ -1,5 +1,7 @@
 import { MatrixOperations } from '../../../service/matrixoperations';
 import { Coordinate } from '../../coordinate';
+import { downUnitVector, rightUnitVector, upUnitVector } from '../../unitvectors';
+import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
 import { CellCreator } from '../cell/celltypealiases';
@@ -21,15 +23,18 @@ export class RunningBondGridFactory extends FramedGridFactory {
 
     private createCellGrid(gridProperties: GridProperties): Cell[][] {
 
-        //Inline på dessa variabler?
         const cellWidth: number = gridProperties.edgeSegmentLength;
         const numberOfRows: number = gridProperties.verticalEdgeSegments;
         const numberOfColumns: number = gridProperties.horizontalEdgeSegments;
 
         const startOffsetX: number = cellWidth;
         const startOffsetY: number = cellWidth;
-        const cellHeight: number = cellWidth * 2;
-        const quarterHeight: number = cellHeight / 4;
+        const firstCellCenter: Coordinate = new Coordinate(startOffsetX, startOffsetY);
+        const oneStepRight: Vector = rightUnitVector.scale(cellWidth);
+        const aHalfStepDown: Vector = downUnitVector.scale(cellWidth / 2);
+        const aHalfStepUp: Vector = upUnitVector.scale(cellWidth / 2);
+        const twoStepsDown: Vector = downUnitVector.scale(cellWidth * 2);
+
         const cellMatrix: Cell[][] = [];
         const createSquareCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square');
@@ -48,14 +53,14 @@ export class RunningBondGridFactory extends FramedGridFactory {
             const firstRowOfCells: Cell[] = [];
             for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
                 const evenColumn: boolean = columnIndex % 2 === 0;
-                const xCoordinate: number = startOffsetX + cellWidth * columnIndex;
-                const yAdjustment: number = evenColumn ? quarterHeight : 0;
-                const yCoordinate: number = startOffsetY + yAdjustment;
+
+                let center: Coordinate = firstCellCenter.newRelativeCoordinate(oneStepRight, columnIndex);
 
                 if (evenColumn) {
-                    firstRowOfCells.push(createRectangularCell(new Coordinate(xCoordinate, yCoordinate)));
+                    center = center.newRelativeCoordinate(aHalfStepDown);
+                    firstRowOfCells.push(createRectangularCell(center));
                 } else {
-                    firstRowOfCells.push(createSquareCell(new Coordinate(xCoordinate, yCoordinate)));
+                    firstRowOfCells.push(createSquareCell(center));
                 }
             }
             return firstRowOfCells;
@@ -65,12 +70,17 @@ export class RunningBondGridFactory extends FramedGridFactory {
             const intermediateRowOfCells: Cell[] = [];
             for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
                 const evenColumn: boolean = columnIndex % 2 === 0;
-                const xCoordinate: number = startOffsetX + cellWidth * columnIndex;
-                const yAdjustment: number = evenColumn ? quarterHeight : -quarterHeight;
-                const yCoordinate: number = startOffsetY + cellHeight * rowIndex + yAdjustment;
 
-                intermediateRowOfCells.push(createRectangularCell(new Coordinate(xCoordinate, yCoordinate)));
+                let center: Coordinate = new Coordinate(startOffsetX, startOffsetY)
+                    .newRelativeCoordinate(oneStepRight, columnIndex)
+                    .newRelativeCoordinate(twoStepsDown, rowIndex);
 
+                if (evenColumn) {
+                    center = center.newRelativeCoordinate(aHalfStepDown);
+                } else {
+                    center = center.newRelativeCoordinate(aHalfStepUp);
+                }
+                intermediateRowOfCells.push(createRectangularCell(center));
             }
             return intermediateRowOfCells;
         }
@@ -79,14 +89,16 @@ export class RunningBondGridFactory extends FramedGridFactory {
             const lastRowOfCells: Cell[] = [];
             for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
                 const evenColumn: boolean = columnIndex % 2 === 0;
-                const xCoordinate: number = startOffsetX + cellWidth * columnIndex;
-                const yAdjustment: number = evenColumn ? 0 : -quarterHeight;
-                const yCoordinate: number = startOffsetY + cellHeight * numberOfRows + yAdjustment;
+
+                let center: Coordinate = new Coordinate(startOffsetX, startOffsetY)
+                    .newRelativeCoordinate(oneStepRight, columnIndex)
+                    .newRelativeCoordinate(twoStepsDown, numberOfRows);
 
                 if (evenColumn) {
-                    lastRowOfCells.push(createSquareCell(new Coordinate(xCoordinate, yCoordinate)));
+                    lastRowOfCells.push(createSquareCell(center));
                 } else {
-                    lastRowOfCells.push(createRectangularCell(new Coordinate(xCoordinate, yCoordinate)));
+                    center = center.newRelativeCoordinate(aHalfStepUp);
+                    lastRowOfCells.push(createRectangularCell(center));
                 }
             }
             return lastRowOfCells;

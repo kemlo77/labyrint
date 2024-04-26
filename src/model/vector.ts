@@ -10,38 +10,6 @@ export class Vector {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
-    static get rightUnitVector(): Vector {
-        return new Vector(1, 0);
-    }
-
-    static get upRightUnitVector(): Vector {
-        return new Vector(1 / Math.SQRT2, -1 / Math.SQRT2);
-    }
-
-    static get upUnitVector(): Vector {
-        return new Vector(0, -1);
-    }
-
-    static get upLeftUnitVector(): Vector {
-        return new Vector(-1 / Math.SQRT2, -1 / Math.SQRT2);
-    }
-
-    static get leftUnitVector(): Vector {
-        return new Vector(-1, 0);
-    }
-
-    static get downLeftUnitVector(): Vector {
-        return new Vector(-1 / Math.SQRT2, 1 / Math.SQRT2);
-    }
-
-    static get downUnitVector(): Vector {
-        return new Vector(0, 1);
-    }
-
-    static get downRightUnitVector(): Vector {
-        return new Vector(1 / Math.SQRT2, 1 / Math.SQRT2);
-    }
-
     scale(factor: number): Vector {
         return new Vector(this.x * factor, this.y * factor);
     }

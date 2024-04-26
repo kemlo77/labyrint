@@ -1,4 +1,5 @@
 import { Coordinate } from '../../coordinate';
+import { downRightUnitVector, downUnitVector, leftUnitVector, rightUnitVector, upUnitVector } from '../../unitvectors';
 import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
@@ -40,25 +41,25 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
         const createSquareCell: CellCreator = (center: Coordinate) =>
             CellFactory.createCell(center, cellWidth, 'square', 45 + angle);
 
-        const stepToLeftReferencePoint: Vector = Vector.downRightUnitVector.scale(cellWidth)
+        const stepToLeftReferencePoint: Vector = downRightUnitVector.scale(cellWidth)
             .newRotatedVector(angle);
         const stepToRightReferencePoint: Vector =
-            Vector.rightUnitVector.scale(diagonalLength * (gridProperties.horizontalEdgeSegments - 1))
+            rightUnitVector.scale(diagonalLength * (gridProperties.horizontalEdgeSegments - 1))
                 .newRotatedVector(angle);
-        const columnStep: Vector =
-            Vector.rightUnitVector.scale(diagonalLength / 2).newRotatedVector(angle);
-        const rowStep: Vector =
-            Vector.downUnitVector.scale(diagonalLength).newRotatedVector(angle);
-        const oddColumnExtraStep: Vector =
-            Vector.downUnitVector.scale(halfDiagonalLength).newRotatedVector(angle);
-        const toLeftTriangleCenterStep: Vector =
-            Vector.leftUnitVector.scale(halfDiagonalLength * 2 / 3).newRotatedVector(angle);
-        const toRightTriangleCenterStep: Vector =
-            Vector.rightUnitVector.scale(halfDiagonalLength * 2 / 3).newRotatedVector(angle);
-        const toTopTriangleCenterStep: Vector =
-            Vector.upUnitVector.scale(halfDiagonalLength * 2 / 3).newRotatedVector(angle);
-        const toBottomTriangleCenterStep: Vector =
-            Vector.downUnitVector.scale(halfDiagonalLength * 2 / 3).newRotatedVector(angle);
+        const columnStep: Vector = rightUnitVector.scale(diagonalLength / 2)
+            .newRotatedVector(angle);
+        const rowStep: Vector = downUnitVector.scale(diagonalLength)
+            .newRotatedVector(angle);
+        const oddColumnExtraStep: Vector = downUnitVector.scale(halfDiagonalLength)
+            .newRotatedVector(angle);
+        const toLeftTriangleCenterStep: Vector = leftUnitVector.scale(halfDiagonalLength * 2 / 3)
+            .newRotatedVector(angle);
+        const toRightTriangleCenterStep: Vector = rightUnitVector.scale(halfDiagonalLength * 2 / 3)
+            .newRotatedVector(angle);
+        const toTopTriangleCenterStep: Vector = upUnitVector.scale(halfDiagonalLength * 2 / 3)
+            .newRotatedVector(angle);
+        const toBottomTriangleCenterStep: Vector = downUnitVector.scale(halfDiagonalLength * 2 / 3)
+            .newRotatedVector(angle);
 
         const topLeftReferencePoint: Coordinate =
             gridProperties.insertionPoint.newRelativeCoordinate(stepToLeftReferencePoint);

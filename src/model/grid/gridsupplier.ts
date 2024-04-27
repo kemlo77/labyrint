@@ -27,11 +27,10 @@ export class GridSupplier {
         if (gridType === 'square') {
             const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
             return new SquareGridFactory().createGrid(gridProperties);
-
         }
 
         if (gridType === 'runningBond') {
-            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 10, 30);
+            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
             return new RunningBondGridFactory().createGrid(gridProperties);
         }
 

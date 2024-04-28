@@ -43,7 +43,8 @@ export class GridSupplier {
         }
 
         if (gridType === 'octagonal') {
-            return new OctagonalGridFactory().createGrid(34, 21, 30);
+            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
+            return new OctagonalGridFactory().createGrid(gridProperties);
         }
 
         if (gridType === 'diagonalSquare') {

@@ -1,100 +1,120 @@
 import { Coordinate } from '../../coordinate';
+import { downRightUnitVector, downUnitVector, rightUnitVector } from '../../unitvectors';
+import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
+import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
-import { UnframedGridFactory } from './unframedgridfactory';
+import { FramedGridFactory } from './framedgridfactory';
+import { GridProperties } from './gridproperties';
 
-export class OctagonalGridFactory extends UnframedGridFactory {
+export class OctagonalGridFactory extends FramedGridFactory {
 
-    createGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Grid {
-        const cellGrid: Cell[][] = this.createCellGrid(numberOfColumns, numberOfRows, cellWidth);
-        this.connectOctagonalCellsToNeighbourCells(cellGrid);
+    createGrid(gridProperties: GridProperties): Grid {
+        const cellGrid: Cell[][] = this.createCellGrid(gridProperties);
+        this.establishNeighbourRelationsInGrid(cellGrid);
         const startCell: Cell = cellGrid[0][0];
-        const endCell: Cell = cellGrid[numberOfColumns - 1][2 * (numberOfRows - 1)];
+        const endCell: Cell = cellGrid[cellGrid.length - 1][cellGrid[0].length - 1];
         const cells: Cell[] = cellGrid.flat();
         return new Grid(cells, startCell, endCell);
     }
 
-    private createCellGrid(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
-        const cellGrid: Cell[][] = [];
-        for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
-            const rowOfCells: Cell[] = [];
-            for (let rowIndex: number = 0; rowIndex < numberOfRows * 2 - 1; rowIndex++) {
-                if (rowIndex % 2 === 0) {
-                    const xCoordinate: number = cellWidth * (columnIndex + 1);
-                    const yCoordinate: number = cellWidth * (rowIndex / 2 + 1);
-                    const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(CellFactory.createCell(center, cellWidth, 'octagonal'));
-                } else {
-                    const tiltedSquareCellDiagonalLength: number =
-                        cellWidth - this.sideLengthOfOctagonFromInradius(cellWidth / 2);
-                    const squareWidth: number = tiltedSquareCellDiagonalLength / Math.SQRT2;
-                    const xCoordinate: number = cellWidth * (columnIndex + 3 / 2);
-                    const yCoordinate: number = cellWidth * (rowIndex / 2 + 1);
-                    const center: Coordinate = new Coordinate(xCoordinate, yCoordinate);
-                    rowOfCells.push(CellFactory.createCell(center, squareWidth, 'square', 45));
-                }
+    private createCellGrid(gridProperties: GridProperties): Cell[][] {
+        const numberOfColumns: number = gridProperties.horizontalEdgeSegments;
+        const numberOfRows: number = gridProperties.verticalEdgeSegments;
+        const cellWidth: number = gridProperties.edgeSegmentLength;
+        const angle: number = gridProperties.angle;
 
+        const halfCellWidth: number = cellWidth / 2;
+        const tiltedSquareCellDiagonalLength: number =
+            cellWidth - this.sideLengthOfOctagonFromInradius(halfCellWidth);
+        const tiltedSquareWidth: number = tiltedSquareCellDiagonalLength / Math.SQRT2;
+        const halfTiltedSquareWidth: number = tiltedSquareWidth / 2;
+
+        const stepDirectionToFirstCellCenter: Vector = downRightUnitVector.scale(halfCellWidth * Math.SQRT2)
+            .newRotatedVector(angle);
+        const columnStep: Vector = rightUnitVector.scale(cellWidth).newRotatedVector(angle);
+        const rowStep: Vector = downUnitVector.scale(cellWidth).newRotatedVector(angle);
+        const stepFromOctagonCenterToTiltedSquareCenter: Vector =
+            downRightUnitVector.scale(halfCellWidth + halfTiltedSquareWidth).newRotatedVector(angle);
+
+        const firstCellCenter: Coordinate =
+            gridProperties.insertionPoint.newRelativeCoordinate(stepDirectionToFirstCellCenter);
+
+        const createOctagonalCell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'octagonal', angle);
+        const createTiltedSquareCell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, tiltedSquareWidth, 'square', angle - 45);
+
+        const cellColumns: Cell[][] = [];
+        for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
+            const onLastColumn: boolean = columnIndex === numberOfColumns - 1;
+
+            const firstOctagonalCellCenter: Coordinate = firstCellCenter.newRelativeCoordinate(columnStep, columnIndex);
+            const fistTiltedSquareCellCenter: Coordinate = firstOctagonalCellCenter
+                .newRelativeCoordinate(stepFromOctagonCenterToTiltedSquareCenter);
+
+            const octagonalCellSequence: Cell[] =
+                this.createSequenceOfCells(firstOctagonalCellCenter, rowStep, numberOfRows, createOctagonalCell);
+            cellColumns.push(octagonalCellSequence);
+
+            if (onLastColumn) {
+                continue;
             }
-            cellGrid.push(rowOfCells);
+
+            const tiltedSquareCellSequence: Cell[] =
+                this.createSequenceOfCells(
+                    fistTiltedSquareCellCenter,
+                    rowStep,
+                    numberOfRows - 1,
+                    createTiltedSquareCell
+                );
+            cellColumns.push(tiltedSquareCellSequence);
+
+
         }
-        return cellGrid;
+        return cellColumns;
     }
 
     private sideLengthOfOctagonFromInradius(inradius: number): number {
         return inradius * 2 / (1 + Math.SQRT2);
     }
 
-    private connectOctagonalCellsToNeighbourCells(grid: Cell[][]): void {
+    private establishNeighbourRelationsInGrid(grid: Cell[][]): void {
+        this.establishNeighbourRelationsBetweenOctagons(grid);
+        this.establishNeighbourRelationsToFromTiltedSquareCells(grid);
 
+    }
+
+    private establishNeighbourRelationsBetweenOctagons(grid: Cell[][]): void {
+        const octagonalCells: Cell[][] = grid.filter((_, index) => index % 2 === 0);
+        this.establishNeighbourRelationsInColumns(octagonalCells);
+        this.establishNeighbourRelationsInRows(octagonalCells);
+    }
+
+    private establishNeighbourRelationsToFromTiltedSquareCells(grid: Cell[][]): void {
         for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
             for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
 
-                const rowWithTiltedSquareCells: boolean = rowIndex % 2 === 1;
-                const currentCell: Cell = grid[columnIndex][rowIndex];
-                const notOnTheFirstColumn: boolean = columnIndex !== 0;
-                const notOnTheLastColumn: boolean = columnIndex !== grid.length - 1;
-                const notOnTheFirstRow: boolean = rowIndex !== 0;
-                const notOnTheLastRow: boolean = rowIndex !== grid[columnIndex].length - 1;
+                const onColumnWithOctagonalCells: boolean = columnIndex % 2 === 0;
 
-                if (rowWithTiltedSquareCells) {
+                if (onColumnWithOctagonalCells) {
                     continue;
                 }
 
-                if (notOnTheLastRow) {
-                    const neighbourOctagonalCellBelow: Cell = grid[columnIndex][rowIndex + 2];
-                    currentCell.establishNeighbourRelationTo(neighbourOctagonalCellBelow);
-                }
+                const currentCell: Cell = grid[columnIndex][rowIndex];
+                const neighbourUpLeft: Cell = grid[columnIndex - 1][rowIndex];
+                const neighbourUpRight: Cell = grid[columnIndex + 1][rowIndex];
+                const neighbourDownLeft: Cell = grid[columnIndex - 1][rowIndex + 1];
+                const neighbourDownRight: Cell = grid[columnIndex + 1][rowIndex + 1];
 
-                if (notOnTheLastColumn) {
-                    const neighbourOctagonalCellToTheRight: Cell = grid[columnIndex + 1][rowIndex];
-                    currentCell.establishNeighbourRelationTo(neighbourOctagonalCellToTheRight);
-                }
-
-                if (notOnTheFirstRow && notOnTheLastColumn) {
-                    const neighbourTiltedSquareCellUpRight: Cell = grid[columnIndex][rowIndex - 1];
-                    currentCell.establishNeighbourRelationTo(neighbourTiltedSquareCellUpRight);
-                }
-
-                if (notOnTheFirstRow && notOnTheFirstColumn) {
-                    const neighbourTiltedSquareCellUpLeft: Cell = grid[columnIndex - 1][rowIndex - 1];
-                    currentCell.establishNeighbourRelationTo(neighbourTiltedSquareCellUpLeft);
-                }
-
-                if (notOnTheLastRow && notOnTheLastColumn) {
-                    const neighbourTiltedSquareCellDownLeft: Cell = grid[columnIndex][rowIndex + 1];
-                    currentCell.establishNeighbourRelationTo(neighbourTiltedSquareCellDownLeft);
-                }
-
-                if (notOnTheLastRow && notOnTheFirstColumn) {
-                    const neighbourTiltedSquareCellDownRight: Cell = grid[columnIndex - 1][rowIndex + 1];
-                    currentCell.establishNeighbourRelationTo(neighbourTiltedSquareCellDownRight);
-                }
+                currentCell.establishNeighbourRelationTo(neighbourUpLeft);
+                currentCell.establishNeighbourRelationTo(neighbourUpRight);
+                currentCell.establishNeighbourRelationTo(neighbourDownLeft);
+                currentCell.establishNeighbourRelationTo(neighbourDownRight);
 
             }
         }
-
-
     }
 
 }

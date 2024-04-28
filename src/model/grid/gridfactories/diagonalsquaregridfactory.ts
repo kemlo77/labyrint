@@ -31,13 +31,13 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
         const angle: number = - gridProperties.angle;
 
         const createBottomRowTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', 45 + angle);
+            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle - 45);
         const createLeftColumnTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', 135 + angle);
+            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle - 135);
         const createTopRowTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', 225 + angle);
+            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle - 225);
         const createRightColumnTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', 315 + angle);
+            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle - 315);
         const createSquareCell: CellCreator = (center: Coordinate) =>
             CellFactory.createCell(center, cellWidth, 'square', 45 + angle);
 

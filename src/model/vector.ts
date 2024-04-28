@@ -23,11 +23,10 @@ export class Vector {
         if (angleInDegrees === 0) {
             return this;
         }
-        const angle: number = angleInDegrees * Math.PI / 180;
-        const tempX: number = this.x;
-        const tempY: number = this.y;
-        const newX: number = tempX * Math.cos(angle) - tempY * Math.sin(angle);
-        const newY: number = tempX * Math.sin(angle) + tempY * Math.cos(angle);
+        //negative angle because everyting is plotted in a Canvas-element with the y-axis pointing downwards
+        const angle: number = -angleInDegrees * Math.PI / 180;
+        const newX: number = this.x * Math.cos(angle) - this.y * Math.sin(angle);
+        const newY: number = this.x * Math.sin(angle) + this.y * Math.cos(angle);
         return new Vector(newX, newY);
     }
 

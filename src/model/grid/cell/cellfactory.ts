@@ -41,6 +41,12 @@ export class CellFactory {
         if (type === 'octagonal') {
             return CellFactory.createCornersForOctagon(center, width);
         }
+        if (type === 'semi-octagonal-semi-square') {
+            return CellFactory.createCornersForSemiOctagonSemiSquare(center, width);
+        }
+        if (type === 'chamfered-square') {
+            return CellFactory.createCornersForChamferedSquare(center, width);
+        }
         throw new Error('Unknown cell type');
     }
 
@@ -132,6 +138,31 @@ export class CellFactory {
         const lowerQ4: Coordinate = new Coordinate(center.x + halfSideLength, center.y - halfWidth);
         const upperQ4: Coordinate = new Coordinate(center.x + halfWidth, center.y - halfSideLength);
         return [lowerQ1, upperQ1, upperQ2, lowerQ2, upperQ3, lowerQ3, lowerQ4, upperQ4];
+    }
+
+    private static createCornersForSemiOctagonSemiSquare(center: Coordinate, width: number): Coordinate[] {
+        const sideLength: number = width / (1 + Math.SQRT2);
+        const halfSideLength: number = sideLength / 2;
+        const halfWidth: number = width / 2;
+        const lowerQ1: Coordinate = new Coordinate(center.x + halfWidth, center.y + halfSideLength);
+        const upperQ1: Coordinate = new Coordinate(center.x + halfSideLength, center.y + halfWidth);
+        const q2: Coordinate = new Coordinate(center.x - halfWidth, center.y + halfWidth);
+        const q3: Coordinate = new Coordinate(center.x - halfWidth, center.y - halfWidth);
+        const lowerQ4: Coordinate = new Coordinate(center.x + halfSideLength, center.y - halfWidth);
+        const upperQ4: Coordinate = new Coordinate(center.x + halfWidth, center.y - halfSideLength);
+        return [lowerQ1, upperQ1, q2, q3, lowerQ4, upperQ4];
+    }
+
+    private static createCornersForChamferedSquare(center: Coordinate, width: number): Coordinate[] {
+        const sideLength: number = width / (1 + Math.SQRT2);
+        const halfSideLength: number = sideLength / 2;
+        const halfWidth: number = width / 2;
+        const lowerQ1: Coordinate = new Coordinate(center.x + halfWidth, center.y + halfSideLength);
+        const upperQ1: Coordinate = new Coordinate(center.x + halfSideLength, center.y + halfWidth);
+        const q2: Coordinate = new Coordinate(center.x - halfWidth, center.y + halfWidth);
+        const q3: Coordinate = new Coordinate(center.x - halfWidth, center.y - halfWidth);
+        const q4: Coordinate = new Coordinate(center.x + halfWidth, center.y - halfWidth);
+        return [lowerQ1, upperQ1, q2, q3, q4];
     }
 
 }

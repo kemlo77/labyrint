@@ -20,6 +20,8 @@ export class OctagonalGridFactory extends FramedGridFactory {
     }
 
     private createCellGrid(gridProperties: GridProperties): Cell[][] {
+        //TODO: handle when verticalEdgeSegments == 1
+        //TODO: handle when horizontalEdgeSegments == 1
         const numberOfColumns: number = gridProperties.horizontalEdgeSegments;
         const numberOfRows: number = gridProperties.verticalEdgeSegments;
         const cellWidth: number = gridProperties.edgeSegmentLength;
@@ -43,36 +45,117 @@ export class OctagonalGridFactory extends FramedGridFactory {
 
         const createOctagonalCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'octagonal', angle);
+        const createLeftHalfOctagonalCell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'semi-octagonal-semi-square', angle);
+        const createToptHalfOctagonalCell: CellCreator = (center: Coordinate) => CellFactory
+            .createCell(center, cellWidth, 'semi-octagonal-semi-square', angle + 270);
+        const createRightHalfOctagonalCell: CellCreator = (center: Coordinate) =>
+            CellFactory.createCell(center, cellWidth, 'semi-octagonal-semi-square', angle + 180);
+        const createBottomtHalfOctagonalCell: CellCreator = (center: Coordinate) =>
+            CellFactory.createCell(center, cellWidth, 'semi-octagonal-semi-square', angle + 90);
+        const createChamferedSquareQ1Cell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'chamfered-square', angle - 90);
+        const createChamferedSquareQ2Cell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'chamfered-square', angle);
+        const createChamferedSquareQ3Cell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'chamfered-square', angle + 90);
+        const createChamferedSquareQ4Cell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'chamfered-square', angle + 180);
         const createTiltedSquareCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, tiltedSquareWidth, 'square', angle - 45);
 
         const cellColumns: Cell[][] = [];
-        for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
-            const onLastColumn: boolean = columnIndex === numberOfColumns - 1;
 
+        // first column
+        const firstColumn: Cell[] = [];
+        const q2CornerCell: Cell = createChamferedSquareQ2Cell(firstCellCenter);
+        firstColumn.push(q2CornerCell);
+
+        const leftColumnSecondCellCenter: Coordinate = firstCellCenter.newRelativeCoordinate(rowStep);
+        const leftColumnOfCells: Cell[] = this.createSequenceOfCells(
+            leftColumnSecondCellCenter,
+            rowStep,
+            numberOfRows - 2,
+            createLeftHalfOctagonalCell
+        );
+        firstColumn.push(...leftColumnOfCells);
+
+        const q3CornerCellCenter: Coordinate = leftColumnSecondCellCenter
+            .newRelativeCoordinate(rowStep.scale(numberOfRows - 2));
+        const q3CornerCell: Cell = createChamferedSquareQ3Cell(q3CornerCellCenter);
+        firstColumn.push(q3CornerCell);
+
+        cellColumns.push(firstColumn);
+
+
+        // intermediate columns
+        for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
+            const notOnFirstColumn: boolean = columnIndex !== 0;
+            const notOnLastColumn: boolean = columnIndex !== numberOfColumns - 1;
             const firstOctagonalCellCenter: Coordinate = firstCellCenter.newRelativeCoordinate(columnStep, columnIndex);
             const fistTiltedSquareCellCenter: Coordinate = firstOctagonalCellCenter
                 .newRelativeCoordinate(stepFromOctagonCenterToTiltedSquareCenter);
 
-            const octagonalCellSequence: Cell[] =
-                this.createSequenceOfCells(firstOctagonalCellCenter, rowStep, numberOfRows, createOctagonalCell);
-            cellColumns.push(octagonalCellSequence);
 
-            if (onLastColumn) {
-                continue;
+            if (notOnFirstColumn && notOnLastColumn) {
+                const intermediateColumn: Cell[] = [];
+                const topCell: Cell = createToptHalfOctagonalCell(firstOctagonalCellCenter);
+                intermediateColumn.push(topCell);
+                const intermediateColumnSecondCellCenter: Coordinate =
+                    firstOctagonalCellCenter.newRelativeCoordinate(rowStep);
+                const octagonalCellSequence: Cell[] =
+                    this.createSequenceOfCells(
+                        intermediateColumnSecondCellCenter,
+                        rowStep,
+                        numberOfRows - 2,
+                        createOctagonalCell
+                    );
+                intermediateColumn.push(...octagonalCellSequence);
+                const bottomCellCenter: Coordinate = firstOctagonalCellCenter
+                    .newRelativeCoordinate(rowStep.scale(numberOfRows - 1));
+                const bottomCell: Cell = createBottomtHalfOctagonalCell(bottomCellCenter);
+                intermediateColumn.push(bottomCell);
+
+
+                cellColumns.push(intermediateColumn);
             }
 
-            const tiltedSquareCellSequence: Cell[] =
-                this.createSequenceOfCells(
-                    fistTiltedSquareCellCenter,
-                    rowStep,
-                    numberOfRows - 1,
-                    createTiltedSquareCell
-                );
-            cellColumns.push(tiltedSquareCellSequence);
+            if (notOnLastColumn) {
+                const tiltedSquareCellSequence: Cell[] =
+                    this.createSequenceOfCells(
+                        fistTiltedSquareCellCenter,
+                        rowStep,
+                        numberOfRows - 1,
+                        createTiltedSquareCell
+                    );
+                cellColumns.push(tiltedSquareCellSequence);
+            }
 
 
         }
+        // last column
+        const lastColumn: Cell[] = [];
+        const lastColumnFirstCellCenter: Coordinate =
+            firstCellCenter.newRelativeCoordinate(columnStep, numberOfColumns - 1);
+        const q1CornerCell: Cell = createChamferedSquareQ1Cell(lastColumnFirstCellCenter);
+        lastColumn.push(q1CornerCell);
+
+        const rightColumnSecondCellCenter: Coordinate = lastColumnFirstCellCenter.newRelativeCoordinate(rowStep);
+        const rightColumnOfCells: Cell[] = this.createSequenceOfCells(
+            rightColumnSecondCellCenter,
+            rowStep,
+            numberOfRows - 2,
+            createRightHalfOctagonalCell
+        );
+        lastColumn.push(...rightColumnOfCells);
+
+        const q4CornerCellCenter: Coordinate = rightColumnSecondCellCenter
+            .newRelativeCoordinate(rowStep.scale(numberOfRows - 2));
+        const q4CornerCell: Cell = createChamferedSquareQ4Cell(q4CornerCellCenter);
+        lastColumn.push(q4CornerCell);
+
+        cellColumns.push(lastColumn);
+
         return cellColumns;
     }
 

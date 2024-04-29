@@ -29,6 +29,12 @@ export class GridSupplier {
             return new SquareGridFactory().createGrid(gridProperties);
         }
 
+        if (gridType === 'tiltedSquare') {
+            const specialInsertionPoint: Coordinate = new Coordinate(15, 30 * 15 * Math.SQRT2 / 2 + 15);
+            const gridProperties: GridProperties = new GridProperties(specialInsertionPoint, 30, 30, 15, 45);
+            return new SquareGridFactory().createGrid(gridProperties);
+        }
+
         if (gridType === 'runningBond') {
             const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
             return new RunningBondGridFactory().createGrid(gridProperties);
@@ -50,12 +56,6 @@ export class GridSupplier {
         if (gridType === 'diagonalSquare') {
             const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
             return new DiagonalSquareGridFactory().createGrid(gridProperties);
-        }
-
-        if (gridType === 'diagonalSquareVariant') {
-            const specialInsertionPoint: Coordinate = new Coordinate(30 * 15 * Math.SQRT2 / 2 + 15, 15);
-            const gridProperties: GridProperties = new GridProperties(specialInsertionPoint, 30, 30, 15, 45);
-            return new SquareGridFactory().createGrid(gridProperties);
         }
 
         throw new Error('Invalid grid type');

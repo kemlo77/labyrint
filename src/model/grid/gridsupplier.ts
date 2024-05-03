@@ -49,7 +49,7 @@ export class GridSupplier {
         }
 
         if (gridType === 'octagonal') {
-            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
+            const gridProperties: GridProperties = new GridProperties(insertionPoint, 3, 3, 30);
             return new OctagonalGridFactory().createGrid(gridProperties);
         }
 

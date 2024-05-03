@@ -30,6 +30,7 @@ export class View implements Observer {
         this.drawStartCell();
         this.drawEndCell();
         this.drawAllCellBorders();
+        this.drawNumberOfNeighbours();
     }
 
     private shadeDisconnectedCells(): void {

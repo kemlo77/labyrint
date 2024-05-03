@@ -20,8 +20,6 @@ export class OctagonalGridFactory extends FramedGridFactory {
     }
 
     private createCellGrid(gridProperties: GridProperties): Cell[][] {
-        //TODO: handle when verticalEdgeSegments == 1
-        //TODO: handle when horizontalEdgeSegments == 1
         const numberOfColumns: number = gridProperties.horizontalEdgeSegments;
         const numberOfRows: number = gridProperties.verticalEdgeSegments;
         const cellWidth: number = gridProperties.edgeSegmentLength;
@@ -63,6 +61,29 @@ export class OctagonalGridFactory extends FramedGridFactory {
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'chamfered-square', angle + 180);
         const createTiltedSquareCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, tiltedSquareWidth, 'square', angle - 45);
+        const createSquareCell: CellCreator =
+            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', angle);
+
+        if (gridProperties.verticalEdgeSegments === 1) {
+            const rowOfCells: Cell[] = this.createSequenceOfCells(
+                firstCellCenter,
+                columnStep,
+                gridProperties.horizontalEdgeSegments,
+                createSquareCell
+            );
+            return [rowOfCells];
+        }
+
+        if (gridProperties.horizontalEdgeSegments === 1) {
+            const columnOfCells: Cell[] = this.createSequenceOfCells(
+                firstCellCenter,
+                rowStep,
+                gridProperties.verticalEdgeSegments,
+                createSquareCell
+            );
+            return [columnOfCells];
+        }
+
 
         const cellColumns: Cell[][] = [];
 

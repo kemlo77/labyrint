@@ -14,7 +14,7 @@ export abstract class GridFactory {
     ): Cell[] {
         const cellSequence: Cell[] = [];
         for (let stepNumber: number = 0; stepNumber < cellsToCreate; stepNumber++) {
-            const newCellCenter: Coordinate = startCoordinate.newRelativeCoordinate(stepVector, stepNumber);
+            const newCellCenter: Coordinate = startCoordinate.newRelativeCoordinate(stepVector.scale(stepNumber));
             cellSequence.push(createCell(newCellCenter));
         }
         return cellSequence;

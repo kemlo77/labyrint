@@ -114,7 +114,8 @@ export class OctagonalGridFactory extends FramedGridFactory {
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
             const notOnFirstColumn: boolean = columnIndex !== 0;
             const notOnLastColumn: boolean = columnIndex !== numberOfColumns - 1;
-            const firstOctagonalCellCenter: Coordinate = firstCellCenter.newRelativeCoordinate(columnStep, columnIndex);
+            const firstOctagonalCellCenter: Coordinate = firstCellCenter
+                .newRelativeCoordinate(columnStep.scale(columnIndex));
             const fistTiltedSquareCellCenter: Coordinate = firstOctagonalCellCenter
                 .newRelativeCoordinate(stepFromOctagonCenterToTiltedSquareCenter);
 
@@ -158,7 +159,7 @@ export class OctagonalGridFactory extends FramedGridFactory {
         // last column
         const lastColumn: Cell[] = [];
         const lastColumnFirstCellCenter: Coordinate =
-            firstCellCenter.newRelativeCoordinate(columnStep, numberOfColumns - 1);
+            firstCellCenter.newRelativeCoordinate(columnStep.scale(numberOfColumns - 1));
         const lowerRightCornerCell: Cell = createLowerRightCornerCell(lastColumnFirstCellCenter);
         lastColumn.push(lowerRightCornerCell);
 

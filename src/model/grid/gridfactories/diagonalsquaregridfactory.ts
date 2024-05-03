@@ -1,5 +1,5 @@
 import { Coordinate } from '../../coordinate';
-import { downRightUnitVector, downUnitVector, leftUnitVector, rightUnitVector, upRightUnitVector, upUnitVector } from '../../unitvectors';
+import { downUnitVector, leftUnitVector, rightUnitVector, upRightUnitVector, upUnitVector } from '../../unitvectors';
 import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
@@ -82,7 +82,7 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
             const evenColumn: boolean = columnIndex % 2 === 0;
             const oddColumn: boolean = columnIndex % 2 === 1;
             const columnStartPoint: Coordinate = bottomLeftReferencePoint
-                .newRelativeCoordinate(columnStep, columnIndex);
+                .newRelativeCoordinate(columnStep.scale(columnIndex));
 
             if (evenColumn) {
                 //Bottom triangle
@@ -99,7 +99,7 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
 
                 //Top triangle
                 const topTriangleCenter: Coordinate = columnStartPoint
-                    .newRelativeCoordinate(rowStep, numberOfRows - 1)
+                    .newRelativeCoordinate(rowStep.scale(numberOfRows - 1))
                     .newRelativeCoordinate(toTopTriangleCenterStep);
                 const topTriangleCell: Cell = createTopRowTriangle(topTriangleCenter);
                 cellColumn.push(topTriangleCell);

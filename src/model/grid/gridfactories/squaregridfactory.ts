@@ -43,7 +43,7 @@ export class SquareGridFactory extends FramedGridFactory {
         const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < gridProperties.horizontalEdgeSegments; columnIndex++) {
             const columnStartCenter: Coordinate =
-                firstCellCenter.newRelativeCoordinate(columnStep, columnIndex);
+                firstCellCenter.newRelativeCoordinate(columnStep.scale(columnIndex));
             const cellSequence: Cell[] =
                 this.createSequenceOfCells(columnStartCenter, rowStep, gridProperties.verticalEdgeSegments,
                     createRotatedSquareCell);

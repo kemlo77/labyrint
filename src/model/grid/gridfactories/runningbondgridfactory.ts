@@ -1,6 +1,6 @@
 import { MatrixOperations } from '../../../service/matrixoperations';
 import { Coordinate } from '../../coordinate';
-import { downUnitVector, leftUnitVector, rightUnitVector } from '../../unitvectors';
+import { leftUnitVector, rightUnitVector, upUnitVector } from '../../unitvectors';
 import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
@@ -30,8 +30,8 @@ export class RunningBondGridFactory extends FramedGridFactory {
         const numberOfRows: number = gridProperties.verticalEdgeSegments;
         const angle: number = gridProperties.angle;
 
-        const oneStepDown: Vector = downUnitVector.scale(cellWidth).newRotatedVector(angle);
-        const aHalfStepDown: Vector = downUnitVector.scale(halfCellWidth).newRotatedVector(angle);
+        const oneStepUp: Vector = upUnitVector.scale(cellWidth).newRotatedVector(angle);
+        const aHalfStepUp: Vector = upUnitVector.scale(halfCellWidth).newRotatedVector(angle);
         const aHalfStepLeft: Vector = leftUnitVector.scale(halfCellWidth).newRotatedVector(angle);
         const aHalfStepRight: Vector = rightUnitVector.scale(halfCellWidth).newRotatedVector(angle);
         const oneStepRight: Vector = rightUnitVector.scale(cellWidth).newRotatedVector(angle);
@@ -43,7 +43,7 @@ export class RunningBondGridFactory extends FramedGridFactory {
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'double-square-rectangle', 90 + angle);
 
         const firstCellCenter: Coordinate = gridProperties.insertionPoint
-            .newRelativeCoordinate(aHalfStepDown)
+            .newRelativeCoordinate(aHalfStepUp)
             .newRelativeCoordinate(aHalfStepRight);
 
         const cellRows: Cell[][] = [];
@@ -54,7 +54,7 @@ export class RunningBondGridFactory extends FramedGridFactory {
         for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
             const rowOfCells: Cell[] = [];
             const onEvenRow: boolean = rowIndex % 2 === 0;
-            const rowStartPoint: Coordinate = firstCellCenter.newRelativeCoordinate(oneStepDown.scale(rowIndex));
+            const rowStartPoint: Coordinate = firstCellCenter.newRelativeCoordinate(oneStepUp.scale(rowIndex));
             if (onEvenRow) {
                 //rectangular cells
                 const evenRowStartPoint: Coordinate = rowStartPoint.newRelativeCoordinate(aHalfStepRight);
@@ -128,14 +128,14 @@ export class RunningBondGridFactory extends FramedGridFactory {
                 if (onEvenRow || onFirstColumn) {
                     continue;
                 }
-                const upperRowLeftNeighbour: Cell = grid[rowIndex - 1][columnIndex - 1];
-                cell.establishNeighbourRelationTo(upperRowLeftNeighbour);
+                const lowerRowLeftNeighbour: Cell = grid[rowIndex - 1][columnIndex - 1];
+                cell.establishNeighbourRelationTo(lowerRowLeftNeighbour);
 
                 if (onLastRow) {
                     continue;
                 }
-                const lowerRowLeftNeighbour: Cell = grid[rowIndex + 1][columnIndex - 1];
-                cell.establishNeighbourRelationTo(lowerRowLeftNeighbour);
+                const upperRowLeftNeighbour: Cell = grid[rowIndex + 1][columnIndex - 1];
+                cell.establishNeighbourRelationTo(upperRowLeftNeighbour);
             }
         }
     }

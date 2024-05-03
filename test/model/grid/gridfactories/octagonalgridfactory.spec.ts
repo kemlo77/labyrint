@@ -12,7 +12,6 @@ describe('OctagonalGridFactory', () => {
         const gridProperties: GridProperties = new GridProperties(insertionPoint, 3, 3, 10);
         const cellMatrix: Cell[][] = octagonalGridFactory['createCellGrid'](gridProperties);
         octagonalGridFactory['establishNeighbourRelationsInGrid'](cellMatrix);
-        //expect(grid.allCells.length).to.equal(18);
 
         expect(cellMatrix[0].map(cell => cell.neighbours.length)).to.deep.equal([3, 5, 3]);
         expect(cellMatrix[1].map(cell => cell.neighbours.length)).to.deep.equal([4, 4]);

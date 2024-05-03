@@ -1,5 +1,5 @@
 import { Coordinate } from '../../coordinate';
-import { downRightUnitVector, downUnitVector, leftUnitVector, rightUnitVector, upUnitVector } from '../../unitvectors';
+import { downRightUnitVector, downUnitVector, leftUnitVector, rightUnitVector, upRightUnitVector, upUnitVector } from '../../unitvectors';
 import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
@@ -28,49 +28,49 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
         const halfDiagonalLength: number = diagonalLength / 2;
         const numberOfColumns: number = gridProperties.horizontalEdgeSegments * 2 - 1;
         const numberOfRows: number = gridProperties.verticalEdgeSegments;
-        const angle: number = - gridProperties.angle;
+        const angle: number = gridProperties.angle;
 
-        const createBottomRowTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle - 45);
-        const createLeftColumnTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle - 135);
         const createTopRowTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle - 225);
+            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle + 45);
+        const createLeftColumnTriangle: CellCreator = (center: Coordinate) =>
+            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle + 135);
+        const createBottomRowTriangle: CellCreator = (center: Coordinate) =>
+            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle + 225);
         const createRightColumnTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle - 315);
+            CellFactory.createCell(center, cellWidth, 'isosceles-right-triangular', angle + 315);
         const createSquareCell: CellCreator = (center: Coordinate) =>
             CellFactory.createCell(center, cellWidth, 'square', 45 + angle);
 
-        const stepToLeftReferencePoint: Vector = downRightUnitVector.scale(cellWidth)
+        const stepToLeftReferencePoint: Vector = upRightUnitVector.scale(cellWidth)
             .newRotatedVector(angle);
         const stepToRightReferencePoint: Vector =
             rightUnitVector.scale(diagonalLength * (gridProperties.horizontalEdgeSegments - 1))
                 .newRotatedVector(angle);
         const columnStep: Vector = rightUnitVector.scale(diagonalLength / 2)
             .newRotatedVector(angle);
-        const rowStep: Vector = downUnitVector.scale(diagonalLength)
+        const rowStep: Vector = upUnitVector.scale(diagonalLength)
             .newRotatedVector(angle);
-        const oddColumnExtraStep: Vector = downUnitVector.scale(halfDiagonalLength)
+        const oddColumnExtraStep: Vector = upUnitVector.scale(halfDiagonalLength)
             .newRotatedVector(angle);
         const toLeftTriangleCenterStep: Vector = leftUnitVector.scale(halfDiagonalLength * 2 / 3)
             .newRotatedVector(angle);
         const toRightTriangleCenterStep: Vector = rightUnitVector.scale(halfDiagonalLength * 2 / 3)
             .newRotatedVector(angle);
-        const toTopTriangleCenterStep: Vector = upUnitVector.scale(halfDiagonalLength * 2 / 3)
-            .newRotatedVector(angle);
         const toBottomTriangleCenterStep: Vector = downUnitVector.scale(halfDiagonalLength * 2 / 3)
             .newRotatedVector(angle);
+        const toTopTriangleCenterStep: Vector = upUnitVector.scale(halfDiagonalLength * 2 / 3)
+            .newRotatedVector(angle);
 
-        const topLeftReferencePoint: Coordinate =
+        const bottomLeftReferencePoint: Coordinate =
             gridProperties.insertionPoint.newRelativeCoordinate(stepToLeftReferencePoint);
-        const topRightReferencePoint: Coordinate =
-            topLeftReferencePoint.newRelativeCoordinate(stepToRightReferencePoint);
+        const bottomRightReferencePoint: Coordinate =
+            bottomLeftReferencePoint.newRelativeCoordinate(stepToRightReferencePoint);
 
         const cellColumns: Cell[][] = [];
 
         //Left column of triangles
         const leftTriangleColumnStartPoint: Coordinate =
-            topLeftReferencePoint.newRelativeCoordinate(toLeftTriangleCenterStep);
+            bottomLeftReferencePoint.newRelativeCoordinate(toLeftTriangleCenterStep);
         const firstColumn: Cell[] =
             this.createSequenceOfCells(leftTriangleColumnStartPoint, rowStep, numberOfRows, createLeftColumnTriangle);
         cellColumns.push(firstColumn);
@@ -81,13 +81,15 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
 
             const evenColumn: boolean = columnIndex % 2 === 0;
             const oddColumn: boolean = columnIndex % 2 === 1;
-            const columnStartPoint: Coordinate = topLeftReferencePoint.newRelativeCoordinate(columnStep, columnIndex);
+            const columnStartPoint: Coordinate = bottomLeftReferencePoint
+                .newRelativeCoordinate(columnStep, columnIndex);
 
             if (evenColumn) {
-                //Top triangle
-                const topTriangleCenter: Coordinate = columnStartPoint.newRelativeCoordinate(toTopTriangleCenterStep);
-                const topTriangleCell: Cell = createTopRowTriangle(topTriangleCenter);
-                cellColumn.push(topTriangleCell);
+                //Bottom triangle
+                const bottomTriangleCenter: Coordinate = columnStartPoint
+                    .newRelativeCoordinate(toBottomTriangleCenterStep);
+                const bottomTriangleCell: Cell = createBottomRowTriangle(bottomTriangleCenter);
+                cellColumn.push(bottomTriangleCell);
 
                 //Squares
                 const oddColumnStartPoint: Coordinate = columnStartPoint.newRelativeCoordinate(oddColumnExtraStep);
@@ -95,12 +97,12 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
                     this.createSequenceOfCells(oddColumnStartPoint, rowStep, numberOfRows - 1, createSquareCell);
                 cellColumn.push(...sequenceOfSquareCells);
 
-                //Bottom triangle
-                const bottomTriangleCenter: Coordinate = columnStartPoint
+                //Top triangle
+                const topTriangleCenter: Coordinate = columnStartPoint
                     .newRelativeCoordinate(rowStep, numberOfRows - 1)
-                    .newRelativeCoordinate(toBottomTriangleCenterStep);
-                const bottomTriangleCell: Cell = createBottomRowTriangle(bottomTriangleCenter);
-                cellColumn.push(bottomTriangleCell);
+                    .newRelativeCoordinate(toTopTriangleCenterStep);
+                const topTriangleCell: Cell = createTopRowTriangle(topTriangleCenter);
+                cellColumn.push(topTriangleCell);
 
 
                 cellColumns.push(cellColumn);
@@ -118,7 +120,7 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
 
         //Right column of triangles
         const rightTriangleColumnStartPoint: Coordinate =
-            topRightReferencePoint.newRelativeCoordinate(toRightTriangleCenterStep);
+            bottomRightReferencePoint.newRelativeCoordinate(toRightTriangleCenterStep);
         const rightColumn: Cell[] =
             this.createSequenceOfCells(rightTriangleColumnStartPoint, rowStep, numberOfRows, createRightColumnTriangle);
         cellColumns.push(rightColumn);
@@ -141,20 +143,20 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
                 }
 
                 if (onOddColumn && notOnLastRow) {
-                    const leftLowerCell: Cell = grid[columnIndex - 1][rowIndex];
-                    currentCell.establishNeighbourRelationTo(leftLowerCell);
+                    const leftUpperCell: Cell = grid[columnIndex - 1][rowIndex];
+                    currentCell.establishNeighbourRelationTo(leftUpperCell);
                 }
 
                 if (onOddColumn && notOnTheFirstRow) {
-                    const leftUpperCell: Cell = grid[columnIndex - 1][rowIndex - 1];
-                    currentCell.establishNeighbourRelationTo(leftUpperCell);
+                    const leftLowerCell: Cell = grid[columnIndex - 1][rowIndex - 1];
+                    currentCell.establishNeighbourRelationTo(leftLowerCell);
                 }
 
                 if (onEvenColumn) {
-                    const leftLowerCell: Cell = grid[columnIndex - 1][rowIndex + 1];
-                    const leftUpperCell: Cell = grid[columnIndex - 1][rowIndex];
-                    currentCell.establishNeighbourRelationTo(leftLowerCell);
+                    const leftUpperCell: Cell = grid[columnIndex - 1][rowIndex + 1];
+                    const leftLowerCell: Cell = grid[columnIndex - 1][rowIndex];
                     currentCell.establishNeighbourRelationTo(leftUpperCell);
+                    currentCell.establishNeighbourRelationTo(leftLowerCell);
                 }
 
             }

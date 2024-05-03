@@ -11,8 +11,8 @@ describe('Vector', () => {
     it('should return an accurate new rotated vector', () => {
         const vector: Vector = new Vector(3, 4);
         const rotatedVector: Vector = vector.newRotatedVector(90);
-        expect(rotatedVector.x).to.be.closeTo(4, 0.0001);
-        expect(rotatedVector.y).to.be.closeTo(-3, 0.0001);
+        expect(rotatedVector.x).to.be.closeTo(-4, 0.0001);
+        expect(rotatedVector.y).to.be.closeTo(3, 0.0001);
     });
 
     it('should return an accurate angle', () => {

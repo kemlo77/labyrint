@@ -31,7 +31,7 @@ export class GridSupplier {
 
         if (gridType === 'tiltedSquare') {
             const specialInsertionPoint: Coordinate = new Coordinate(15, 30 * 15 * Math.SQRT2 / 2 + 15);
-            const gridProperties: GridProperties = new GridProperties(specialInsertionPoint, 30, 30, 15, 45);
+            const gridProperties: GridProperties = new GridProperties(specialInsertionPoint, 30, 30, 15, -45);
             return new SquareGridFactory().createGrid(gridProperties);
         }
 
@@ -49,7 +49,7 @@ export class GridSupplier {
         }
 
         if (gridType === 'octagonal') {
-            const gridProperties: GridProperties = new GridProperties(insertionPoint, 3, 3, 30);
+            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
             return new OctagonalGridFactory().createGrid(gridProperties);
         }
 

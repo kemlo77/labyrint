@@ -16,7 +16,9 @@ export class CanvasPainter {
     constructor(canvasElement: HTMLCanvasElement) {
         this._canvasElement = canvasElement;
         this._canvasCtx = this._canvasElement.getContext('2d');
-
+        this._canvasCtx.scale(1, -1);
+        this._canvasCtx.translate(0, -this._canvasElement.height);
+        this._canvasCtx.save();
     }
 
     public clearTheCanvas(): void {
@@ -61,9 +63,13 @@ export class CanvasPainter {
     }
 
     public drawText(text: string, position: Coordinate, fontSize: number, color: string): void {
+        this._canvasCtx.save();
+        this._canvasCtx.scale(1, -1);
+        this._canvasCtx.translate(0, -this._canvasElement.height);
         this._canvasCtx.fillStyle = color;
         this._canvasCtx.font = `${fontSize}px Arial`;
         this._canvasCtx.fillText(text, position.x - fontSize / 4, position.y + fontSize / 4);
+        this._canvasCtx.restore();
     }
 
 }

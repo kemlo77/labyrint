@@ -58,17 +58,17 @@ describe('CellFactory', () => {
         const rectangleCell: Cell =
             CellFactory.createCell(rotatedRectangleCenter, 10, 'double-square-rectangle', 90);
         expect(rectangleCell.corners[0].x).to.be.closeTo(0, 0.0001);
-        expect(rectangleCell.corners[0].y).to.be.closeTo(-5, 0.0001);
-        expect(rectangleCell.corners[1].x).to.be.closeTo(10, 0.0001);
-        expect(rectangleCell.corners[1].y).to.be.closeTo(-5, 0.0001);
-        expect(rectangleCell.corners[2].x).to.be.closeTo(10, 0.0001);
-        expect(rectangleCell.corners[2].y).to.be.closeTo(5, 0.0001);
+        expect(rectangleCell.corners[0].y).to.be.closeTo(5, 0.0001);
+        expect(rectangleCell.corners[1].x).to.be.closeTo(-10, 0.0001);
+        expect(rectangleCell.corners[1].y).to.be.closeTo(5, 0.0001);
+        expect(rectangleCell.corners[2].x).to.be.closeTo(-10, 0.0001);
+        expect(rectangleCell.corners[2].y).to.be.closeTo(-5, 0.0001);
         expect(rectangleCell.corners[3].x).to.be.closeTo(0, 0.0001);
-        expect(rectangleCell.corners[3].y).to.be.closeTo(5, 0.0001);
-        expect(rectangleCell.corners[4].x).to.be.closeTo(-10, 0.0001);
-        expect(rectangleCell.corners[4].y).to.be.closeTo(5, 0.0001);
-        expect(rectangleCell.corners[5].x).to.be.closeTo(-10, 0.0001);
-        expect(rectangleCell.corners[5].y).to.be.closeTo(-5, 0.0001);
+        expect(rectangleCell.corners[3].y).to.be.closeTo(-5, 0.0001);
+        expect(rectangleCell.corners[4].x).to.be.closeTo(10, 0.0001);
+        expect(rectangleCell.corners[4].y).to.be.closeTo(-5, 0.0001);
+        expect(rectangleCell.corners[5].x).to.be.closeTo(10, 0.0001);
+        expect(rectangleCell.corners[5].y).to.be.closeTo(5, 0.0001);
         expect(rectangleCell.corners.length).to.equal(6);
         expect(rectangleCell.center).to.equal(rotatedRectangleCenter);
     });

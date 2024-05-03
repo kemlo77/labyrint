@@ -1,5 +1,5 @@
 import { Coordinate } from '../../coordinate';
-import { downRightUnitVector, downUnitVector, rightUnitVector } from '../../unitvectors';
+import { rightUnitVector, upRightUnitVector, upUnitVector } from '../../unitvectors';
 import { Vector } from '../../vector';
 import { Cell } from '../cell/cell';
 import { CellFactory } from '../cell/cellfactory';
@@ -26,11 +26,11 @@ export class SquareGridFactory extends FramedGridFactory {
         const cellWidth: number = gridProperties.edgeSegmentLength;
         const diagonalLength: number = cellWidth * Math.SQRT2;
 
-        const stepDirectionToFirstCellCenter: Vector = downRightUnitVector.scale(diagonalLength / 2)
+        const stepDirectionToFirstCellCenter: Vector = upRightUnitVector.scale(diagonalLength / 2)
             .newRotatedVector(gridProperties.angle);
         const columnStep: Vector = rightUnitVector.scale(cellWidth)
             .newRotatedVector(gridProperties.angle);
-        const rowStep: Vector = downUnitVector.scale(cellWidth)
+        const rowStep: Vector = upUnitVector.scale(cellWidth)
             .newRotatedVector(gridProperties.angle);
 
         const firstCellCenter: Coordinate =

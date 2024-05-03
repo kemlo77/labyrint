@@ -31,6 +31,8 @@ export class View implements Observer {
         this.drawEndCell();
         this.drawAllCellBorders();
         //this.drawAllCellCenters();
+        //this.drawAllCellConnections();
+        //this.drawAllNeighbourRelations();
         //this.drawNumberOfNeighbours();
     }
 

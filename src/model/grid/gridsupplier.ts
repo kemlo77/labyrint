@@ -45,7 +45,7 @@ export class GridSupplier {
         }
 
         if (gridType === 'triangular') {
-            return new TriangularGridFactory().createGrid(81, 29, 25);
+            return new TriangularGridFactory().createGrid(39, 42, 30);
         }
 
         if (gridType === 'octagonal') {

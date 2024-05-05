@@ -45,12 +45,12 @@ export class TriangularGridFactory extends UnframedGridFactory {
             for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
 
                 let cellCenter: Coordinate = columnStartCenter.newRelativeCoordinate(rowStep.scale(rowIndex));
-                if (this.cellPointsLeft(rowIndex, columnIndex)) {
-                    cellCenter = cellCenter.newRelativeCoordinate(rightAdjustmentStep);
-                    columnOfCells.push(leftPointingTriangle(cellCenter));
-                } else {
+                if (this.cellPointsRight(rowIndex, columnIndex)) {
                     cellCenter = cellCenter.newRelativeCoordinate(leftAdjustmentStep);
                     columnOfCells.push(rightPointingTriangle(cellCenter));
+                } else {
+                    cellCenter = cellCenter.newRelativeCoordinate(rightAdjustmentStep);
+                    columnOfCells.push(leftPointingTriangle(cellCenter));
                 }
             }
 
@@ -60,7 +60,7 @@ export class TriangularGridFactory extends UnframedGridFactory {
         return cellColumns;
     }
 
-    private cellPointsLeft(columnIndex: number, rowIndex: number): boolean {
+    private cellPointsRight(columnIndex: number, rowIndex: number): boolean {
         const evenRowIndex: boolean = rowIndex % 2 == 0;
         const evenColumnIndex: boolean = columnIndex % 2 == 0;
         return (evenRowIndex && evenColumnIndex) || (!evenRowIndex && !evenColumnIndex);

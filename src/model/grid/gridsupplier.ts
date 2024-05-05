@@ -41,7 +41,7 @@ export class GridSupplier {
         }
 
         if (gridType === 'hexagonal') {
-            return new HexagonalGridFactory().createGrid(33, 24, 30);
+            return new HexagonalGridFactory().createGrid(39, 21, 30);
         }
 
         if (gridType === 'triangular') {

@@ -19,30 +19,30 @@ export class HexagonalGridFactory extends UnframedGridFactory {
     }
 
     private createCellMatrix(numberOfColumns: number, numberOfRows: number, cellWidth: number): Cell[][] {
-        const rowOffset: number = cellWidth * Math.sqrt(3) / 2;
+        const columnOffset: number = cellWidth * Math.sqrt(3) / 2;
 
-        const columnStep: Vector = rightUnitVector.scale(cellWidth);
-        const oddRowExtraColumnStep: Vector = rightUnitVector.scale(cellWidth / 2);
-        const rowStep: Vector = upUnitVector.scale(rowOffset);
+        const columnStep: Vector = rightUnitVector.scale(columnOffset);
+        const oddColumnExtraRowStep: Vector = upUnitVector.scale(cellWidth / 2);
+        const rowStep: Vector = upUnitVector.scale(cellWidth);
 
         const createHexagonalCell: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'hexagonal');
+            CellFactory.createCell(center, cellWidth, 'hexagonal', 90);
 
-        const firstCellCenter: Coordinate = new Coordinate(cellWidth, rowOffset);
+        const firstCellCenter: Coordinate = new Coordinate(cellWidth, columnOffset);
 
-        const cellRows: Cell[][] = [];
-        for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
-            const onOddRow: boolean = rowIndex % 2 === 1;
-            let rowStartCellCenter: Coordinate = firstCellCenter.newRelativeCoordinate(rowStep.scale(rowIndex));
-            if (onOddRow) {
-                rowStartCellCenter = rowStartCellCenter.newRelativeCoordinate(oddRowExtraColumnStep);
-
+        const cellColumns: Cell[][] = [];
+        for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
+            const onOddColumn: boolean = columnIndex % 2 === 1;
+            let columnStartCellCenter: Coordinate =
+                firstCellCenter.newRelativeCoordinate(columnStep.scale(columnIndex));
+            if (onOddColumn) {
+                columnStartCellCenter = columnStartCellCenter.newRelativeCoordinate(oddColumnExtraRowStep);
             }
-            const rowOfCells: Cell[] =
-                this.createSequenceOfCells(rowStartCellCenter, columnStep, numberOfColumns, createHexagonalCell);
-            cellRows.push(rowOfCells);
+            const columnOfCells: Cell[] =
+                this.createSequenceOfCells(columnStartCellCenter, rowStep, numberOfRows, createHexagonalCell);
+            cellColumns.push(columnOfCells);
         }
-        return cellRows;
+        return cellColumns;
     }
 
     private establishNeighbourRelationsInGrid(grid: Cell[][]): void {
@@ -53,31 +53,32 @@ export class HexagonalGridFactory extends UnframedGridFactory {
 
     private establishNeighbourRelationsBetweenTheRest(grid: Cell[][]): void {
 
-        for (let rowIndex: number = 0; rowIndex < grid.length; rowIndex++) {
-            for (let columnIndex: number = 0; columnIndex < grid[rowIndex].length; columnIndex++) {
-                const currentCell: Cell = grid[rowIndex][columnIndex];
-                const onEvenRow: boolean = rowIndex % 2 === 0;
-                const onOddRow: boolean = !onEvenRow;
-                const onLastRow: boolean = rowIndex === grid.length - 1;
-                const notOnLastColumn: boolean = columnIndex < grid[rowIndex].length - 1;
-                const notOnFirstColumn: boolean = columnIndex > 0;
 
-                if (onLastRow) {
+        for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
+            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
+                const currentCell: Cell = grid[columnIndex][rowIndex];
+                const onEvenColumn: boolean = columnIndex % 2 === 0;
+                const onOddColumn: boolean = !onEvenColumn;
+                const onLastColumn: boolean = columnIndex === grid.length - 1;
+                const notOnFirstRow: boolean = rowIndex > 0;
+                const notOnLastRow: boolean = rowIndex < grid[columnIndex].length - 1;
+
+                if (onLastColumn) {
                     continue;
                 }
 
-                if (onEvenRow && notOnFirstColumn) {
-                    const neighbourUpLeft: Cell = grid[rowIndex + 1][columnIndex - 1];
-                    currentCell.establishNeighbourRelationTo(neighbourUpLeft);
+                if (onEvenColumn && notOnFirstRow) {
+                    const neighbourDownRight: Cell = grid[columnIndex + 1][rowIndex - 1];
+                    currentCell.establishNeighbourRelationTo(neighbourDownRight);
                 }
 
-                if (onOddRow && notOnLastColumn) {
-                    const neighbourUpRight: Cell = grid[rowIndex + 1][columnIndex + 1];
+                if (onOddColumn && notOnLastRow) {
+                    const neighbourUpRight: Cell = grid[columnIndex + 1][rowIndex + 1];
                     currentCell.establishNeighbourRelationTo(neighbourUpRight);
                 }
             }
         }
     }
-
-
 }
+
+

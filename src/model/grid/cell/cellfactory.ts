@@ -23,6 +23,15 @@ export class CellFactory {
         if (type === 'equilateral-triangular') {
             return CellFactory.createCornersForEquilateralTriangle(center, width);
         }
+        if (type === 'triangular') {
+            return CellFactory.createCornersForTriangle(center, width);
+        }
+        if (type === 'left-half-triangular') {
+            return CellFactory.createCornersForLeftHalfTriangle(center, width);
+        }
+        if (type === 'right-half-triangular') {
+            return CellFactory.createCornersForRightHalfTriangle(center, width);
+        }
         if (type === 'isosceles-right-triangular') {
             return CellFactory.createCornersForIsoscelesRightTriangle(center, width);
         }
@@ -62,6 +71,41 @@ export class CellFactory {
         throw new Error('Unknown cell type');
     }
 
+    private static createCornersForTriangle(center: Coordinate, width: number): Coordinate[] {
+        const height: number = width;
+        const thirdHeight: number = height / 3;
+        const halfWidth: number = width / 2;
+
+        const upperCorner: Coordinate = new Coordinate(center.x, center.y + thirdHeight * 2);
+        const rightCorner: Coordinate = new Coordinate(center.x + halfWidth, center.y - thirdHeight);
+        const leftCorner: Coordinate = new Coordinate(center.x - halfWidth, center.y - thirdHeight);
+        return [upperCorner, rightCorner, leftCorner];
+    }
+
+    private static createCornersForLeftHalfTriangle(center: Coordinate, width: number): Coordinate[] {
+        const height: number = width;
+        const thirdHeight: number = height / 3;
+        const halfWidth: number = width / 2;
+        const sixthOfWidth: number = width / 6;
+
+        const upperCorner: Coordinate = new Coordinate(center.x + sixthOfWidth, center.y + thirdHeight * 2);
+        const corner: Coordinate = new Coordinate(center.x + sixthOfWidth, center.y - thirdHeight);
+        const leftCorner: Coordinate = new Coordinate(center.x - halfWidth + sixthOfWidth, center.y - thirdHeight);
+        return [upperCorner, corner, leftCorner];
+    }
+
+    private static createCornersForRightHalfTriangle(center: Coordinate, width: number): Coordinate[] {
+        const height: number = width;
+        const thirdHeight: number = height / 3;
+        const halfWidth: number = width / 2;
+        const sixthOfWidth: number = width / 6;
+
+        const upperCorner: Coordinate = new Coordinate(center.x - sixthOfWidth, center.y + thirdHeight * 2);
+        const rightCorner: Coordinate = new Coordinate(center.x + halfWidth - sixthOfWidth, center.y - thirdHeight);
+        const corner: Coordinate = new Coordinate(center.x - sixthOfWidth, center.y - thirdHeight);
+        return [upperCorner, rightCorner, corner];
+    }
+
     private static createCornersForEquilateralTriangle(center: Coordinate, width: number): Coordinate[] {
         const height: number = width * Math.sqrt(3) / 2;
         const thirdHeight: number = height / 3;
@@ -72,7 +116,6 @@ export class CellFactory {
         const leftCorner: Coordinate = new Coordinate(center.x - halfWidth, center.y - thirdHeight);
         return [upperCorner, rightCorner, leftCorner];
     }
-
 
     private static createCornersForIsoscelesRightTriangle(center: Coordinate, width: number): Coordinate[] {
         const thirdWidth: number = width / 3;

@@ -38,17 +38,17 @@ export class CellFactory {
         if (type === 'hexagonal') {
             return CellFactory.createCornersForHexagon(center, width);
         }
-        if (type === 'half-hexagonal') {
-            return CellFactory.createCornersForHalfHexagon(center, width);
+        if (type === 'right-half-hexagonal') {
+            return CellFactory.createCornersForRightHalfHexagon(center, width);
         }
-        if (type === 'side-hexagonal') {
-            return CellFactory.createCornersForSideHexagon(center, width);
+        if (type === 'bottom-half-hexagonal') {
+            return CellFactory.createCornersForBottomHalfHexagon(center, width);
         }
-        if (type === 'quarter-hexagonal') {
-            return CellFactory.createCornersForQuarterHexagon(center, width);
+        if (type === 'bottom-right-quarter-hexagonal') {
+            return CellFactory.createCornersForBottomRightQuarterHexagon(center, width);
         }
-        if (type === 'quarter-hexagonal-mirrored') {
-            return CellFactory.createCornersForQuarterHexagonMirrored(center, width);
+        if (type === 'bottom-left-quarter-hexagonal') {
+            return CellFactory.createCornersForBottomLeftQuarterHexagon(center, width);
         }
         if (type === 'octagonal') {
             return CellFactory.createCornersForOctagon(center, width);
@@ -127,58 +127,66 @@ export class CellFactory {
     private static createCornersForHexagon(center: Coordinate, width: number): Coordinate[] {
         const halfWidth: number = width / 2;
         const quarterHeight: number = width / Math.sqrt(3) / 2;
+        const halfHeight: number = width / Math.sqrt(3);
 
         const upperRight: Coordinate = new Coordinate(center.x + halfWidth, center.y + quarterHeight);
-        const upperCenter: Coordinate = new Coordinate(center.x, center.y + 2 * quarterHeight);
+        const upperCenter: Coordinate = new Coordinate(center.x, center.y + halfHeight);
         const upperLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y + quarterHeight);
         const lowerLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y - quarterHeight);
-        const lowerCenter: Coordinate = new Coordinate(center.x, center.y - 2 * quarterHeight);
+        const lowerCenter: Coordinate = new Coordinate(center.x, center.y - halfHeight);
         const lowerRight: Coordinate = new Coordinate(center.x + halfWidth, center.y - quarterHeight);
         return [upperRight, upperCenter, upperLeft, lowerLeft, lowerCenter, lowerRight];
     }
 
-    private static createCornersForHalfHexagon(center: Coordinate, width: number): Coordinate[] {
-        const halfWidth: number = width / 2;
+    private static createCornersForRightHalfHexagon(center: Coordinate, width: number): Coordinate[] {
+        const quarterWidth: number = width / 4;
         const quarterHeight: number = width / Math.sqrt(3) / 2;
+        const halfHeight: number = width / Math.sqrt(3);
 
-        const upperCenter: Coordinate = new Coordinate(center.x, center.y + 2 * quarterHeight);
-        const upperRight: Coordinate = new Coordinate(center.x + halfWidth, center.y + quarterHeight);
-        const lowerRight: Coordinate = new Coordinate(center.x + halfWidth, center.y - quarterHeight);
-        const lowerCenter: Coordinate = new Coordinate(center.x, center.y - 2 * quarterHeight);
+        const upperCenter: Coordinate = new Coordinate(center.x - quarterWidth, center.y + halfHeight);
+        const upperRight: Coordinate = new Coordinate(center.x + quarterWidth, center.y + quarterHeight);
+        const lowerRight: Coordinate = new Coordinate(center.x + quarterWidth, center.y - quarterHeight);
+        const lowerCenter: Coordinate = new Coordinate(center.x - quarterWidth, center.y - halfHeight);
         return [upperRight, upperCenter, lowerCenter, lowerRight];
     }
 
-    private static createCornersForSideHexagon(center: Coordinate, width: number): Coordinate[] {
+    private static createCornersForBottomHalfHexagon(center: Coordinate, width: number): Coordinate[] {
         const halfWidth: number = width / 2;
         const quarterHeight: number = width / Math.sqrt(3) / 2;
+        const eightOfHeight: number = quarterHeight / 2;
 
-        const upperRight: Coordinate = new Coordinate(center.x + halfWidth, center.y);
-        const upperLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y);
-        const lowerRight: Coordinate = new Coordinate(center.x + halfWidth, center.y - quarterHeight);
-        const lowerLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y - quarterHeight);
-        const lowerCenter: Coordinate = new Coordinate(center.x, center.y - 2 * quarterHeight);
+        const upperRight: Coordinate =
+            new Coordinate(center.x + halfWidth, center.y + eightOfHeight);
+        const upperLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y + eightOfHeight);
+        const lowerRight: Coordinate = new Coordinate(center.x + halfWidth, center.y - eightOfHeight);
+        const lowerLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y - eightOfHeight);
+        const lowerCenter: Coordinate = new Coordinate(center.x, center.y - quarterHeight - eightOfHeight);
         return [upperRight, upperLeft, lowerLeft, lowerCenter, lowerRight];
     }
 
-    private static createCornersForQuarterHexagon(center: Coordinate, width: number): Coordinate[] {
-        const halfWidth: number = width / 2;
+    private static createCornersForBottomRightQuarterHexagon(center: Coordinate, width: number): Coordinate[] {
+        const quarterWidth: number = width / 4;
         const quarterHeight: number = width / Math.sqrt(3) / 2;
+        const eightOfHeight: number = quarterHeight / 2;
 
-        const upperCenter: Coordinate = new Coordinate(center.x, center.y);
-        const upperRight: Coordinate = new Coordinate(center.x + halfWidth, center.y);
-        const lowerRight: Coordinate = new Coordinate(center.x + halfWidth, center.y - quarterHeight);
-        const lowerCenter: Coordinate = new Coordinate(center.x, center.y - 2 * quarterHeight);
+        const upperCenter: Coordinate = new Coordinate(center.x - quarterWidth, center.y + eightOfHeight);
+        const upperRight: Coordinate = new Coordinate(center.x + quarterWidth, center.y + eightOfHeight);
+        const lowerRight: Coordinate = new Coordinate(center.x + quarterWidth, center.y - eightOfHeight);
+        const lowerCenter: Coordinate =
+            new Coordinate(center.x - quarterWidth, center.y - quarterHeight - eightOfHeight);
         return [upperRight, upperCenter, lowerCenter, lowerRight];
     }
 
-    private static createCornersForQuarterHexagonMirrored(center: Coordinate, width: number): Coordinate[] {
-        const halfWidth: number = width / 2;
+    private static createCornersForBottomLeftQuarterHexagon(center: Coordinate, width: number): Coordinate[] {
+        const quarterWidth: number = width / 4;
         const quarterHeight: number = width / Math.sqrt(3) / 2;
+        const eightOfHeight: number = quarterHeight / 2;
 
-        const upperRight: Coordinate = new Coordinate(center.x, center.y);
-        const upperLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y);
-        const lowerLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y - quarterHeight);
-        const lowerCenter: Coordinate = new Coordinate(center.x, center.y - 2 * quarterHeight);
+        const upperRight: Coordinate = new Coordinate(center.x + quarterWidth, center.y + eightOfHeight);
+        const upperLeft: Coordinate = new Coordinate(center.x - quarterWidth, center.y + eightOfHeight);
+        const lowerLeft: Coordinate = new Coordinate(center.x - quarterWidth, center.y - eightOfHeight);
+        const lowerCenter: Coordinate =
+            new Coordinate(center.x + quarterWidth, center.y - quarterHeight - eightOfHeight);
         return [upperRight, upperLeft, lowerLeft, lowerCenter];
     }
 

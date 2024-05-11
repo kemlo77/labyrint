@@ -1,37 +1,32 @@
 import './style.css';
 import { Controller } from './controller';
 import { Model } from './model/model';
-import { RectangularGrid } from './model/rectangulargrid';
-import { HexagonalGrid } from './model/hexagonalgrid';
-import { RoundedView } from './view/roundedview';
-import { BoxedView } from './view/boxedview';
-import { HoneycombView } from './view/honeycombview';
+import { View } from './view/view';
+import { CanvasPainter } from './view/canvaspainter';
+
+const canvasElement: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
+const generateButton: HTMLButtonElement = document.getElementById('generateButton') as HTMLButtonElement;
+const simplifyButton: HTMLButtonElement = document.getElementById('simplifyButton') as HTMLButtonElement;
+const showTrailButton: HTMLButtonElement = document.getElementById('showTrailButton') as HTMLButtonElement;
+const hideTrailButton: HTMLButtonElement = document.getElementById('hideTrailButton') as HTMLButtonElement;
+const mazeTypeRadioButtons: NodeListOf<HTMLInputElement> = document.querySelectorAll('input[name="mazeType"]');
 
 const model: Model = new Model();
-const controller: Controller = new Controller(model);
+const canvasPainter: CanvasPainter = new CanvasPainter(canvasElement);
+const view: View = new View(canvasPainter, model);
+const controller: Controller = new Controller(model, view);
+controller.changeGridType('square');
 
-document.getElementById('squareMazeButton').addEventListener('click', () => createSquareMaze());
-document.getElementById('roundedMazeButton').addEventListener('click', () => createRoundedMaze());
-document.getElementById('hexagonalMazeButton').addEventListener('click', () => createHexagonalMaze());
 
-document.getElementById('simplifyButton').addEventListener('click', () => model.reduceSomeComplexity());
-document.getElementById('showTrailButton').addEventListener('click', () => model.showSolution());
-document.getElementById('hideTrailButton').addEventListener('click', () => model.hideSolution());
+generateButton.addEventListener('click', () => controller.generateLabyrinth());
+simplifyButton.addEventListener('click', () => model.reduceSomeComplexity());
+showTrailButton.addEventListener('click', () => controller.showSolution());
+hideTrailButton.addEventListener('click', () => controller.hideSolution());
 
-function createSquareMaze(): void {
-    model.grid = new RectangularGrid(69,43,15);
-    model.view = new BoxedView(14);
-    controller.generateLabyrinth();
-}
-
-function createRoundedMaze(): void {
-    model.grid = new HexagonalGrid(51,37,20);
-    model.view = new RoundedView(16);
-    controller.generateLabyrinth();
-}
-
-function createHexagonalMaze(): void {
-    model.grid = new HexagonalGrid(51,37,20);
-    model.view = new HoneycombView(18);
-    controller.generateLabyrinth();
-}
+mazeTypeRadioButtons.forEach(radioButton => {
+    radioButton.addEventListener('change', () => {
+        if (radioButton.checked) {
+            controller.changeGridType(radioButton.value);
+        }
+    });
+});

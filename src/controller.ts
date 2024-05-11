@@ -1,14 +1,30 @@
 import { Model } from './model/model';
+import { View } from './view/view';
+
 
 export class Controller {
 
-    private model: Model;
+    private _model: Model;
+    private _view: View;
 
-    constructor(model: Model) {        
-        this.model = model;
+    constructor(model: Model, view: View) {
+        this._model = model;
+        this._view = view;
     }
 
-    public generateLabyrinth(): void {        
-        this.model.generateLabyrinth();
+    public changeGridType(gridType: string): void {
+        this._model.changeGridType(gridType);
+    }
+
+    public generateLabyrinth(): void {
+        this._model.generateLabyrinth();
+    }
+
+    public showSolution(): void {
+        this._view.showSolution();
+    }
+
+    public hideSolution(): void {
+        this._view.hideSolution();
     }
 }

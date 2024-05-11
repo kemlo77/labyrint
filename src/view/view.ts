@@ -1,54 +1,98 @@
-import { Coordinate } from '../model/coordinate';
+import { Cell } from '../model/grid/cell/cell';
+import { Model } from '../model/model';
+import { Observer } from './observer';
+import {
+    CanvasPainter,
+    BLACK_COLOR,
+    BLUE_COLOR,
+    WHITE_COLOR,
+    LIGHT_GREEN_COLOR,
+    LIGHT_RED_COLOR,
+    LIGHT_GRAY_COLOR
+} from './canvaspainter';
 
-export abstract class View {
+export class View implements Observer {
 
-    private canvasElement: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
-    protected canvasCtx: CanvasRenderingContext2D = this.canvasElement.getContext('2d');
-    protected mazeColor: string = 'rgba(255,255,255,1)';
-    private trailColor: string = 'rgba(0,0,255,1)';
+    private _model: Model;
+    private _canvasPainter: CanvasPainter;
 
-    clearTheCanvas(): void {
-        this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+
+    constructor(canvasPainter: CanvasPainter, model: Model) {
+        this._canvasPainter = canvasPainter;
+        this._model = model;
+        this._model.attachObserver(this);
     }
 
-    abstract drawConnection(startPoint: Coordinate, endPoint: Coordinate): void;
-    abstract fillCell(center: Coordinate): void;
+    update(): void {
+        this._canvasPainter.clearTheCanvas();
+        this.shadeDisconnectedCells();
 
-    paintCellCenter(centerPoint: Coordinate): void {
-        this.canvasCtx.fillStyle = this.mazeColor;
-        this.canvasCtx.beginPath();
-        this.canvasCtx.arc(centerPoint.x, centerPoint.y, 3, 0, 2 * Math.PI);
-        this.canvasCtx.fill();
+        this.drawStartCell();
+        this.drawEndCell();
+        this.drawAllCellBorders();
+        //this.drawAllCellCenters();
+        //this.drawAllCellConnections();
+        //this.drawAllNeighbourRelations();
+        //this.drawNumberOfNeighbours();
     }
 
-    drawTrail(startPoint: Coordinate, endPoint: Coordinate): void {
-        this.canvasCtx.strokeStyle = this.trailColor;
-        this.canvasCtx.lineWidth = 2;
-        this.canvasCtx.lineCap = 'round';
-        this.canvasCtx.beginPath();
-        this.canvasCtx.moveTo(startPoint.x, startPoint.y);
-        this.canvasCtx.lineTo(endPoint.x, endPoint.y);
-        this.canvasCtx.stroke();
+    private shadeDisconnectedCells(): void {
+        this._model.grid.allDisconnectedCells
+            .forEach(cell => this.fillCell(cell, LIGHT_GRAY_COLOR, BLACK_COLOR));
     }
 
-    concealTrail(startPoint: Coordinate, endPoint: Coordinate): void {
-        this.canvasCtx.strokeStyle = this.mazeColor;
-        this.canvasCtx.lineWidth = 4;
-        this.canvasCtx.lineCap = 'round';
-        this.canvasCtx.beginPath();
-        this.canvasCtx.moveTo(startPoint.x, startPoint.y);
-        this.canvasCtx.lineTo(endPoint.x, endPoint.y);
-        this.canvasCtx.stroke();
+    private fillCell(cell: Cell, fillColor: string, borderColor: string): void {
+        this._canvasPainter.fillPolygon(cell.corners, fillColor, borderColor);
     }
 
-    protected drawLine(fromPoint: Coordinate, toPoint: Coordinate, width: number, color: string): void {
-        this.canvasCtx.strokeStyle = color;
-        this.canvasCtx.lineWidth = width;
-        this.canvasCtx.lineCap = 'round';
-        this.canvasCtx.beginPath();
-        this.canvasCtx.moveTo(fromPoint.x, fromPoint.y);
-        this.canvasCtx.lineTo(toPoint.x, toPoint.y);
-        this.canvasCtx.stroke();
+    private drawAllCellBorders(): void {
+        this._model.grid.allCells.forEach(cell => {
+            this._canvasPainter.drawSegments(cell.closedBorders, 1, BLACK_COLOR);
+        });
+    }
+
+    private drawAllCellCenters(): void {
+        this._model.grid.allCells.forEach(cell => {
+            this._canvasPainter.drawFilledCircle(cell.center, 2, BLACK_COLOR);
+        });
+    }
+
+    private drawAllCellConnections(): void {
+        this._model.grid.allCells.forEach(cell => {
+            cell.connectedNeighbours.forEach(neighbour => {
+                this._canvasPainter.drawLine(cell.center, neighbour.center, 1, BLUE_COLOR);
+            });
+        });
+    }
+
+    private drawAllNeighbourRelations(): void {
+        this._model.grid.allCells.forEach(cell => {
+            cell.neighbours.forEach(neighbour => {
+                this._canvasPainter.drawLine(cell.center, neighbour.center, 1, BLUE_COLOR);
+            });
+        });
+    }
+
+    private drawNumberOfNeighbours(): void {
+        this._model.grid.allDisconnectedCells.forEach(cell => {
+            this._canvasPainter.drawText(cell.neighbours.length.toString(), cell.center, 10, BLACK_COLOR);
+        });
+    }
+
+    private drawStartCell(): void {
+        this._canvasPainter.fillPolygon(this._model.grid.startCell.corners, LIGHT_GREEN_COLOR, LIGHT_GREEN_COLOR);
+    }
+
+    private drawEndCell(): void {
+        this._canvasPainter.fillPolygon(this._model.grid.endCell.corners, LIGHT_RED_COLOR, LIGHT_RED_COLOR);
+    }
+
+    public showSolution(): void {
+        this._canvasPainter.drawSegments(this._model.solutionTrail, 2, BLUE_COLOR);
+    }
+
+    public hideSolution(): void {
+        this._canvasPainter.drawSegments(this._model.solutionTrail, 4, WHITE_COLOR);
     }
 
 }

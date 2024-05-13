@@ -25,6 +25,10 @@ export class Grid {
         return [...this._cells];
     }
 
+    private get allCellsWithRoomForMoreNeighbours(): Cell[] {
+        return this.allCells.filter(cell => cell.hasRoomForMoreNeighbours);
+    }
+
     get allDisconnectedCells(): Cell[] {
         return this.allCells.filter(cell => cell.connectedNeighbours.length == 0);
     }
@@ -59,6 +63,24 @@ export class Grid {
             .forEach(cell => {
                 cell.removeConnectionsToCell();
             });
+    }
+
+    public establishNeighbourRelationsWith(grid: Grid): void {
+        for (const cell of this.allCellsWithRoomForMoreNeighbours) {
+            for (const otherCell of grid.allCellsWithRoomForMoreNeighbours) {
+                if (!otherCell.hasRoomForMoreNeighbours) {
+                    continue;
+                }
+
+                if (!cell.hasRoomForMoreNeighbours) {
+                    break;
+                }
+
+                if ( cell.hasCommonBorderWith(otherCell)) {
+                    cell.establishNeighbourRelationTo(otherCell);
+                }
+            }
+        }
     }
 
 }

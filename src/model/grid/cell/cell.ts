@@ -26,9 +26,12 @@ export class Cell {
         this._visited = visited;
     }
 
-
     get neighbours(): Cell[] {
         return this._neighbours;
+    }
+
+    get hasRoomForMoreNeighbours(): boolean {
+        return this._neighbours.length < this._corners.length;
     }
 
     get unvisitedNeighbours(): Cell[] {

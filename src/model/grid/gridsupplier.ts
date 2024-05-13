@@ -7,6 +7,7 @@ import { TriangularGridFactory } from './gridfactories/triangulargridfactory';
 import { RunningBondGridFactory } from './gridfactories/runningbondgridfactory';
 import { Coordinate } from '../coordinate';
 import { GridProperties } from './gridfactories/gridproperties';
+import { ComplexGridFactory } from './gridfactories/complexgridfactory';
 
 export class GridSupplier {
 
@@ -58,6 +59,11 @@ export class GridSupplier {
         if (gridType === 'diagonalSquare') {
             const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
             return new DiagonalSquareGridFactory().createGrid(gridProperties);
+        }
+
+        if (gridType === 'complexGrid') {
+            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
+            return new ComplexGridFactory().createGrid(gridProperties);
         }
 
         throw new Error('Invalid grid type');

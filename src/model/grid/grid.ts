@@ -9,7 +9,6 @@ export class Grid {
     constructor(interconnectedCells: Cell[], startCell: Cell, endCell: Cell) {
         this._cells = interconnectedCells;
         this._startCell = startCell;
-        this._startCell.visited = true;
         this._endCell = endCell;
     }
 
@@ -48,7 +47,6 @@ export class Grid {
 
     private resetVisitedStatusOnCells(): void {
         this.allCells.forEach(cell => cell.visited = false);
-        this.startCell.visited = true;
     }
 
     private removeEstablishedConnectionsInCells(): void {
@@ -81,6 +79,15 @@ export class Grid {
                 }
             }
         }
+    }
+
+    public mergeWith(grid: Grid): Grid {
+        this.establishNeighbourRelationsWith(grid);
+        return new Grid(
+            [
+                ...this.allCells,
+                ...grid.allCells
+            ], this.startCell, grid.endCell);
     }
 
 }

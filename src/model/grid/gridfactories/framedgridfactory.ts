@@ -1,7 +1,7 @@
 import { Grid } from '../grid';
 import { GridFactory } from './gridfactory';
-import { GridProperties } from './gridproperties';
+import { RectangularGridProperties } from './rectangulargridproperties';
 
 export abstract class FramedGridFactory extends GridFactory {
-    abstract createGrid(gridProperties: GridProperties): Grid;
+    abstract createGrid(gridProperties: RectangularGridProperties): Grid;
 }

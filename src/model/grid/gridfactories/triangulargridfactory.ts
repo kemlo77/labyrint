@@ -6,12 +6,12 @@ import { CellFactory } from '../cell/cellfactory';
 import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
 import { FramedGridFactory } from './framedgridfactory';
-import { GridProperties } from './gridproperties';
+import { RectangularGridProperties } from './rectangulargridproperties';
 
 
 export class TriangularGridFactory extends FramedGridFactory {
 
-    createGrid(gridProperties: GridProperties): Grid {
+    createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellGrid: Cell[][] = this.createCellMatrix(gridProperties);
         this.establishNeighbourRelationsInMatrix(cellGrid);
 
@@ -26,11 +26,11 @@ export class TriangularGridFactory extends FramedGridFactory {
     }
 
 
-    private createCellMatrix(gridProperties: GridProperties): Cell[][] {
+    private createCellMatrix(gridProperties: RectangularGridProperties): Cell[][] {
 
-        const cellWidth: number = gridProperties.edgeSegmentLength;
-        const numberOfRows: number = gridProperties.verticalEdgeSegments * 2 + 1;
-        const numberOfColumns: number = gridProperties.horizontalEdgeSegments;
+        const cellWidth: number = gridProperties.lengthOfEdgeSegments;
+        const numberOfRows: number = gridProperties.numberOfVerticalEdgeSegments * 2 + 1;
+        const numberOfColumns: number = gridProperties.numberOfHorizontalEdgeSegments;
         const angle: number = gridProperties.angle;
 
         const cellHeight: number = cellWidth;

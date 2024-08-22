@@ -6,11 +6,11 @@ import { CellCreator } from '../cell/celltypealiases';
 import { downUnitVector, leftUnitVector, rightUnitVector, upUnitVector } from '../../unitvectors';
 import { Vector } from '../../vector';
 import { FramedGridFactory } from './framedgridfactory';
-import { GridProperties } from './gridproperties';
+import { RectangularGridProperties } from './rectangulargridproperties';
 
 export class HexagonalGridFactory extends FramedGridFactory {
 
-    createGrid(gridProperties: GridProperties): Grid {
+    createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellGrid: Cell[][] = this.createCellMatrix(gridProperties);
         this.establishNeighbourRelationsInGrid(cellGrid);
         const startCell: Cell = cellGrid[0][0];
@@ -19,12 +19,12 @@ export class HexagonalGridFactory extends FramedGridFactory {
         return new Grid(cells, startCell, endCell);
     }
 
-    private createCellMatrix(gridProperties: GridProperties): Cell[][] {
+    private createCellMatrix(gridProperties: RectangularGridProperties): Cell[][] {
 
-        const cellWidth: number = gridProperties.edgeSegmentLength;
+        const cellWidth: number = gridProperties.lengthOfEdgeSegments;
         const eigthOfCellHeight: number = cellWidth / Math.sqrt(3) / 4;
-        const numberOfRows: number = gridProperties.verticalEdgeSegments;
-        const numberOfColumns: number = gridProperties.horizontalEdgeSegments;
+        const numberOfRows: number = gridProperties.numberOfVerticalEdgeSegments;
+        const numberOfColumns: number = gridProperties.numberOfHorizontalEdgeSegments;
         const angle: number = gridProperties.angle;
 
         const columnOffset: number = cellWidth * Math.sqrt(3) / 2;

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { OctagonalGridFactory } from '../../../../src/model/grid/gridfactories/octagonalgridfactory';
 import { Cell } from '../../../../src/model/grid/cell/cell';
-import { GridProperties } from '../../../../src/model/grid/gridfactories/gridproperties';
+import { RectangularGridProperties } from '../../../../src/model/grid/gridfactories/rectangulargridproperties';
 import { Coordinate } from '../../../../src/model/coordinate';
 
 describe('OctagonalGridFactory', () => {
@@ -9,7 +9,7 @@ describe('OctagonalGridFactory', () => {
     it('Verifying neighbour count', () => {
         const octagonalGridFactory: OctagonalGridFactory = new OctagonalGridFactory();
         const insertionPoint: Coordinate = new Coordinate(0, 0);
-        const gridProperties: GridProperties = new GridProperties(insertionPoint, 3, 3, 10);
+        const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 3, 3, 10);
         const cellMatrix: Cell[][] = octagonalGridFactory['createCellGrid'](gridProperties);
         octagonalGridFactory['establishNeighbourRelationsInGrid'](cellMatrix);
 

@@ -7,12 +7,12 @@ import { CellFactory } from '../cell/cellfactory';
 import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
 import { FramedGridFactory } from './framedgridfactory';
-import { GridProperties } from './gridproperties';
+import { RectangularGridProperties } from './rectangulargridproperties';
 
 export class RunningBondGridFactory extends FramedGridFactory {
 
 
-    createGrid(gridProperties: GridProperties): Grid {
+    createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellMatrix: Cell[][] = this.createCellGrid(gridProperties);
         this.establishNeighbourRelationsInMatrix(cellMatrix);
         const startCell: Cell = cellMatrix[0][0];
@@ -21,13 +21,13 @@ export class RunningBondGridFactory extends FramedGridFactory {
         return new Grid(cells, startCell, endCell);
     }
 
-    private createCellGrid(gridProperties: GridProperties): Cell[][] {
+    private createCellGrid(gridProperties: RectangularGridProperties): Cell[][] {
 
-        const cellWidth: number = gridProperties.edgeSegmentLength;
+        const cellWidth: number = gridProperties.lengthOfEdgeSegments;
         const halfCellWidth: number = cellWidth / 2;
         const doubleCellWidth: number = cellWidth * 2;
-        const numberOfcolumns: number = gridProperties.horizontalEdgeSegments;
-        const numberOfRows: number = gridProperties.verticalEdgeSegments;
+        const numberOfcolumns: number = gridProperties.numberOfHorizontalEdgeSegments;
+        const numberOfRows: number = gridProperties.numberOfVerticalEdgeSegments;
         const angle: number = gridProperties.angle;
 
         const oneStepUp: Vector = upUnitVector.scale(cellWidth).newRotatedVector(angle);

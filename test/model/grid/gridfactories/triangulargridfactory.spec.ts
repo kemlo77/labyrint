@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { TriangularGridFactory } from '../../../../src/model/grid/gridfactories/triangulargridfactory';
 import { Cell } from '../../../../src/model/grid/cell/cell';
 import { Coordinate } from '../../../../src/model/coordinate';
-import { GridProperties } from '../../../../src/model/grid/gridfactories/gridproperties';
+import { RectangularGridProperties } from '../../../../src/model/grid/gridfactories/rectangulargridproperties';
 
 
 describe('TriangularGridFactory', () => {
@@ -11,7 +11,7 @@ describe('TriangularGridFactory', () => {
     const triangularGridFactory: TriangularGridFactory = new TriangularGridFactory();
 
     it('verifying number of neighbours', () => {
-        const gridProperties: GridProperties = new GridProperties(insertionPoint, 3, 3, 10);
+        const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 3, 3, 10);
         const cellMatrix: Cell[][] = triangularGridFactory['createCellMatrix'](gridProperties);
         triangularGridFactory['establishNeighbourRelationsInMatrix'](cellMatrix);
         const middleCell: Cell = cellMatrix[1][1];
@@ -19,7 +19,7 @@ describe('TriangularGridFactory', () => {
     });
 
     it('verifying neighbour count', () => {
-        const gridProperties: GridProperties = new GridProperties(insertionPoint, 3, 2, 10);
+        const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 3, 2, 10);
         const cellMatrix: Cell[][] = triangularGridFactory['createCellMatrix'](gridProperties);
         triangularGridFactory['establishNeighbourRelationsInMatrix'](cellMatrix);
         expect(cellMatrix[0].map(cell => cell.neighbours.length)).to.deep.equal([2, 2, 3, 2, 2]);

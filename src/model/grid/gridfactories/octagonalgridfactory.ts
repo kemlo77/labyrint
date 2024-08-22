@@ -6,11 +6,11 @@ import { CellFactory } from '../cell/cellfactory';
 import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
 import { FramedGridFactory } from './framedgridfactory';
-import { GridProperties } from './gridproperties';
+import { RectangularGridProperties } from './rectangulargridproperties';
 
 export class OctagonalGridFactory extends FramedGridFactory {
 
-    createGrid(gridProperties: GridProperties): Grid {
+    createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(gridProperties);
         this.establishNeighbourRelationsInGrid(cellGrid);
         const startCell: Cell = cellGrid[0][0];
@@ -19,10 +19,10 @@ export class OctagonalGridFactory extends FramedGridFactory {
         return new Grid(cells, startCell, endCell);
     }
 
-    private createCellGrid(gridProperties: GridProperties): Cell[][] {
-        const numberOfColumns: number = gridProperties.horizontalEdgeSegments;
-        const numberOfRows: number = gridProperties.verticalEdgeSegments;
-        const cellWidth: number = gridProperties.edgeSegmentLength;
+    private createCellGrid(gridProperties: RectangularGridProperties): Cell[][] {
+        const numberOfColumns: number = gridProperties.numberOfHorizontalEdgeSegments;
+        const numberOfRows: number = gridProperties.numberOfVerticalEdgeSegments;
+        const cellWidth: number = gridProperties.lengthOfEdgeSegments;
         const angle: number = gridProperties.angle;
 
         const halfCellWidth: number = cellWidth / 2;
@@ -65,21 +65,21 @@ export class OctagonalGridFactory extends FramedGridFactory {
         const createSquareCell: CellCreator =
             (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', angle);
 
-        if (gridProperties.verticalEdgeSegments === 1) {
+        if (gridProperties.numberOfVerticalEdgeSegments === 1) {
             const rowOfCells: Cell[] = this.createSequenceOfCells(
                 firstCellCenter,
                 columnStep,
-                gridProperties.horizontalEdgeSegments,
+                gridProperties.numberOfHorizontalEdgeSegments,
                 createSquareCell
             );
             return [rowOfCells];
         }
 
-        if (gridProperties.horizontalEdgeSegments === 1) {
+        if (gridProperties.numberOfHorizontalEdgeSegments === 1) {
             const columnOfCells: Cell[] = this.createSequenceOfCells(
                 firstCellCenter,
                 rowStep,
-                gridProperties.verticalEdgeSegments,
+                gridProperties.numberOfVerticalEdgeSegments,
                 createSquareCell
             );
             return [columnOfCells];

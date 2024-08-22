@@ -3,7 +3,7 @@ import { Cell } from '../../../src/model/grid/cell/cell';
 import { GridSupplier } from '../../../src/model/grid/gridsupplier';
 import { expect } from 'chai';
 import { Coordinate } from '../../../src/model/coordinate';
-import { GridProperties } from '../../../src/model/grid/gridfactories/gridproperties';
+import { RectangularGridProperties } from '../../../src/model/grid/gridfactories/rectangulargridproperties';
 import { SquareGridFactory } from '../../../src/model/grid/gridfactories/squaregridfactory';
 
 describe('Grid', () => {
@@ -62,8 +62,8 @@ describe('Grid', () => {
     it('should connect to another grid', () => {
         const insertionPoint1: Coordinate = new Coordinate(0, 0);
         const insertionPoint2: Coordinate = new Coordinate(30, 0);
-        const gridProperties1: GridProperties = new GridProperties(insertionPoint1, 3, 3, 10);
-        const gridProperties2: GridProperties = new GridProperties(insertionPoint2, 3, 3, 10);
+        const gridProperties1: RectangularGridProperties = new RectangularGridProperties(insertionPoint1, 3, 3, 10);
+        const gridProperties2: RectangularGridProperties = new RectangularGridProperties(insertionPoint2, 3, 3, 10);
         const grid1: Grid = new SquareGridFactory().createGrid(gridProperties1);
         const grid2: Grid = new SquareGridFactory().createGrid(gridProperties2);
         expect(grid1.allCells.filter(cell => cell.neighbours.length === 2).length).to.equal(4);
@@ -85,8 +85,8 @@ describe('Grid', () => {
     it('should not connect to another grid', () => {
         const insertionPoint1: Coordinate = new Coordinate(0, 0);
         const insertionPoint2: Coordinate = new Coordinate(31, 0);
-        const gridProperties1: GridProperties = new GridProperties(insertionPoint1, 3, 3, 10);
-        const gridProperties2: GridProperties = new GridProperties(insertionPoint2, 3, 3, 10);
+        const gridProperties1: RectangularGridProperties = new RectangularGridProperties(insertionPoint1, 3, 3, 10);
+        const gridProperties2: RectangularGridProperties = new RectangularGridProperties(insertionPoint2, 3, 3, 10);
         const grid1: Grid = new SquareGridFactory().createGrid(gridProperties1);
         const grid2: Grid = new SquareGridFactory().createGrid(gridProperties2);
         expect(grid1.allCells.filter(cell => cell.neighbours.length === 2).length).to.equal(4);

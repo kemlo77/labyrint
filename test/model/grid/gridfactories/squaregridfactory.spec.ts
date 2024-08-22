@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { SquareGridFactory } from '../../../../src/model/grid/gridfactories/squaregridfactory';
 import { Cell } from '../../../../src/model/grid/cell/cell';
 import { Coordinate } from '../../../../src/model/coordinate';
-import { GridProperties } from '../../../../src/model/grid/gridfactories/gridproperties';
+import { RectangularGridProperties } from '../../../../src/model/grid/gridfactories/rectangulargridproperties';
 
 describe('SquareGridFactory', () => {
 
@@ -11,7 +11,7 @@ describe('SquareGridFactory', () => {
     beforeEach(() => {
         const insertionPoint: Coordinate = new Coordinate(0, 0);
         const squaregridfactory: SquareGridFactory = new SquareGridFactory();
-        const gridProperties: GridProperties = new GridProperties(insertionPoint, 3, 3, 10);
+        const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 3, 3, 10);
         cellMatrix = squaregridfactory['createCellMatrix'](gridProperties);
         squaregridfactory['establishNeighbourRelationsInMatrix'](cellMatrix);
     });

@@ -7,12 +7,12 @@ import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
 import { FramedGridFactory } from './framedgridfactory';
 
-import { GridProperties } from './gridproperties';
+import { RectangularGridProperties } from './rectangulargridproperties';
 
 
 export class SquareGridFactory extends FramedGridFactory {
 
-    createGrid(gridProperties: GridProperties): Grid {
+    createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellMatrix: Cell[][] = this.createCellMatrix(gridProperties);
         this.establishNeighbourRelationsInMatrix(cellMatrix);
         const startCell: Cell = cellMatrix[0][0];
@@ -21,9 +21,9 @@ export class SquareGridFactory extends FramedGridFactory {
         return new Grid(cells, startCell, endCell);
     }
 
-    private createCellMatrix(gridProperties: GridProperties): Cell[][] {
+    private createCellMatrix(gridProperties: RectangularGridProperties): Cell[][] {
 
-        const cellWidth: number = gridProperties.edgeSegmentLength;
+        const cellWidth: number = gridProperties.lengthOfEdgeSegments;
         const diagonalLength: number = cellWidth * Math.SQRT2;
 
         const stepDirectionToFirstCellCenter: Vector = upRightUnitVector.scale(diagonalLength / 2)
@@ -41,11 +41,11 @@ export class SquareGridFactory extends FramedGridFactory {
 
 
         const cellColumns: Cell[][] = [];
-        for (let columnIndex: number = 0; columnIndex < gridProperties.horizontalEdgeSegments; columnIndex++) {
+        for (let columnIndex: number = 0; columnIndex < gridProperties.numberOfHorizontalEdgeSegments; columnIndex++) {
             const columnStartCenter: Coordinate =
                 firstCellCenter.newRelativeCoordinate(columnStep.scale(columnIndex));
             const cellSequence: Cell[] =
-                this.createSequenceOfCells(columnStartCenter, rowStep, gridProperties.verticalEdgeSegments,
+                this.createSequenceOfCells(columnStartCenter, rowStep, gridProperties.numberOfVerticalEdgeSegments,
                     createRotatedSquareCell);
             cellColumns.push(cellSequence);
         }

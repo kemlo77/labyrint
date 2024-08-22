@@ -6,11 +6,11 @@ import { CellFactory } from '../cell/cellfactory';
 import { CellCreator } from '../cell/celltypealiases';
 import { Grid } from '../grid';
 import { FramedGridFactory } from './framedgridfactory';
-import { GridProperties } from './gridproperties';
+import { RectangularGridProperties } from './rectangulargridproperties';
 
 export class DiagonalSquareGridFactory extends FramedGridFactory {
 
-    createGrid(gridProperties: GridProperties): Grid {
+    createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellGrid: Cell[][] = this.createTiltedSquareCellGrid(gridProperties);
         this.connectTiltedSquareCellsToNeighbourCells(cellGrid);
 
@@ -21,13 +21,13 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
         return new Grid(cells, startCell, endCell);
     }
 
-    private createTiltedSquareCellGrid(gridProperties: GridProperties): Cell[][] {
+    private createTiltedSquareCellGrid(gridProperties: RectangularGridProperties): Cell[][] {
 
-        const cellWidth: number = gridProperties.edgeSegmentLength / Math.SQRT2;
-        const diagonalLength: number = gridProperties.edgeSegmentLength;
+        const cellWidth: number = gridProperties.lengthOfEdgeSegments / Math.SQRT2;
+        const diagonalLength: number = gridProperties.lengthOfEdgeSegments;
         const halfDiagonalLength: number = diagonalLength / 2;
-        const numberOfColumns: number = gridProperties.horizontalEdgeSegments * 2 - 1;
-        const numberOfRows: number = gridProperties.verticalEdgeSegments;
+        const numberOfColumns: number = gridProperties.numberOfHorizontalEdgeSegments * 2 - 1;
+        const numberOfRows: number = gridProperties.numberOfVerticalEdgeSegments;
         const angle: number = gridProperties.angle;
 
         const createTopRowTriangle: CellCreator = (center: Coordinate) =>
@@ -44,7 +44,7 @@ export class DiagonalSquareGridFactory extends FramedGridFactory {
         const stepToLeftReferencePoint: Vector = upRightUnitVector.scale(cellWidth)
             .newRotatedVector(angle);
         const stepToRightReferencePoint: Vector =
-            rightUnitVector.scale(diagonalLength * (gridProperties.horizontalEdgeSegments - 1))
+            rightUnitVector.scale(diagonalLength * (gridProperties.numberOfHorizontalEdgeSegments - 1))
                 .newRotatedVector(angle);
         const columnStep: Vector = rightUnitVector.scale(diagonalLength / 2)
             .newRotatedVector(angle);

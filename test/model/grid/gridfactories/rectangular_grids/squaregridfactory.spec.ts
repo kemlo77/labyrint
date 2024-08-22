@@ -1,8 +1,10 @@
 import { expect } from 'chai';
-import { SquareGridFactory } from '../../../../src/model/grid/gridfactories/squaregridfactory';
-import { Cell } from '../../../../src/model/grid/cell/cell';
-import { Coordinate } from '../../../../src/model/coordinate';
-import { RectangularGridProperties } from '../../../../src/model/grid/gridfactories/rectangulargridproperties';
+import { SquareGridFactory } 
+    from '../../../../../src/model/grid/gridfactories/rectangular_grids/squaregridfactory';
+import { Cell } from '../../../../../src/model/grid/cell/cell';
+import { Coordinate } from '../../../../../src/model/coordinate';
+import { RectangularGridProperties } 
+    from '../../../../../src/model/grid/gridfactories/rectangular_grids/rectangulargridproperties';
 
 describe('SquareGridFactory', () => {
 

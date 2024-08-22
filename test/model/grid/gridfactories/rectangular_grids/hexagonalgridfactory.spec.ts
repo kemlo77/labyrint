@@ -1,9 +1,11 @@
 import { expect } from 'chai';
-import { HexagonalGridFactory } from '../../../../src/model/grid/gridfactories/hexagonalgridfactory';
-import { Grid } from '../../../../src/model/grid/grid';
-import { Cell } from '../../../../src/model/grid/cell/cell';
-import { Coordinate } from '../../../../src/model/coordinate';
-import { RectangularGridProperties } from '../../../../src/model/grid/gridfactories/rectangulargridproperties';
+import { HexagonalGridFactory } 
+    from '../../../../../src/model/grid/gridfactories/rectangular_grids/hexagonalgridfactory';
+import { Grid } from '../../../../../src/model/grid/grid';
+import { Cell } from '../../../../../src/model/grid/cell/cell';
+import { Coordinate } from '../../../../../src/model/coordinate';
+import { RectangularGridProperties } 
+    from '../../../../../src/model/grid/gridfactories/rectangular_grids/rectangulargridproperties';
 
 describe('HexagonalGridFactory', () => {
 

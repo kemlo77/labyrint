@@ -3,8 +3,8 @@ import { Cell } from '../../../src/model/grid/cell/cell';
 import { GridSupplier } from '../../../src/model/grid/gridsupplier';
 import { expect } from 'chai';
 import { Coordinate } from '../../../src/model/coordinate';
-import { RectangularGridProperties } from '../../../src/model/grid/gridfactories/rectangulargridproperties';
-import { SquareGridFactory } from '../../../src/model/grid/gridfactories/squaregridfactory';
+import { RectangularGridProperties } from '../../../src/model/grid/gridfactories/rectangular_grids/rectangulargridproperties';
+import { SquareGridFactory } from '../../../src/model/grid/gridfactories/rectangular_grids/squaregridfactory';
 
 describe('Grid', () => {
     let grid: Grid;

@@ -1,11 +1,11 @@
-import { Coordinate } from '../../coordinate';
-import { rightUnitVector, upUnitVector } from '../../unitvectors';
-import { Vector } from '../../vector';
-import { Grid } from '../grid';
-import { DiagonalSquareGridFactory } from './diagonalsquaregridfactory';
-import { FramedGridFactory } from './framedgridfactory';
-import { RectangularGridProperties } from './rectangulargridproperties';
-import { SquareGridFactory } from './squaregridfactory';
+import { Coordinate } from '../../../coordinate';
+import { rightUnitVector, upUnitVector } from '../../../unitvectors';
+import { Vector } from '../../../vector';
+import { Grid } from '../../grid';
+import { DiagonalSquareGridFactory } from '../rectangular_grids/diagonalsquaregridfactory';
+import { FramedGridFactory } from '../framedgridfactory';
+import { RectangularGridProperties } from '../rectangular_grids/rectangulargridproperties';
+import { SquareGridFactory } from '../rectangular_grids/squaregridfactory';
 
 export class ComplexGridFactory extends FramedGridFactory {
 

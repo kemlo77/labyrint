@@ -1,12 +1,12 @@
-import { MatrixOperations } from '../../../service/matrixoperations';
-import { Coordinate } from '../../coordinate';
-import { leftUnitVector, rightUnitVector, upUnitVector } from '../../unitvectors';
-import { Vector } from '../../vector';
-import { Cell } from '../cell/cell';
-import { CellFactory } from '../cell/cellfactory';
-import { CellCreator } from '../cell/celltypealiases';
-import { Grid } from '../grid';
-import { FramedGridFactory } from './framedgridfactory';
+import { MatrixOperations } from '../../../../service/matrixoperations';
+import { Coordinate } from '../../../coordinate';
+import { leftUnitVector, rightUnitVector, upUnitVector } from '../../../unitvectors';
+import { Vector } from '../../../vector';
+import { Cell } from '../../cell/cell';
+import { CellFactory } from '../../cell/cellfactory';
+import { CellCreator } from '../../cell/celltypealiases';
+import { Grid } from '../../grid';
+import { FramedGridFactory } from '../framedgridfactory';
 import { RectangularGridProperties } from './rectangulargridproperties';
 
 export class RunningBondGridFactory extends FramedGridFactory {

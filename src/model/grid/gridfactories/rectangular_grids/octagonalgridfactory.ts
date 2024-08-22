@@ -1,11 +1,11 @@
-import { Coordinate } from '../../coordinate';
-import { rightUnitVector, upRightUnitVector, upUnitVector } from '../../unitvectors';
-import { Vector } from '../../vector';
-import { Cell } from '../cell/cell';
-import { CellFactory } from '../cell/cellfactory';
-import { CellCreator } from '../cell/celltypealiases';
-import { Grid } from '../grid';
-import { FramedGridFactory } from './framedgridfactory';
+import { Coordinate } from '../../../coordinate';
+import { rightUnitVector, upRightUnitVector, upUnitVector } from '../../../unitvectors';
+import { Vector } from '../../../vector';
+import { Cell } from '../../cell/cell';
+import { CellFactory } from '../../cell/cellfactory';
+import { CellCreator } from '../../cell/celltypealiases';
+import { Grid } from '../../grid';
+import { FramedGridFactory } from '../framedgridfactory';
 import { RectangularGridProperties } from './rectangulargridproperties';
 
 export class OctagonalGridFactory extends FramedGridFactory {

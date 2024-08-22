@@ -1,13 +1,13 @@
 import { Grid } from './grid';
-import { HexagonalGridFactory } from './gridfactories/hexagonalgridfactory';
-import { OctagonalGridFactory } from './gridfactories/octagonalgridfactory';
-import { SquareGridFactory } from './gridfactories/squaregridfactory';
-import { DiagonalSquareGridFactory } from './gridfactories/diagonalsquaregridfactory';
-import { TriangularGridFactory } from './gridfactories/triangulargridfactory';
-import { RunningBondGridFactory } from './gridfactories/runningbondgridfactory';
+import { HexagonalGridFactory } from './gridfactories/rectangular_grids/hexagonalgridfactory';
+import { OctagonalGridFactory } from './gridfactories/rectangular_grids/octagonalgridfactory';
+import { SquareGridFactory } from './gridfactories/rectangular_grids/squaregridfactory';
+import { DiagonalSquareGridFactory } from './gridfactories/rectangular_grids/diagonalsquaregridfactory';
+import { TriangularGridFactory } from './gridfactories/rectangular_grids/triangulargridfactory';
+import { RunningBondGridFactory } from './gridfactories/rectangular_grids/runningbondgridfactory';
 import { Coordinate } from '../coordinate';
-import { RectangularGridProperties } from './gridfactories/rectangulargridproperties';
-import { ComplexGridFactory } from './gridfactories/complexgridfactory';
+import { RectangularGridProperties } from './gridfactories/rectangular_grids/rectangulargridproperties';
+import { ComplexGridFactory } from './gridfactories/complex_grids/complexgridfactory';
 
 export class GridSupplier {
 

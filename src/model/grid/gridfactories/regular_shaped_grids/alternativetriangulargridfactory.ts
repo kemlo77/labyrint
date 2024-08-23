@@ -1,11 +1,12 @@
 import { Cell } from '../../cell/cell';
 import { Grid } from '../../grid';
-import { FramedGridFactory } from '../framedgridfactory';
-import { RectangularGridProperties } from '../rectangular_grids/rectangulargridproperties';
+import { GridFactory } from '../gridfactory';
+import { RegularShapedGridFactory } from './regularshapedgridfactory.interface';
+import { RegularShapedGridProperties } from './regularshapedgridproperties';
 
-export class AlternativeTriangularGridFactory extends FramedGridFactory {
+export class AlternativeTriangularGridFactory extends GridFactory implements RegularShapedGridFactory {
 
-    createGrid(gridProperties: RectangularGridProperties): Grid {
+    createGrid(gridProperties: RegularShapedGridProperties): Grid {
         const cellGrid: Cell[][] = this.createCellMatrix(gridProperties);
         this.establishNeighbourRelationsInMatrix(cellGrid);
 
@@ -15,7 +16,7 @@ export class AlternativeTriangularGridFactory extends FramedGridFactory {
         return new Grid(cells, startCell, endCell);
     }
 
-    private createCellMatrix(gridProperties: RectangularGridProperties): Cell[][] {
+    private createCellMatrix(gridProperties: RegularShapedGridProperties): Cell[][] {
         throw new Error('Method not implemented.');
     }
 

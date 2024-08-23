@@ -5,10 +5,11 @@ import { Cell } from '../../cell/cell';
 import { CellFactory } from '../../cell/cellfactory';
 import { CellCreator } from '../../cell/celltypealiases';
 import { Grid } from '../../grid';
-import { FramedGridFactory } from '../framedgridfactory';
+import { GridFactory } from '../gridfactory';
+import { RectangularGridFactory } from './rectangulargridfactory.interface';
 import { RectangularGridProperties } from './rectangulargridproperties';
 
-export class DiagonalSquareGridFactory extends FramedGridFactory {
+export class DiagonalSquareGridFactory extends GridFactory implements RectangularGridFactory {
 
     createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellGrid: Cell[][] = this.createTiltedSquareCellGrid(gridProperties);

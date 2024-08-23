@@ -7,7 +7,8 @@ import { TriangularGridFactory } from './gridfactories/rectangular_grids/triangu
 import { RunningBondGridFactory } from './gridfactories/rectangular_grids/runningbondgridfactory';
 import { Coordinate } from '../coordinate';
 import { RectangularGridProperties } from './gridfactories/rectangular_grids/rectangulargridproperties';
-import { ComplexGridFactory } from './gridfactories/complex_grids/complexgridfactory';
+import { SwedishFlagGridFactory } from './gridfactories/complex_grids/swedishflaggridfactory';
+import { ComplexGridProperties } from './gridfactories/complex_grids/complexgridproperties';
 
 export class GridSupplier {
 
@@ -21,7 +22,8 @@ export class GridSupplier {
         const testInsertionPoint: Coordinate = new Coordinate(0, 0);
 
         if (gridType === 'test-grid') {
-            const gridProperties: RectangularGridProperties = new RectangularGridProperties(testInsertionPoint, 3, 3, 10);
+            const gridProperties: RectangularGridProperties = 
+                new RectangularGridProperties(testInsertionPoint, 3, 3, 10);
             return new SquareGridFactory().createGrid(gridProperties);
         }
 
@@ -32,7 +34,8 @@ export class GridSupplier {
 
         if (gridType === 'tiltedSquare') {
             const specialInsertionPoint: Coordinate = new Coordinate(15, 30 * 15 * Math.SQRT2 / 2 + 15);
-            const gridProperties: RectangularGridProperties = new RectangularGridProperties(specialInsertionPoint, 30, 30, 15, -45);
+            const gridProperties: RectangularGridProperties = 
+                new RectangularGridProperties(specialInsertionPoint, 30, 30, 15, -45);
             return new SquareGridFactory().createGrid(gridProperties);
         }
 
@@ -62,8 +65,8 @@ export class GridSupplier {
         }
 
         if (gridType === 'complexGrid') {
-            const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 34, 21, 30);
-            return new ComplexGridFactory().createGrid(gridProperties);
+            const gridProperties: ComplexGridProperties = new ComplexGridProperties(insertionPoint, 20, 0);
+            return new SwedishFlagGridFactory().createGrid(gridProperties);
         }
 
         throw new Error('Invalid grid type');

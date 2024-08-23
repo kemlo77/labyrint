@@ -9,6 +9,8 @@ import { Coordinate } from '../coordinate';
 import { RectangularGridProperties } from './gridfactories/rectangular_grids/rectangulargridproperties';
 import { SwedishFlagGridFactory } from './gridfactories/complex_grids/swedishflaggridfactory';
 import { ComplexGridProperties } from './gridfactories/complex_grids/complexgridproperties';
+import { RegularShapedGridProperties } from './gridfactories/regular_shaped_grids/regularshapedgridproperties';
+import { AlternativeTriangularGridFactory } from './gridfactories/regular_shaped_grids/alternativetriangulargridfactory';
 
 export class GridSupplier {
 
@@ -67,6 +69,12 @@ export class GridSupplier {
         if (gridType === 'complexGrid') {
             const gridProperties: ComplexGridProperties = new ComplexGridProperties(insertionPoint, 20, 0);
             return new SwedishFlagGridFactory().createGrid(gridProperties);
+        }
+
+        if (gridType === 'triangular2') {
+            const gridProperties: RegularShapedGridProperties = 
+                new RegularShapedGridProperties(insertionPoint, 15, 30);
+            return new AlternativeTriangularGridFactory().createGrid(gridProperties);
         }
 
         throw new Error('Invalid grid type');

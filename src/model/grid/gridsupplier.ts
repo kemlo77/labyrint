@@ -73,7 +73,7 @@ export class GridSupplier {
 
         if (gridType === 'triangular2') {
             const gridProperties: RegularShapedGridProperties = 
-                new RegularShapedGridProperties(insertionPoint, 15, 30);
+                new RegularShapedGridProperties(insertionPoint, 24, 30);
             return new AlternativeTriangularGridFactory().createGrid(gridProperties);
         }
 

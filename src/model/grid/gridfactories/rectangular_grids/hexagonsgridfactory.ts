@@ -9,7 +9,7 @@ import { RectangularGridFactory } from './rectangulargridfactory.interface';
 import { RectangularGridProperties } from './rectangulargridproperties';
 import { GridFactory } from '../gridfactory';
 
-export class HexagonalGridFactory extends GridFactory implements RectangularGridFactory {
+export class HexagonsGridFactory extends GridFactory implements RectangularGridFactory {
 
     createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellGrid: Cell[][] = this.createCellMatrix(gridProperties);
@@ -80,7 +80,7 @@ export class HexagonalGridFactory extends GridFactory implements RectangularGrid
                 const evenLastColumnStartCenter: Coordinate =
                     columnStartCenter.newRelativeCoordinate(rightColumnAdjustmentStep);
                 const columnOfCells: Cell[] =
-                    this.createSequenceOfCells(evenLastColumnStartCenter, rowStep, numberOfRows, createRightSideCell)
+                    this.createSequenceOfCells(evenLastColumnStartCenter, rowStep, numberOfRows, createRightSideCell);
                 cellColumns.push(columnOfCells);
                 continue;
             }

@@ -10,7 +10,7 @@ import { RectangularGridFactory } from './rectangulargridfactory.interface';
 import { RectangularGridProperties } from './rectangulargridproperties';
 
 
-export class TriangularGridFactory extends GridFactory implements RectangularGridFactory {
+export class TrianglesGridFactory extends GridFactory implements RectangularGridFactory {
 
     createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellGrid: Cell[][] = this.createCellMatrix(gridProperties);

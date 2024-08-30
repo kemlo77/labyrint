@@ -9,7 +9,7 @@ import { GridFactory } from '../gridfactory';
 import { RectangularGridFactory } from './rectangulargridfactory.interface';
 import { RectangularGridProperties } from './rectangulargridproperties';
 
-export class DiagonalSquareGridFactory extends GridFactory implements RectangularGridFactory {
+export class DiagonalSquaresGridFactory extends GridFactory implements RectangularGridFactory {
 
     createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellGrid: Cell[][] = this.createTiltedSquareCellGrid(gridProperties);

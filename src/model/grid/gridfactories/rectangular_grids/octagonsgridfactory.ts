@@ -9,7 +9,7 @@ import { RectangularGridFactory } from './rectangulargridfactory.interface';
 import { GridFactory } from '../gridfactory';
 import { RectangularGridProperties } from './rectangulargridproperties';
 
-export class OctagonalGridFactory extends GridFactory implements RectangularGridFactory {
+export class OctagonsGridFactory extends GridFactory implements RectangularGridFactory {
 
     createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellGrid: Cell[][] = this.createCellGrid(gridProperties);

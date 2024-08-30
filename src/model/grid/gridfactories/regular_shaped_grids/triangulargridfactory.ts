@@ -9,7 +9,7 @@ import { GridFactory } from '../gridfactory';
 import { RegularShapedGridFactory } from './regularshapedgridfactory.interface';
 import { RegularShapedGridProperties } from './regularshapedgridproperties';
 
-export class AlternativeTriangularGridFactory extends GridFactory implements RegularShapedGridFactory {
+export class TriangularGridFactory extends GridFactory implements RegularShapedGridFactory {
 
     createGrid(gridProperties: RegularShapedGridProperties): Grid {
         const cellGrid: Cell[][] = this.createCellMatrix(gridProperties);
@@ -39,13 +39,13 @@ export class AlternativeTriangularGridFactory extends GridFactory implements Reg
         const cellRows: Cell[][] = [];
 
         for (let rowIndex: number = 0; rowIndex < gridProperties.numberOfEdgeSegments; rowIndex++) {
-            const rowStartCenter: Coordinate = 
+            const rowStartCenter: Coordinate =
                 firstCellCornerPosition
                     .newRelativeCoordinate(columnStep)
                     .newRelativeCoordinate(rowStep.scale(rowIndex))
                     .newRelativeCoordinate(columnStep.scale(rowIndex));
             const cellRow: Cell[] = [];
-            const trianglesInRow: number = 2* (gridProperties.numberOfEdgeSegments  - rowIndex) -1;
+            const trianglesInRow: number = 2 * (gridProperties.numberOfEdgeSegments - rowIndex) - 1;
             for (let columnIndex: number = 0; columnIndex < trianglesInRow; columnIndex++) {
                 const evenColumn: boolean = columnIndex % 2 === 0;
                 let cellCenter: Coordinate = rowStartCenter.newRelativeCoordinate(columnStep.scale(columnIndex));
@@ -63,7 +63,7 @@ export class AlternativeTriangularGridFactory extends GridFactory implements Reg
         return cellRows;
     }
 
-    
+
 
     private establishNeighbourRelationsInMatrix(cellGrid: Cell[][]): void {
         cellGrid.forEach(cellRow => this.establishNeighbourRelationsInSequence(cellRow));
@@ -71,8 +71,8 @@ export class AlternativeTriangularGridFactory extends GridFactory implements Reg
         for (let rowIndex: number = 0; rowIndex < cellGrid.length - 1; rowIndex++) {
             const currentRow: Cell[] = cellGrid[rowIndex];
             const nextRow: Cell[] = cellGrid[rowIndex + 1];
-            for (let columnIndex: number = 0; columnIndex < nextRow.length; columnIndex+=2) {
-                const currentRowCell: Cell = currentRow[columnIndex+1];
+            for (let columnIndex: number = 0; columnIndex < nextRow.length; columnIndex += 2) {
+                const currentRowCell: Cell = currentRow[columnIndex + 1];
                 const nextRowCell: Cell = nextRow[columnIndex];
                 currentRowCell.establishNeighbourRelationTo(nextRowCell);
 

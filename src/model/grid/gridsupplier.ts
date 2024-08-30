@@ -1,17 +1,17 @@
 import { Grid } from './grid';
-import { HexagonalGridFactory } from './gridfactories/rectangular_grids/hexagonalgridfactory';
-import { OctagonalGridFactory } from './gridfactories/rectangular_grids/octagonalgridfactory';
+import { HexagonsGridFactory } from './gridfactories/rectangular_grids/hexagonsgridfactory';
+import { OctagonsGridFactory } from './gridfactories/rectangular_grids/octagonsgridfactory';
 import { StandardGridFactory } from './gridfactories/rectangular_grids/standardgridfactory';
-import { DiagonalSquareGridFactory } from './gridfactories/rectangular_grids/diagonalsquaregridfactory';
-import { TriangularGridFactory } from './gridfactories/rectangular_grids/triangulargridfactory';
+import { DiagonalSquaresGridFactory } from './gridfactories/rectangular_grids/diagonalsquaresgridfactory';
+import { TrianglesGridFactory } from './gridfactories/rectangular_grids/trianglesgridfactory';
 import { RunningBondGridFactory } from './gridfactories/rectangular_grids/runningbondgridfactory';
 import { Coordinate } from '../coordinate';
 import { RectangularGridProperties } from './gridfactories/rectangular_grids/rectangulargridproperties';
 import { SwedishFlagGridFactory } from './gridfactories/complex_grids/swedishflaggridfactory';
 import { ComplexGridProperties } from './gridfactories/complex_grids/complexgridproperties';
 import { RegularShapedGridProperties } from './gridfactories/regular_shaped_grids/regularshapedgridproperties';
-import { AlternativeTriangularGridFactory }
-    from './gridfactories/regular_shaped_grids/alternativetriangulargridfactory';
+import { TriangularGridFactory }
+    from './gridfactories/regular_shaped_grids/triangulargridfactory';
 import { SquareGridFactory } from './gridfactories/regular_shaped_grids/squaregridfactory';
 
 export class GridSupplier {
@@ -47,24 +47,24 @@ export class GridSupplier {
             return new RunningBondGridFactory().createGrid(gridProperties);
         }
 
-        if (gridType === 'hexagonal') {
+        if (gridType === 'hexagons') {
             const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 40, 21, 30);
-            return new HexagonalGridFactory().createGrid(gridProperties);
+            return new HexagonsGridFactory().createGrid(gridProperties);
         }
 
-        if (gridType === 'triangular') {
+        if (gridType === 'triangles') {
             const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 34, 21, 30);
-            return new TriangularGridFactory().createGrid(gridProperties);
+            return new TrianglesGridFactory().createGrid(gridProperties);
         }
 
-        if (gridType === 'octagonal') {
+        if (gridType === 'octagons') {
             const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 34, 21, 30);
-            return new OctagonalGridFactory().createGrid(gridProperties);
+            return new OctagonsGridFactory().createGrid(gridProperties);
         }
 
-        if (gridType === 'diagonalSquare') {
+        if (gridType === 'diagonalSquares') {
             const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 34, 21, 30);
-            return new DiagonalSquareGridFactory().createGrid(gridProperties);
+            return new DiagonalSquaresGridFactory().createGrid(gridProperties);
         }
 
         if (gridType === 'swedishFlag') {
@@ -72,10 +72,10 @@ export class GridSupplier {
             return new SwedishFlagGridFactory().createGrid(gridProperties);
         }
 
-        if (gridType === 'triangular2') {
+        if (gridType === 'triangular') {
             const gridProperties: RegularShapedGridProperties =
                 new RegularShapedGridProperties(insertionPoint, 24, 30);
-            return new AlternativeTriangularGridFactory().createGrid(gridProperties);
+            return new TriangularGridFactory().createGrid(gridProperties);
         }
 
         throw new Error('Invalid grid type');

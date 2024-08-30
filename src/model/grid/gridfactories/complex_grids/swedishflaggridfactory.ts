@@ -3,7 +3,7 @@ import { rightUnitVector, upUnitVector } from '../../../unitvectors';
 import { Vector } from '../../../vector';
 import { Grid } from '../../grid';
 import { GridFactory } from '../gridfactory';
-import { DiagonalSquareGridFactory } from '../rectangular_grids/diagonalsquaregridfactory';
+import { DiagonalSquaresGridFactory } from '../rectangular_grids/diagonalsquaresgridfactory';
 import { RectangularGridProperties } from '../rectangular_grids/rectangulargridproperties';
 import { StandardGridFactory } from '../rectangular_grids/standardgridfactory';
 import { ComplexGridFactory } from './complexgridfactory.interface';
@@ -51,9 +51,9 @@ export class SwedishFlagGridFactory extends GridFactory implements ComplexGridFa
                 new RectangularGridProperties(insertionPoint2, w2, h1, cellWidth);
             const gridProperties3: RectangularGridProperties =
                 new RectangularGridProperties(insertionPoint3, w3, h1, cellWidth);
-            const grid1: Grid = new DiagonalSquareGridFactory().createGrid(gridProperties1);
+            const grid1: Grid = new DiagonalSquaresGridFactory().createGrid(gridProperties1);
             const grid2: Grid = new StandardGridFactory().createGrid(gridProperties2);
-            const grid3: Grid = new DiagonalSquareGridFactory().createGrid(gridProperties3);
+            const grid3: Grid = new DiagonalSquaresGridFactory().createGrid(gridProperties3);
             return grid1.mergeWith(grid2).mergeWith(grid3);
         }
 

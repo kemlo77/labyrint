@@ -1,7 +1,7 @@
 import { Grid } from './grid';
 import { HexagonalGridFactory } from './gridfactories/rectangular_grids/hexagonalgridfactory';
 import { OctagonalGridFactory } from './gridfactories/rectangular_grids/octagonalgridfactory';
-import { SquareGridFactory } from './gridfactories/rectangular_grids/squaregridfactory';
+import { StandardGridFactory } from './gridfactories/rectangular_grids/standardgridfactory';
 import { DiagonalSquareGridFactory } from './gridfactories/rectangular_grids/diagonalsquaregridfactory';
 import { TriangularGridFactory } from './gridfactories/rectangular_grids/triangulargridfactory';
 import { RunningBondGridFactory } from './gridfactories/rectangular_grids/runningbondgridfactory';
@@ -10,7 +10,9 @@ import { RectangularGridProperties } from './gridfactories/rectangular_grids/rec
 import { SwedishFlagGridFactory } from './gridfactories/complex_grids/swedishflaggridfactory';
 import { ComplexGridProperties } from './gridfactories/complex_grids/complexgridproperties';
 import { RegularShapedGridProperties } from './gridfactories/regular_shaped_grids/regularshapedgridproperties';
-import { AlternativeTriangularGridFactory } from './gridfactories/regular_shaped_grids/alternativetriangulargridfactory';
+import { AlternativeTriangularGridFactory }
+    from './gridfactories/regular_shaped_grids/alternativetriangulargridfactory';
+import { SquareGridFactory } from './gridfactories/regular_shaped_grids/squaregridfactory';
 
 export class GridSupplier {
 
@@ -24,20 +26,19 @@ export class GridSupplier {
         const testInsertionPoint: Coordinate = new Coordinate(0, 0);
 
         if (gridType === 'test-grid') {
-            const gridProperties: RectangularGridProperties = 
+            const gridProperties: RectangularGridProperties =
                 new RectangularGridProperties(testInsertionPoint, 3, 3, 10);
-            return new SquareGridFactory().createGrid(gridProperties);
+            return new StandardGridFactory().createGrid(gridProperties);
+        }
+
+        if (gridType === 'standard') {
+            const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 34, 21, 30);
+            return new StandardGridFactory().createGrid(gridProperties);
         }
 
         if (gridType === 'square') {
-            const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 34, 21, 30);
-            return new SquareGridFactory().createGrid(gridProperties);
-        }
-
-        if (gridType === 'tiltedSquare') {
-            const specialInsertionPoint: Coordinate = new Coordinate(15, 30 * 15 * Math.SQRT2 / 2 + 15);
-            const gridProperties: RectangularGridProperties = 
-                new RectangularGridProperties(specialInsertionPoint, 30, 30, 15, -45);
+            const gridProperties: RegularShapedGridProperties =
+                new RegularShapedGridProperties(insertionPoint, 20, 30);
             return new SquareGridFactory().createGrid(gridProperties);
         }
 
@@ -66,13 +67,13 @@ export class GridSupplier {
             return new DiagonalSquareGridFactory().createGrid(gridProperties);
         }
 
-        if (gridType === 'complexGrid') {
+        if (gridType === 'swedishFlag') {
             const gridProperties: ComplexGridProperties = new ComplexGridProperties(insertionPoint, 20, 0);
             return new SwedishFlagGridFactory().createGrid(gridProperties);
         }
 
         if (gridType === 'triangular2') {
-            const gridProperties: RegularShapedGridProperties = 
+            const gridProperties: RegularShapedGridProperties =
                 new RegularShapedGridProperties(insertionPoint, 24, 30);
             return new AlternativeTriangularGridFactory().createGrid(gridProperties);
         }

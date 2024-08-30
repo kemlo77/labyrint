@@ -6,14 +6,14 @@ import { CellFactory } from '../../cell/cellfactory';
 import { CellCreator } from '../../cell/celltypealiases';
 import { Grid } from '../../grid';
 import { GridFactory } from '../gridfactory';
-import { RectangularGridFactory } from './rectangulargridfactory.interface';
+import { RegularShapedGridFactory } from './regularshapedgridfactory.interface';
+import { RegularShapedGridProperties } from './regularshapedgridproperties';
 
-import { RectangularGridProperties } from './rectangulargridproperties';
 
 
-export class SquareGridFactory extends GridFactory implements RectangularGridFactory {
+export class SquareGridFactory extends GridFactory implements RegularShapedGridFactory {
 
-    createGrid(gridProperties: RectangularGridProperties): Grid {
+    createGrid(gridProperties: RegularShapedGridProperties): Grid {
         const cellMatrix: Cell[][] = this.createCellMatrix(gridProperties);
         this.establishNeighbourRelationsInMatrix(cellMatrix);
         const startCell: Cell = cellMatrix[0][0];
@@ -22,7 +22,7 @@ export class SquareGridFactory extends GridFactory implements RectangularGridFac
         return new Grid(cells, startCell, endCell);
     }
 
-    private createCellMatrix(gridProperties: RectangularGridProperties): Cell[][] {
+    private createCellMatrix(gridProperties: RegularShapedGridProperties): Cell[][] {
 
         const cellWidth: number = gridProperties.lengthOfEdgeSegments;
         const diagonalLength: number = cellWidth * Math.SQRT2;
@@ -42,12 +42,11 @@ export class SquareGridFactory extends GridFactory implements RectangularGridFac
 
 
         const cellColumns: Cell[][] = [];
-        for (let columnIndex: number = 0; columnIndex < gridProperties.numberOfHorizontalEdgeSegments; columnIndex++) {
-            const columnStartCenter: Coordinate =
-                firstCellCenter.newRelativeCoordinate(columnStep.scale(columnIndex));
+        const segmentsPerSide: number = gridProperties.numberOfEdgeSegments;
+        for (let columnIndex: number = 0; columnIndex < segmentsPerSide; columnIndex++) {
+            const columnStartCenter: Coordinate = firstCellCenter.newRelativeCoordinate(columnStep.scale(columnIndex));
             const cellSequence: Cell[] =
-                this.createSequenceOfCells(columnStartCenter, rowStep, gridProperties.numberOfVerticalEdgeSegments,
-                    createRotatedSquareCell);
+                this.createSequenceOfCells(columnStartCenter, rowStep, segmentsPerSide, createRotatedSquareCell);
             cellColumns.push(cellSequence);
         }
 

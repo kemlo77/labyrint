@@ -15,7 +15,7 @@ const model: Model = new Model();
 const canvasPainter: CanvasPainter = new CanvasPainter(canvasElement);
 const view: View = new View(canvasPainter, model);
 const controller: Controller = new Controller(model, view);
-controller.changeGridType('square');
+controller.changeGridType('standard');
 
 
 generateButton.addEventListener('click', () => controller.generateLabyrinth());

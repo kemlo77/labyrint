@@ -1,18 +1,18 @@
 import { expect } from 'chai';
-import { SquareGridFactory } 
-    from '../../../../../src/model/grid/gridfactories/rectangular_grids/squaregridfactory';
+import { StandardGridFactory }
+    from '../../../../../src/model/grid/gridfactories/rectangular_grids/standardgridfactory';
 import { Cell } from '../../../../../src/model/grid/cell/cell';
 import { Coordinate } from '../../../../../src/model/coordinate';
-import { RectangularGridProperties } 
+import { RectangularGridProperties }
     from '../../../../../src/model/grid/gridfactories/rectangular_grids/rectangulargridproperties';
 
-describe('SquareGridFactory', () => {
+describe('StandardGridFactory', () => {
 
     let cellMatrix: Cell[][];
 
     beforeEach(() => {
         const insertionPoint: Coordinate = new Coordinate(0, 0);
-        const squaregridfactory: SquareGridFactory = new SquareGridFactory();
+        const squaregridfactory: StandardGridFactory = new StandardGridFactory();
         const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 3, 3, 10);
         cellMatrix = squaregridfactory['createCellMatrix'](gridProperties);
         squaregridfactory['establishNeighbourRelationsInMatrix'](cellMatrix);

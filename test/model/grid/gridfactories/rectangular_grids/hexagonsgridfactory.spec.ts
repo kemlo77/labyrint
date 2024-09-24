@@ -29,7 +29,7 @@ describe('HexagonsGridFactory', () => {
 
     it('numberOfVisitedCells', () => {
         const rectGrid: Grid = hexagonalgridfactory.createGrid(gridProperties);
-        expect(rectGrid.numberOfVisitedCells).to.equal(1);
+        expect(rectGrid.numberOfVisitedCells).to.equal(0);
     });
 
     it('totalNumberOfCells', () => {

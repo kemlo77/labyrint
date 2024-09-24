@@ -45,4 +45,8 @@ export class Coordinate {
         return this.x === coordinate.x && this.y === coordinate.y;
     }
 
+    clone(): Coordinate {
+        return new Coordinate(this.x, this.y);
+    }
+
 }

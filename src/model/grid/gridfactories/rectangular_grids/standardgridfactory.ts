@@ -25,20 +25,18 @@ export class StandardGridFactory extends GridFactory implements RectangularGridF
     private createCellMatrix(gridProperties: RectangularGridProperties): Cell[][] {
 
         const cellWidth: number = gridProperties.lengthOfEdgeSegments;
-        const diagonalLength: number = cellWidth * Math.SQRT2;
 
-        const stepDirectionToFirstCellCenter: Vector = upRightUnitVector.scale(diagonalLength / 2)
-            .newRotatedVector(gridProperties.angle);
         const columnStep: Vector = rightUnitVector.scale(cellWidth)
             .newRotatedVector(gridProperties.angle);
         const rowStep: Vector = upUnitVector.scale(cellWidth)
             .newRotatedVector(gridProperties.angle);
 
         const firstCellCenter: Coordinate =
-            gridProperties.insertionPoint.newRelativeCoordinate(stepDirectionToFirstCellCenter);
+            gridProperties.insertionPoint;
 
         const createRotatedSquareCell: CellCreator =
-            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', gridProperties.angle);
+            (insertionPoint: Coordinate) =>
+                CellFactory.createCell(insertionPoint, cellWidth, 'square', gridProperties.angle);
 
 
         const cellColumns: Cell[][] = [];

@@ -32,20 +32,17 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
         const angle: number = gridProperties.angle;
 
         const oneStepUp: Vector = upUnitVector.scale(cellWidth).newRotatedVector(angle);
-        const aHalfStepUp: Vector = upUnitVector.scale(halfCellWidth).newRotatedVector(angle);
-        const aHalfStepLeft: Vector = leftUnitVector.scale(halfCellWidth).newRotatedVector(angle);
         const aHalfStepRight: Vector = rightUnitVector.scale(halfCellWidth).newRotatedVector(angle);
         const oneStepRight: Vector = rightUnitVector.scale(cellWidth).newRotatedVector(angle);
         const twoStepsRight: Vector = rightUnitVector.scale(doubleCellWidth).newRotatedVector(angle);
 
         const createSquareCell: CellCreator =
-            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', angle);
+            (insertionPoint: Coordinate) => CellFactory.createCell(insertionPoint, cellWidth, 'square', angle);
         const createRectangularCell: CellCreator =
-            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'double-square-rectangle', 90 + angle);
+            (insertionPoint: Coordinate) =>
+                CellFactory.createCell(insertionPoint, cellWidth * 2, 'double-square-rectangle', 0 + angle);
 
-        const firstCellCenter: Coordinate = gridProperties.insertionPoint
-            .newRelativeCoordinate(aHalfStepUp)
-            .newRelativeCoordinate(aHalfStepRight);
+        const firstCellCenter: Coordinate = gridProperties.insertionPoint;
 
         const cellRows: Cell[][] = [];
         const evenRowNumberOfWideCells: number = Math.floor(numberOfcolumns / 2);
@@ -60,7 +57,7 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
                 //rectangular cells
                 const evenRowStartPoint: Coordinate = rowStartPoint.newRelativeCoordinate(aHalfStepRight);
                 const rectangularCells: Cell[] = this.createSequenceOfCells(
-                    evenRowStartPoint,
+                    rowStartPoint,
                     twoStepsRight,
                     evenRowNumberOfWideCells,
                     createRectangularCell
@@ -69,8 +66,7 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
                 //square cell
                 if (numberOfcolumns % 2 === 1) {
                     const lastCellCenter: Coordinate = evenRowStartPoint
-                        .newRelativeCoordinate(twoStepsRight.scale(evenRowNumberOfWideCells))
-                        .newRelativeCoordinate(aHalfStepLeft);
+                        .newRelativeCoordinate(twoStepsRight.scale(evenRowNumberOfWideCells));
                     const squareCell: Cell = createSquareCell(lastCellCenter);
                     rowOfCells.push(squareCell);
                 }
@@ -82,7 +78,6 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
 
                 //rectangular cells
                 const rectangularCellsStartPoint: Coordinate = oddRowStartPoint
-                    .newRelativeCoordinate(aHalfStepRight)
                     .newRelativeCoordinate(oneStepRight);
                 const rectangularCells: Cell[] = this.createSequenceOfCells(
                     rectangularCellsStartPoint,
@@ -95,8 +90,7 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
                 //square cell
                 if (numberOfcolumns % 2 === 0) {
                     const lastCellCenter: Coordinate = rectangularCellsStartPoint
-                        .newRelativeCoordinate(twoStepsRight.scale(oddRowNumberOfWideCells))
-                        .newRelativeCoordinate(aHalfStepLeft);
+                        .newRelativeCoordinate(twoStepsRight.scale(oddRowNumberOfWideCells));
                     const lastSquareCellInRow: Cell = createSquareCell(lastCellCenter);
                     rowOfCells.push(lastSquareCellInRow);
                 }

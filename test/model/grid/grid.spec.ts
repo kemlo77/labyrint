@@ -41,7 +41,7 @@ describe('Grid', () => {
     });
 
     it('should have the correct number of visited cells', () => {
-        expect(grid.numberOfVisitedCells).to.equal(1);
+        expect(grid.numberOfVisitedCells).to.equal(0);
     });
 
     it('should reset the grid', () => {
@@ -49,7 +49,7 @@ describe('Grid', () => {
         allCells[0].establishConnectionTo(allCells[1]);
         allCells.forEach(cell => cell.visited = true);
         grid.resetGrid();
-        expect(grid.numberOfVisitedCells).to.equal(1);
+        expect(grid.numberOfVisitedCells).to.equal(0);
         expect(grid.allDisconnectedCells.length).to.equal(9);
     });
 

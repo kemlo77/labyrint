@@ -155,4 +155,13 @@ export class Cell {
         return closedBorders;
     }
 
+    rotateAroundCenter(angle: number, center?: Coordinate): Cell {
+        if (center === undefined) {
+            center = this._center;
+        }
+        const newCenter: Coordinate = this._center.rotateAroundCenter(angle, center);
+        const newCorners: Coordinate[] = this._corners.map(corner => corner.rotateAroundCenter(angle, center));
+        return new Cell(newCenter, newCorners);
+    }
+
 }

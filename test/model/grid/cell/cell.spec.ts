@@ -13,20 +13,20 @@ describe('Cell', () => {
     let lowerCell: Cell;
 
     beforeEach(() => {
-        const center1: Coordinate = new Coordinate(5, 5);
-        leftCell = CellFactory.createCell(center1, 10, 'square');
+        const insertionPoint1: Coordinate = new Coordinate(5, 5);
+        leftCell = CellFactory.createCell(insertionPoint1, 10, 'square');
 
-        const center2: Coordinate = new Coordinate(15, 5);
-        middleCell = CellFactory.createCell(center2, 10, 'square');
+        const insertionPoint2: Coordinate = new Coordinate(15, 5);
+        middleCell = CellFactory.createCell(insertionPoint2, 10, 'square');
 
-        const center3: Coordinate = new Coordinate(25, 5);
-        rightCell = CellFactory.createCell(center3, 10, 'square');
+        const insertionPoint3: Coordinate = new Coordinate(25, 5);
+        rightCell = CellFactory.createCell(insertionPoint3, 10, 'square');
 
-        const center4: Coordinate = new Coordinate(15, 15);
-        upperCell = CellFactory.createCell(center4, 10, 'square');
+        const insertionPoint4: Coordinate = new Coordinate(15, 15);
+        upperCell = CellFactory.createCell(insertionPoint4, 10, 'square');
 
-        const center5: Coordinate = new Coordinate(15, -5);
-        lowerCell = CellFactory.createCell(center5, 10, 'square');
+        const insertionPoint5: Coordinate = new Coordinate(15, -5);
+        lowerCell = CellFactory.createCell(insertionPoint5, 10, 'square');
     });
 
     it('establishing neighbour relation between two cells', () => {
@@ -102,16 +102,16 @@ describe('Cell', () => {
     });
 
     it('should have correct coordinates', () => {
-        expect(leftCell.center.x).to.equal(5);
-        expect(leftCell.center.y).to.equal(5);
+        expect(leftCell.center.x).to.equal(10);
+        expect(leftCell.center.y).to.equal(10);
     });
 
     it('should have correct corners', () => {
         const corners: Coordinate[] = leftCell.corners;
-        expect(corners[0].equals(new Coordinate(10, 10))).to.equal(true);
-        expect(corners[1].equals(new Coordinate(0, 10))).to.equal(true);
-        expect(corners[2].equals(new Coordinate(0, 0))).to.equal(true);
-        expect(corners[3].equals(new Coordinate(10, 0))).to.equal(true);
+        expect(corners[0].equals(new Coordinate(5, 5))).to.equal(true);
+        expect(corners[1].equals(new Coordinate(15, 5))).to.equal(true);
+        expect(corners[2].equals(new Coordinate(15, 15))).to.equal(true);
+        expect(corners[3].equals(new Coordinate(5, 15))).to.equal(true);
     });
 
     it('should have 4 borders when no neighbours', () => {

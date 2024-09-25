@@ -96,22 +96,23 @@ describe('CellFactory', () => {
     it('creating an octagon cell', () => {
         const octagonCell: Cell = CellFactory.createCell(insertionPoint, 10, 'octagonal');
         expect(octagonCell.corners.length).to.equal(8);
-        expect(octagonCell.center.equals(new Coordinate(10, 10))).to.equal(true);
-        expect(octagonCell.corners[0].x).to.be.closeTo(15, 0.0001);
-        expect(octagonCell.corners[0].y).to.be.closeTo(12.0711, 0.0001);
-        expect(octagonCell.corners[1].x).to.be.closeTo(12.0711, 0.0001);
-        expect(octagonCell.corners[1].y).to.be.closeTo(15, 0.0001);
-        expect(octagonCell.corners[2].x).to.be.closeTo(7.9289, 0.0001);
-        expect(octagonCell.corners[2].y).to.be.closeTo(15, 0.0001);
-        expect(octagonCell.corners[3].x).to.be.closeTo(5, 0.0001);
+        expect(octagonCell.center.x).to.be.closeTo(7.0711, 0.0001);
+        expect(octagonCell.center.x).to.be.closeTo(7.0711, 0.0001);
+        expect(octagonCell.corners[0].x).to.be.closeTo(5, 0.0001);
+        expect(octagonCell.corners[0].y).to.be.closeTo(5, 0.0001);
+        expect(octagonCell.corners[1].x).to.be.closeTo(9.1421, 0.0001);
+        expect(octagonCell.corners[1].y).to.be.closeTo(5, 0.0001);
+        expect(octagonCell.corners[2].x).to.be.closeTo(12.0711, 0.0001);
+        expect(octagonCell.corners[2].y).to.be.closeTo(7.9289, 0.0001);
+        expect(octagonCell.corners[3].x).to.be.closeTo(12.0711, 0.0001);
         expect(octagonCell.corners[3].y).to.be.closeTo(12.0711, 0.0001);
-        expect(octagonCell.corners[4].x).to.be.closeTo(5, 0.0001);
-        expect(octagonCell.corners[4].y).to.be.closeTo(7.9289, 0.0001);
-        expect(octagonCell.corners[5].x).to.be.closeTo(7.9289, 0.0001);
-        expect(octagonCell.corners[5].y).to.be.closeTo(5, 0.0001);
-        expect(octagonCell.corners[6].x).to.be.closeTo(12.0711, 0.0001);
-        expect(octagonCell.corners[6].y).to.be.closeTo(5, 0.0001);
-        expect(octagonCell.corners[7].x).to.be.closeTo(15, 0.0001);
+        expect(octagonCell.corners[4].x).to.be.closeTo(9.1421, 0.0001);
+        expect(octagonCell.corners[4].y).to.be.closeTo(15, 0.0001);
+        expect(octagonCell.corners[5].x).to.be.closeTo(5, 0.0001);
+        expect(octagonCell.corners[5].y).to.be.closeTo(15, 0.0001);
+        expect(octagonCell.corners[6].x).to.be.closeTo(2.0711, 0.0001);
+        expect(octagonCell.corners[6].y).to.be.closeTo(12.0711, 0.0001);
+        expect(octagonCell.corners[7].x).to.be.closeTo(2.0711, 0.0001);
         expect(octagonCell.corners[7].y).to.be.closeTo(7.9289, 0.0001);
 
     });

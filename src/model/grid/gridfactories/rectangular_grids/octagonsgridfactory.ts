@@ -24,6 +24,7 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
         const numberOfColumns: number = gridProperties.numberOfHorizontalEdgeSegments;
         const numberOfRows: number = gridProperties.numberOfVerticalEdgeSegments;
         const cellWidth: number = gridProperties.lengthOfEdgeSegments;
+        const sideLength: number = cellWidth / (1 + Math.SQRT2);
         const angle: number = gridProperties.angle;
 
         const tiltedSquareCellDiagonalLength: number =
@@ -36,7 +37,13 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
         const gridInsertionPoint: Coordinate = gridProperties.insertionPoint;
 
         const createOctagonalCell: CellCreator =
-            (insertionPoint: Coordinate) => CellFactory.createCell(insertionPoint, cellWidth, 'octagonal', angle);
+            (insertionPoint: Coordinate) =>
+                CellFactory.createCell(
+                    insertionPoint.newRelativeCoordinate(rightUnitVector.scale(cellWidth / 2 - sideLength / 2)),
+                    cellWidth,
+                    'octagonal',
+                    angle
+                );
 
         const createLeftHalfOctagonalCell: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(

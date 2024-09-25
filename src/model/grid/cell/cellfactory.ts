@@ -1,6 +1,7 @@
 import { Coordinate } from '../../coordinate';
 import { downLeftUnitVector, downUnitVector, leftUnitVector, rightUnitVector, upLeftUnitVector, upRightUnitVector, upUnitVector } from '../../unitvectors';
 import { Cell } from './cell';
+import { CellBuilder } from './cellbuilder';
 
 export class CellFactory {
 
@@ -73,115 +74,77 @@ export class CellFactory {
 
     private static createSquareCell(insertionPoint: Coordinate, width: number): Cell {
         const halfWidth: number = width / 2;
-
-        const lowerLeftCorner: Coordinate = insertionPoint.clone();
-        const lowerRightCorner: Coordinate = lowerLeftCorner.newRelativeCoordinate(rightUnitVector.scale(width));
-        const upperRightCorner: Coordinate = lowerRightCorner.newRelativeCoordinate(upUnitVector.scale(width));
-        const upperLeftCorner: Coordinate = upperRightCorner.newRelativeCoordinate(leftUnitVector.scale(width));
-
         const center: Coordinate = new Coordinate(insertionPoint.x + halfWidth, insertionPoint.y + halfWidth);
-        return new Cell(
-            center,
-            [
-                lowerLeftCorner,
-                lowerRightCorner,
-                upperRightCorner,
-                upperLeftCorner
-            ]
-        );
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(rightUnitVector.scale(width))
+            .addStepToNextCorner(upUnitVector.scale(width))
+            .addStepToNextCorner(leftUnitVector.scale(width))
+            .defineCenter(center)
+            .build();
     }
 
     private static createIsoscelesRightTriangleCell(insertionPoint: Coordinate, width: number): Cell {
         const thirdWidth: number = width / 3;
         const thidHeight: number = width / 3;
         const hypotenuseLength: number = Math.sqrt(2 * width * width);
-
-        const lowerLeftCorner: Coordinate = insertionPoint.clone();
-        const lowerRightCorner: Coordinate = lowerLeftCorner.newRelativeCoordinate(rightUnitVector.scale(width));
-        const upperCorner: Coordinate = lowerRightCorner
-            .newRelativeCoordinate(upLeftUnitVector.scale(hypotenuseLength));
-
         const center: Coordinate = new Coordinate(insertionPoint.x + thirdWidth, insertionPoint.y + thidHeight);
-        return new Cell(
-            center,
-            [
-                lowerLeftCorner,
-                lowerRightCorner,
-                upperCorner
-            ]
-        );
+
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(rightUnitVector.scale(width))
+            .addStepToNextCorner(upLeftUnitVector.scale(hypotenuseLength))
+            .defineCenter(center)
+            .build();
     }
 
     private static createDoubleSquareRectangleCell(insertionPoint: Coordinate, width: number): Cell {
         const halfWidth: number = width / 2;
         const halfHeight: number = width / 4;
         const height: number = width / 2;
-        const lowerLeftCorner: Coordinate = insertionPoint.clone();
-        const lowerMiddleCorner: Coordinate = lowerLeftCorner.newRelativeCoordinate(rightUnitVector.scale(halfWidth));
-        const lowerRightCorner: Coordinate = lowerMiddleCorner.newRelativeCoordinate(rightUnitVector.scale(halfWidth));
-        const upperRightCorner: Coordinate = lowerRightCorner.newRelativeCoordinate(upUnitVector.scale(height));
-        const upperMiddleCorner: Coordinate = upperRightCorner.newRelativeCoordinate(leftUnitVector.scale(halfWidth));
-        const upperLeftCorner: Coordinate = upperMiddleCorner.newRelativeCoordinate(leftUnitVector.scale(halfWidth));
         const center: Coordinate = new Coordinate(insertionPoint.x + halfWidth, insertionPoint.y + halfHeight);
-        return new Cell(
-            center,
-            [
-                lowerLeftCorner,
-                lowerMiddleCorner,
-                lowerRightCorner,
-                upperRightCorner,
-                upperMiddleCorner,
-                upperLeftCorner
-            ]
-        );
+
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(rightUnitVector.scale(halfWidth))
+            .addStepToNextCorner(rightUnitVector.scale(halfWidth))
+            .addStepToNextCorner(upUnitVector.scale(height))
+            .addStepToNextCorner(leftUnitVector.scale(halfWidth))
+            .addStepToNextCorner(leftUnitVector.scale(halfWidth))
+            .defineCenter(center)
+            .build();
     }
 
     private static createChamferedSquareCell(insertionPoint: Coordinate, width: number): Cell {
         const sideLength: number = width / (1 + Math.SQRT2);
         const halfSideLength: number = sideLength / 2;
         const halfWidth: number = width / 2;
-
-        const q3: Coordinate = insertionPoint.clone();
-        const q4: Coordinate = q3.newRelativeCoordinate(rightUnitVector.scale(width));
-        const lowerQ1: Coordinate = q4.newRelativeCoordinate(upUnitVector.scale(halfWidth + halfSideLength));
-        const upperQ1: Coordinate = lowerQ1.newRelativeCoordinate(upLeftUnitVector.scale(sideLength));
-        const q2: Coordinate = upperQ1.newRelativeCoordinate(leftUnitVector.scale(halfWidth + halfSideLength));
-
         const center: Coordinate = new Coordinate(insertionPoint.x + halfWidth, insertionPoint.y + halfWidth);
-        return new Cell(
-            center,
-            [
-                q3,
-                q4,
-                lowerQ1,
-                upperQ1,
-                q2
-            ]
-        );
+
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(rightUnitVector.scale(width))
+            .addStepToNextCorner(upUnitVector.scale(halfWidth + halfSideLength))
+            .addStepToNextCorner(upLeftUnitVector.scale(sideLength))
+            .addStepToNextCorner(leftUnitVector.scale(halfWidth + halfSideLength))
+            .defineCenter(center)
+            .build();
     }
 
     private static createSemiOctagonalSemiSquareCell(insertionPoint: Coordinate, width: number): Cell {
         const sideLength: number = width / (1 + Math.SQRT2);
         const halfSideLength: number = sideLength / 2;
         const halfWidth: number = width / 2;
-        const q3: Coordinate = insertionPoint.clone();
-        const lowerQ4: Coordinate = q3.newRelativeCoordinate(rightUnitVector.scale(halfWidth + halfSideLength));
-        const upperQ4: Coordinate = lowerQ4.newRelativeCoordinate(upRightUnitVector.scale(sideLength));
-        const lowerQ1: Coordinate = upperQ4.newRelativeCoordinate(upUnitVector.scale(sideLength));
-        const upperQ1: Coordinate = lowerQ1.newRelativeCoordinate(upLeftUnitVector.scale(sideLength));
-        const q2: Coordinate = upperQ1.newRelativeCoordinate(leftUnitVector.scale(halfWidth + halfSideLength));
         const center: Coordinate = new Coordinate(insertionPoint.x + halfWidth, insertionPoint.y + halfWidth);
-        return new Cell(
-            center,
-            [
-                lowerQ1,
-                upperQ1,
-                q2,
-                q3,
-                lowerQ4,
-                upperQ4
-            ]
-        );
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(rightUnitVector.scale(halfWidth + halfSideLength))
+            .addStepToNextCorner(upRightUnitVector.scale(sideLength))
+            .addStepToNextCorner(upUnitVector.scale(sideLength))
+            .addStepToNextCorner(upLeftUnitVector.scale(sideLength))
+            .addStepToNextCorner(leftUnitVector.scale(halfWidth + halfSideLength))
+            .defineCenter(center)
+            .build();
     }
 
 
@@ -189,6 +152,8 @@ export class CellFactory {
         const sideLength: number = width / (1 + Math.SQRT2);
         const halfSideLength: number = sideLength / 2;
         const halfWidth: number = width / 2;
+        const center: Coordinate = new Coordinate(insertionPoint.x + halfWidth, insertionPoint.y + halfWidth);
+
         const lowerQ3: Coordinate = insertionPoint
             .newRelativeCoordinate(rightUnitVector.scale(halfWidth - halfSideLength));
         const lowerQ4: Coordinate = lowerQ3.newRelativeCoordinate(rightUnitVector.scale(sideLength));
@@ -198,7 +163,7 @@ export class CellFactory {
         const upperQ2: Coordinate = upperQ1.newRelativeCoordinate(leftUnitVector.scale(sideLength));
         const lowerQ2: Coordinate = upperQ2.newRelativeCoordinate(downLeftUnitVector.scale(sideLength));
         const upperQ3: Coordinate = lowerQ2.newRelativeCoordinate(downUnitVector.scale(sideLength));
-        const center: Coordinate = new Coordinate(insertionPoint.x + halfWidth, insertionPoint.y + halfWidth);
+
         return new Cell(
             center,
             [

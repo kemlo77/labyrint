@@ -1,6 +1,6 @@
 import { Coordinate } from '../../../coordinate';
-import { rightUnitVector, upUnitVector } from '../../../unitvectors';
-import { Vector } from '../../../vector';
+import { Vector } from '../../../vector/vector';
+import { stepRight, stepUp } from '../../../vector/vectorcreator';
 import { Grid } from '../../grid';
 import { GridFactory } from '../gridfactory';
 import { DiagonalSquaresGridFactory } from '../rectangular_grids/diagonalsquaresgridfactory';
@@ -14,8 +14,8 @@ export class SwedishFlagGridFactory extends GridFactory implements ComplexGridFa
     createGrid(gridProperties: ComplexGridProperties): Grid {
         const cellWidth: number = gridProperties.lengthOfEdgeSegments;
         const mult: number = 3;
-        const rightStep: Vector = rightUnitVector.scale(cellWidth);
-        const upStep: Vector = upUnitVector.scale(cellWidth);
+        const rightStep: Vector = stepRight(cellWidth);
+        const upStep: Vector = stepUp(cellWidth);
 
         const w1: number = 5 * mult;
         const w2: number = 2 * mult;
@@ -27,8 +27,8 @@ export class SwedishFlagGridFactory extends GridFactory implements ComplexGridFa
 
         const insertionPoint1: Coordinate = gridProperties.insertionPoint;
 
-        const insertionPoint4: Coordinate = insertionPoint1.newRelativeCoordinate(upStep.scale(h1));
-        const insertionPoint5: Coordinate = insertionPoint1.newRelativeCoordinate(upStep.scale(h1 + h2));
+        const insertionPoint4: Coordinate = insertionPoint1.stepToNewCoordinate(upStep.times(h1));
+        const insertionPoint5: Coordinate = insertionPoint1.stepToNewCoordinate(upStep.times(h1 + h2));
 
         const firstRowGrid: Grid = createEdgeGrid(insertionPoint1);
         const secondRowGrid: Grid = createMiddleRowGrid(insertionPoint4);
@@ -43,8 +43,8 @@ export class SwedishFlagGridFactory extends GridFactory implements ComplexGridFa
         }
 
         function createEdgeGrid(insertionPoint: Coordinate): Grid {
-            const insertionPoint2: Coordinate = insertionPoint.newRelativeCoordinate(rightStep.scale(w1));
-            const insertionPoint3: Coordinate = insertionPoint.newRelativeCoordinate(rightStep.scale(w1 + w2));
+            const insertionPoint2: Coordinate = insertionPoint.stepToNewCoordinate(rightStep.times(w1));
+            const insertionPoint3: Coordinate = insertionPoint.stepToNewCoordinate(rightStep.times(w1 + w2));
             const gridProperties1: RectangularGridProperties =
                 new RectangularGridProperties(insertionPoint, w1, h1, cellWidth);
             const gridProperties2: RectangularGridProperties =

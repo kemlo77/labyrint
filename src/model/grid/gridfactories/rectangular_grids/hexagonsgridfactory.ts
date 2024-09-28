@@ -3,11 +3,11 @@ import { Cell } from '../../cell/cell';
 import { CellFactory } from '../../cell/cellfactory';
 import { Grid } from '../../grid';
 import { CellCreator } from '../../cell/celltypealiases';
-import { downUnitVector, leftUnitVector, rightUnitVector, upUnitVector } from '../../../unitvectors';
-import { Vector } from '../../../vector';
+import { Vector } from '../../../vector/vector';
 import { RectangularGridFactory } from './rectangulargridfactory.interface';
 import { RectangularGridProperties } from './rectangulargridproperties';
 import { GridFactory } from '../gridfactory';
+import { stepDown, stepLeft, stepRight, stepUp } from '../../../vector/vectorcreator';
 
 export class HexagonsGridFactory extends GridFactory implements RectangularGridFactory {
 
@@ -30,15 +30,15 @@ export class HexagonsGridFactory extends GridFactory implements RectangularGridF
 
         const columnOffset: number = cellWidth * Math.sqrt(3) / 2;
 
-        const columnStep: Vector = rightUnitVector.scale(columnOffset).newRotatedVector(angle);
-        const leftColumnAdjustmentStep: Vector = rightUnitVector.scale(eigthOfCellHeight).newRotatedVector(angle);
-        const rightColumnAdjustmentStep: Vector = leftUnitVector.scale(eigthOfCellHeight).newRotatedVector(angle);
-        const oddColumnExtraRowStep: Vector = upUnitVector.scale(cellWidth / 2).newRotatedVector(angle);
-        const rowStep: Vector = upUnitVector.scale(cellWidth).newRotatedVector(angle);
-        const quarterRowStep: Vector = upUnitVector.scale(cellWidth / 4).newRotatedVector(angle);
-        const negativeQuarterRowStep: Vector = downUnitVector.scale(cellWidth / 4).newRotatedVector(angle);
-        const halfRowStep: Vector = upUnitVector.scale(cellWidth / 2).newRotatedVector(angle);
-        const negativeRowStep: Vector = downUnitVector.scale(cellWidth).newRotatedVector(angle);
+        const columnStep: Vector = stepRight(columnOffset).newRotatedVector(angle);
+        const leftColumnAdjustmentStep: Vector = stepRight(eigthOfCellHeight).newRotatedVector(angle);
+        const rightColumnAdjustmentStep: Vector = stepLeft(eigthOfCellHeight).newRotatedVector(angle);
+        const oddColumnExtraRowStep: Vector = stepUp(cellWidth / 2).newRotatedVector(angle);
+        const rowStep: Vector = stepUp(cellWidth).newRotatedVector(angle);
+        const quarterRowStep: Vector = stepUp(cellWidth / 4).newRotatedVector(angle);
+        const negativeQuarterRowStep: Vector = stepDown(cellWidth / 4).newRotatedVector(angle);
+        const halfRowStep: Vector = stepUp(cellWidth / 2).newRotatedVector(angle);
+        const negativeRowStep: Vector = stepDown(cellWidth).newRotatedVector(angle);
 
         const createRegularCell: CellCreator = (center: Coordinate) =>
             CellFactory.createCell(center, cellWidth, 'hexagonal', angle + 90);
@@ -55,7 +55,7 @@ export class HexagonsGridFactory extends GridFactory implements RectangularGridF
         const createDownRightQuarterCell: CellCreator = (center: Coordinate) =>
             CellFactory.createCell(center, cellWidth, 'bottom-left-quarter-hexagonal', angle + 270);
 
-        const firstCellCenter: Coordinate = gridProperties.insertionPoint.newRelativeCoordinate(halfRowStep);
+        const firstCellCenter: Coordinate = gridProperties.insertionPoint.stepToNewCoordinate(halfRowStep);
 
         const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
@@ -64,12 +64,12 @@ export class HexagonsGridFactory extends GridFactory implements RectangularGridF
             const onFirstColumn: boolean = columnIndex === 0;
             const onLastColumn: boolean = columnIndex === numberOfColumns - 1;
 
-            const columnStartCenter: Coordinate = firstCellCenter.newRelativeCoordinate(columnStep.scale(columnIndex));
+            const columnStartCenter: Coordinate = firstCellCenter.stepToNewCoordinate(columnStep.times(columnIndex));
 
 
             if (onFirstColumn) {
                 const firstColumnStartCenter: Coordinate =
-                    columnStartCenter.newRelativeCoordinate(leftColumnAdjustmentStep);
+                    columnStartCenter.stepToNewCoordinate(leftColumnAdjustmentStep);
                 const columnOfCells: Cell[] =
                     this.createSequenceOfCells(firstColumnStartCenter, rowStep, numberOfRows, createLeftSideCell);
                 cellColumns.push(columnOfCells);
@@ -78,7 +78,7 @@ export class HexagonsGridFactory extends GridFactory implements RectangularGridF
 
             if (onEvenColumn && onLastColumn) {
                 const evenLastColumnStartCenter: Coordinate =
-                    columnStartCenter.newRelativeCoordinate(rightColumnAdjustmentStep);
+                    columnStartCenter.stepToNewCoordinate(rightColumnAdjustmentStep);
                 const columnOfCells: Cell[] =
                     this.createSequenceOfCells(evenLastColumnStartCenter, rowStep, numberOfRows, createRightSideCell);
                 cellColumns.push(columnOfCells);
@@ -86,13 +86,13 @@ export class HexagonsGridFactory extends GridFactory implements RectangularGridF
             }
 
             if (onOddColumn && onLastColumn) {
-                const oddColumnStartCenter: Coordinate = columnStartCenter.newRelativeCoordinate(oddColumnExtraRowStep)
-                    .newRelativeCoordinate(rightColumnAdjustmentStep);
-                const bottomCellCenter: Coordinate = oddColumnStartCenter.newRelativeCoordinate(negativeRowStep)
-                    .newRelativeCoordinate(quarterRowStep);
+                const oddColumnStartCenter: Coordinate = columnStartCenter.stepToNewCoordinate(oddColumnExtraRowStep)
+                    .stepToNewCoordinate(rightColumnAdjustmentStep);
+                const bottomCellCenter: Coordinate = oddColumnStartCenter.stepToNewCoordinate(negativeRowStep)
+                    .stepToNewCoordinate(quarterRowStep);
                 const topColumnCenter: Coordinate =
-                    oddColumnStartCenter.newRelativeCoordinate(rowStep.scale(numberOfRows - 1))
-                        .newRelativeCoordinate(negativeQuarterRowStep);
+                    oddColumnStartCenter.stepToNewCoordinate(rowStep.times(numberOfRows - 1))
+                        .stepToNewCoordinate(negativeQuarterRowStep);
 
                 const bottomCell: Cell = createDownRightQuarterCell(bottomCellCenter);
                 const intermediateCellsInColumn: Cell[] =
@@ -110,12 +110,12 @@ export class HexagonsGridFactory extends GridFactory implements RectangularGridF
             }
 
             if (onOddColumn) {
-                const oddColumnStartCenter: Coordinate = columnStartCenter.newRelativeCoordinate(oddColumnExtraRowStep);
-                const bottomCellCenter: Coordinate = oddColumnStartCenter.newRelativeCoordinate(negativeRowStep)
-                    .newRelativeCoordinate(quarterRowStep);
+                const oddColumnStartCenter: Coordinate = columnStartCenter.stepToNewCoordinate(oddColumnExtraRowStep);
+                const bottomCellCenter: Coordinate = oddColumnStartCenter.stepToNewCoordinate(negativeRowStep)
+                    .stepToNewCoordinate(quarterRowStep);
                 const topColumnCenter: Coordinate =
-                    oddColumnStartCenter.newRelativeCoordinate(rowStep.scale(numberOfRows - 1))
-                        .newRelativeCoordinate(negativeQuarterRowStep);
+                    oddColumnStartCenter.stepToNewCoordinate(rowStep.times(numberOfRows - 1))
+                        .stepToNewCoordinate(negativeQuarterRowStep);
 
                 const bottomCell: Cell = createBottomHalfCell(bottomCellCenter);
                 const intermediateCellsInColumn: Cell[] =

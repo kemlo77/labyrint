@@ -1,6 +1,6 @@
 import { Coordinate } from '../../../coordinate';
-import { rightUnitVector, upUnitVector } from '../../../unitvectors';
-import { Vector } from '../../../vector';
+import { Vector } from '../../../vector/vector';
+import { stepRight, stepUp } from '../../../vector/vectorcreator';
 import { Cell } from '../../cell/cell';
 import { CellFactory } from '../../cell/cellfactory';
 import { CellCreator } from '../../cell/celltypealiases';
@@ -30,10 +30,10 @@ export class TriangularGridFactory extends GridFactory implements RegularShapedG
             CellFactory.createCell(center, cellWidth, 'equilateral-triangular', angle + 180);
 
         const triangleHeight: number = cellWidth * Math.sqrt(3) / 2;
-        const rowStep: Vector = upUnitVector.scale(triangleHeight).newRotatedVector(angle);
-        const columnStep: Vector = rightUnitVector.scale(cellWidth / 2).newRotatedVector(angle);
-        const evenTriangleAdjustment: Vector = upUnitVector.scale(triangleHeight / 3).newRotatedVector(angle);
-        const oddTriangleAdjustment: Vector = upUnitVector.scale(triangleHeight * 2 / 3).newRotatedVector(angle);
+        const rowStep: Vector = stepUp(triangleHeight).newRotatedVector(angle);
+        const columnStep: Vector = stepRight(cellWidth / 2).newRotatedVector(angle);
+        const evenTriangleAdjustment: Vector = stepUp(triangleHeight / 3).newRotatedVector(angle);
+        const oddTriangleAdjustment: Vector = stepUp(triangleHeight * 2 / 3).newRotatedVector(angle);
 
         const firstCellCornerPosition: Coordinate = gridProperties.insertionPoint;
         const cellRows: Cell[][] = [];
@@ -41,19 +41,19 @@ export class TriangularGridFactory extends GridFactory implements RegularShapedG
         for (let rowIndex: number = 0; rowIndex < gridProperties.numberOfEdgeSegments; rowIndex++) {
             const rowStartCenter: Coordinate =
                 firstCellCornerPosition
-                    .newRelativeCoordinate(columnStep)
-                    .newRelativeCoordinate(rowStep.scale(rowIndex))
-                    .newRelativeCoordinate(columnStep.scale(rowIndex));
+                    .stepToNewCoordinate(columnStep)
+                    .stepToNewCoordinate(rowStep.times(rowIndex))
+                    .stepToNewCoordinate(columnStep.times(rowIndex));
             const cellRow: Cell[] = [];
             const trianglesInRow: number = 2 * (gridProperties.numberOfEdgeSegments - rowIndex) - 1;
             for (let columnIndex: number = 0; columnIndex < trianglesInRow; columnIndex++) {
                 const evenColumn: boolean = columnIndex % 2 === 0;
-                let cellCenter: Coordinate = rowStartCenter.newRelativeCoordinate(columnStep.scale(columnIndex));
+                let cellCenter: Coordinate = rowStartCenter.stepToNewCoordinate(columnStep.times(columnIndex));
                 if (evenColumn) {
-                    cellCenter = cellCenter.newRelativeCoordinate(evenTriangleAdjustment);
+                    cellCenter = cellCenter.stepToNewCoordinate(evenTriangleAdjustment);
                     cellRow.push(createTriangleWithPointyTop(cellCenter));
                 } else {
-                    cellCenter = cellCenter.newRelativeCoordinate(oddTriangleAdjustment);
+                    cellCenter = cellCenter.stepToNewCoordinate(oddTriangleAdjustment);
                     cellRow.push(createTriangleWithPointyBottom(cellCenter));
                 }
             }

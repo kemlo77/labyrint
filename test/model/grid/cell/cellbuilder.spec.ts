@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { CellBuilder } from '../../../../src/model/grid/cell/cellbuilder';
 import { Coordinate } from '../../../../src/model/coordinate';
-import { Vector } from '../../../../src/model/vector';
+import { Vector } from '../../../../src/model/vector/vector';
 import { Cell } from '../../../../src/model/grid/cell/cell';
 
 describe('CellBuilder', () => {
@@ -48,8 +48,8 @@ describe('CellBuilder', () => {
 
             const expectedCorners: Coordinate[] = [
                 startCorner,
-                startCorner.newRelativeCoordinate(step1),
-                startCorner.newRelativeCoordinate(step1).newRelativeCoordinate(step2)
+                startCorner.stepToNewCoordinate(step1),
+                startCorner.stepToNewCoordinate(step1).stepToNewCoordinate(step2)
             ];
 
 

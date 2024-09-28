@@ -1,6 +1,6 @@
 import { Coordinate } from '../../../coordinate';
-import { downUnitVector, leftUnitVector, rightUnitVector, upUnitVector } from '../../../unitvectors';
-import { Vector } from '../../../vector';
+import { Vector } from '../../../vector/vector';
+import { stepDown, stepLeft, stepRight, stepUp } from '../../../vector/vectorcreator';
 import { Cell } from '../../cell/cell';
 import { CellFactory } from '../../cell/cellfactory';
 import { CellCreator } from '../../cell/celltypealiases';
@@ -36,13 +36,13 @@ export class TrianglesGridFactory extends GridFactory implements RectangularGrid
 
         const cellHeight: number = cellWidth;
 
-        const columnStep: Vector = rightUnitVector.scale(cellHeight).newRotatedVector(angle);
-        const rowStep: Vector = upUnitVector.scale(cellWidth / 2).newRotatedVector(angle);
-        const leftAdjustmentStep: Vector = leftUnitVector.scale(cellHeight / 6).newRotatedVector(angle);
-        const rightAdjustmentStep: Vector = rightUnitVector.scale(cellHeight / 6).newRotatedVector(angle);
-        const firstCellVerticalAdjustment: Vector = upUnitVector.scale(cellWidth / 6).newRotatedVector(angle);
-        const firstCellHorizontalAdjustment: Vector = rightUnitVector.scale(cellHeight / 2).newRotatedVector(angle);
-        const lastCellVerticalAdjustment: Vector = downUnitVector.scale(cellWidth / 6).newRotatedVector(angle);
+        const columnStep: Vector = stepRight(cellHeight).newRotatedVector(angle);
+        const rowStep: Vector = stepUp(cellWidth / 2).newRotatedVector(angle);
+        const leftAdjustmentStep: Vector = stepLeft(cellHeight / 6).newRotatedVector(angle);
+        const rightAdjustmentStep: Vector = stepRight(cellHeight / 6).newRotatedVector(angle);
+        const firstCellVerticalAdjustment: Vector = stepUp(cellWidth / 6).newRotatedVector(angle);
+        const firstCellHorizontalAdjustment: Vector = stepRight(cellHeight / 2).newRotatedVector(angle);
+        const lastCellVerticalAdjustment: Vector = stepDown(cellWidth / 6).newRotatedVector(angle);
 
         const createLeftPointingTriangle: CellCreator = (center: Coordinate) =>
             CellFactory.createCell(center, cellWidth, 'triangular', angle + 90);
@@ -58,48 +58,48 @@ export class TrianglesGridFactory extends GridFactory implements RectangularGrid
             CellFactory.createCell(center, cellWidth, 'left-half-triangular', angle + 90);
 
         const firstCellCenter: Coordinate = gridProperties.insertionPoint
-            .newRelativeCoordinate(firstCellHorizontalAdjustment);
+            .stepToNewCoordinate(firstCellHorizontalAdjustment);
 
         const cellColumns: Cell[][] = [];
 
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
-            const columnStartCenter: Coordinate = firstCellCenter.newRelativeCoordinate(columnStep.scale(columnIndex));
+            const columnStartCenter: Coordinate = firstCellCenter.stepToNewCoordinate(columnStep.times(columnIndex));
             const columnOfCells: Cell[] = [];
             for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
                 const onFirstRow: boolean = rowIndex === 0;
                 const onLastRow: boolean = rowIndex === numberOfRows - 1;
 
-                let cellCenter: Coordinate = columnStartCenter.newRelativeCoordinate(rowStep.scale(rowIndex));
+                let cellCenter: Coordinate = columnStartCenter.stepToNewCoordinate(rowStep.times(rowIndex));
                 if (this.cellPointsRight(rowIndex, columnIndex)) {
                     if (onFirstRow) {
-                        cellCenter = cellCenter.newRelativeCoordinate(rightAdjustmentStep)
-                            .newRelativeCoordinate(firstCellVerticalAdjustment);
+                        cellCenter = cellCenter.stepToNewCoordinate(rightAdjustmentStep)
+                            .stepToNewCoordinate(firstCellVerticalAdjustment);
                         columnOfCells.push(createRightPointingBottomTriangle(cellCenter));
                         continue;
                     }
                     if (onLastRow) {
-                        cellCenter = cellCenter.newRelativeCoordinate(rightAdjustmentStep)
-                            .newRelativeCoordinate(lastCellVerticalAdjustment);
+                        cellCenter = cellCenter.stepToNewCoordinate(rightAdjustmentStep)
+                            .stepToNewCoordinate(lastCellVerticalAdjustment);
                         columnOfCells.push(createRightPointingTopTriangle(cellCenter));
                         continue;
                     }
-                    cellCenter = cellCenter.newRelativeCoordinate(rightAdjustmentStep);
+                    cellCenter = cellCenter.stepToNewCoordinate(rightAdjustmentStep);
                     columnOfCells.push(createLeftPointingTriangle(cellCenter));
                 } else {
 
                     if (onFirstRow) {
-                        cellCenter = cellCenter.newRelativeCoordinate(leftAdjustmentStep)
-                            .newRelativeCoordinate(firstCellVerticalAdjustment);
+                        cellCenter = cellCenter.stepToNewCoordinate(leftAdjustmentStep)
+                            .stepToNewCoordinate(firstCellVerticalAdjustment);
                         columnOfCells.push(createLeftPointingBottomTriangle(cellCenter));
                         continue;
                     }
                     if (onLastRow) {
-                        cellCenter = cellCenter.newRelativeCoordinate(leftAdjustmentStep)
-                            .newRelativeCoordinate(lastCellVerticalAdjustment);
+                        cellCenter = cellCenter.stepToNewCoordinate(leftAdjustmentStep)
+                            .stepToNewCoordinate(lastCellVerticalAdjustment);
                         columnOfCells.push(createLeftPointingTopTriangle(cellCenter));
                         continue;
                     }
-                    cellCenter = cellCenter.newRelativeCoordinate(leftAdjustmentStep);
+                    cellCenter = cellCenter.stepToNewCoordinate(leftAdjustmentStep);
                     columnOfCells.push(createRightPointingTriangle(cellCenter));
                 }
             }

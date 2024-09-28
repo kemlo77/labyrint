@@ -1,6 +1,5 @@
 import { Coordinate } from '../../../coordinate';
-import { downUnitVector, rightUnitVector, upRightUnitVector, upUnitVector } from '../../../unitvectors';
-import { Vector } from '../../../vector';
+import { Vector } from '../../../vector/vector';
 import { Cell } from '../../cell/cell';
 import { CellFactory } from '../../cell/cellfactory';
 import { CellCreator } from '../../cell/celltypealiases';
@@ -8,6 +7,7 @@ import { Grid } from '../../grid';
 import { RectangularGridFactory } from './rectangulargridfactory.interface';
 import { GridFactory } from '../gridfactory';
 import { RectangularGridProperties } from './rectangulargridproperties';
+import { stepDown, stepRight, stepUp } from '../../../vector/vectorcreator';
 
 export class OctagonsGridFactory extends GridFactory implements RectangularGridFactory {
 
@@ -31,15 +31,15 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
             cellWidth - this.sideLengthOfOctagonFromInradius(cellWidth / 2);
         const tiltedSquareWidth: number = tiltedSquareCellDiagonalLength / Math.SQRT2;
 
-        const columnStep: Vector = rightUnitVector.scale(cellWidth).newRotatedVector(angle);
-        const rowStep: Vector = upUnitVector.scale(cellWidth).newRotatedVector(angle);
+        const columnStep: Vector = stepRight(cellWidth).newRotatedVector(angle);
+        const rowStep: Vector = stepUp(cellWidth).newRotatedVector(angle);
 
         const gridInsertionPoint: Coordinate = gridProperties.insertionPoint;
 
         const createOctagonalCell: CellCreator =
             (insertionPoint: Coordinate) =>
                 CellFactory.createCell(
-                    insertionPoint.newRelativeCoordinate(rightUnitVector.scale(cellWidth / 2 - sideLength / 2)),
+                    insertionPoint.stepToNewCoordinate(stepRight(cellWidth / 2 - sideLength / 2)),
                     cellWidth,
                     'octagonal',
                     angle
@@ -54,21 +54,21 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
             );
         const createBottomHalfOctagonalCell: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(
-                insertionPoint.newRelativeCoordinate(columnStep),
+                insertionPoint.stepToNewCoordinate(columnStep),
                 cellWidth,
                 'semi-octagonal-semi-square',
                 angle + 90
             );
         const createRightHalfOctagonalCell: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(
-                insertionPoint.newRelativeCoordinate(rowStep).newRelativeCoordinate(columnStep),
+                insertionPoint.stepToNewCoordinate(rowStep.then(columnStep)),
                 cellWidth,
                 'semi-octagonal-semi-square',
                 angle + 180
             );
         const createTopHalfOctagonalCell: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(
-                insertionPoint.newRelativeCoordinate(rowStep),
+                insertionPoint.stepToNewCoordinate(rowStep),
                 cellWidth,
                 'semi-octagonal-semi-square',
                 angle + 270
@@ -83,21 +83,21 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
             );
         const createLowerRightCornerCell: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(
-                insertionPoint.newRelativeCoordinate(columnStep),
+                insertionPoint.stepToNewCoordinate(columnStep),
                 cellWidth,
                 'chamfered-square',
                 angle + 90
             );
         const createUpperLeftCornerCell: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(
-                insertionPoint.newRelativeCoordinate(rowStep),
+                insertionPoint.stepToNewCoordinate(rowStep),
                 cellWidth,
                 'chamfered-square',
                 angle + 270
             );
         const createUpperRightCornerCell: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(
-                insertionPoint.newRelativeCoordinate(rowStep).newRelativeCoordinate(columnStep),
+                insertionPoint.stepToNewCoordinate(rowStep.then(columnStep)),
                 cellWidth,
                 'chamfered-square',
                 angle + 180
@@ -105,7 +105,7 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
 
         const createTiltedSquareCell: CellCreator = (center: Coordinate) =>
             CellFactory.createCell(
-                center.newRelativeCoordinate(downUnitVector.scale(tiltedSquareCellDiagonalLength / 2)),
+                center.stepToNewCoordinate(stepDown(tiltedSquareCellDiagonalLength / 2)),
                 tiltedSquareWidth,
                 'square',
                 angle + 45
@@ -146,7 +146,7 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
         const lowerLeftCornerCell: Cell = createLowerLeftCornerCell(gridInsertionPoint);
         firstColumn.push(lowerLeftCornerCell);
 
-        const leftColumnSecondCellInsertionPoint: Coordinate = gridInsertionPoint.newRelativeCoordinate(rowStep);
+        const leftColumnSecondCellInsertionPoint: Coordinate = gridInsertionPoint.stepToNewCoordinate(rowStep);
         const leftColumnOfCells: Cell[] = this.createSequenceOfCells(
             leftColumnSecondCellInsertionPoint,
             rowStep,
@@ -156,7 +156,7 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
         firstColumn.push(...leftColumnOfCells);
 
         const upperLeftCornerCellInsertionPoint: Coordinate = gridInsertionPoint
-            .newRelativeCoordinate(rowStep.scale(numberOfRows - 1));
+            .stepToNewCoordinate(rowStep.times(numberOfRows - 1));
         const upperLeftCornerCell: Cell = createUpperLeftCornerCell(upperLeftCornerCellInsertionPoint);
         firstColumn.push(upperLeftCornerCell);
 
@@ -169,10 +169,9 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
             const notOnLastColumn: boolean = columnIndex !== numberOfColumns - 1;
 
             const firstOctagonalCellInsertionPoint: Coordinate = gridInsertionPoint
-                .newRelativeCoordinate(columnStep.scale(columnIndex));
+                .stepToNewCoordinate(columnStep.times(columnIndex));
             const fistTiltedSquareCellCenter: Coordinate = firstOctagonalCellInsertionPoint
-                .newRelativeCoordinate(columnStep)
-                .newRelativeCoordinate(rowStep);
+                .stepToNewCoordinate(columnStep.then(rowStep));
 
 
             if (notOnFirstColumn && notOnLastColumn) {
@@ -181,7 +180,7 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
                 intermediateColumn.push(bottomCell);
 
                 const intermediateColumnSecondCellInsertionPoint: Coordinate =
-                    firstOctagonalCellInsertionPoint.newRelativeCoordinate(rowStep);
+                    firstOctagonalCellInsertionPoint.stepToNewCoordinate(rowStep);
                 const octagonalCellSequence: Cell[] =
                     this.createSequenceOfCells(
                         intermediateColumnSecondCellInsertionPoint,
@@ -192,7 +191,7 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
                 intermediateColumn.push(...octagonalCellSequence);
 
                 const topCellInsertionPoint: Coordinate = firstOctagonalCellInsertionPoint
-                    .newRelativeCoordinate(rowStep.scale(numberOfRows - 1));
+                    .stepToNewCoordinate(rowStep.times(numberOfRows - 1));
                 const topCell: Cell = createTopHalfOctagonalCell(topCellInsertionPoint);
                 intermediateColumn.push(topCell);
 
@@ -216,12 +215,12 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
         // last column
         const lastColumn: Cell[] = [];
         const lastColumnFirstCellInsertionPoint: Coordinate =
-            gridInsertionPoint.newRelativeCoordinate(columnStep.scale(numberOfColumns - 1));
+            gridInsertionPoint.stepToNewCoordinate(columnStep.times(numberOfColumns - 1));
         const lowerRightCornerCell: Cell = createLowerRightCornerCell(lastColumnFirstCellInsertionPoint);
         lastColumn.push(lowerRightCornerCell);
 
         const rightColumnSecondCellInsertionPoint: Coordinate =
-            lastColumnFirstCellInsertionPoint.newRelativeCoordinate(rowStep);
+            lastColumnFirstCellInsertionPoint.stepToNewCoordinate(rowStep);
         const rightColumnOfCells: Cell[] = this.createSequenceOfCells(
             rightColumnSecondCellInsertionPoint,
             rowStep,
@@ -231,7 +230,7 @@ export class OctagonsGridFactory extends GridFactory implements RectangularGridF
         lastColumn.push(...rightColumnOfCells);
 
         const upperRightCornerCellInsertionPoint: Coordinate = lastColumnFirstCellInsertionPoint
-            .newRelativeCoordinate(rowStep.scale(numberOfRows - 1));
+            .stepToNewCoordinate(rowStep.times(numberOfRows - 1));
         const upperRightCornerCell: Cell = createUpperRightCornerCell(upperRightCornerCellInsertionPoint);
         lastColumn.push(upperRightCornerCell);
 

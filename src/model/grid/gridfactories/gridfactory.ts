@@ -1,6 +1,6 @@
 import { MatrixOperations } from '../../../service/matrixoperations';
 import { Coordinate } from '../../coordinate';
-import { Vector } from '../../vector';
+import { Vector } from '../../vector/vector';
 import { Cell } from '../cell/cell';
 import { CellCreator } from '../cell/celltypealiases';
 
@@ -8,13 +8,13 @@ export abstract class GridFactory {
 
     protected createSequenceOfCells(
         startCoordinate: Coordinate,
-        stepVector: Vector,
+        step: Vector,
         cellsToCreate: number,
         createCell: CellCreator
     ): Cell[] {
         const cellSequence: Cell[] = [];
         for (let stepNumber: number = 0; stepNumber < cellsToCreate; stepNumber++) {
-            const newCellCenter: Coordinate = startCoordinate.newRelativeCoordinate(stepVector.scale(stepNumber));
+            const newCellCenter: Coordinate = startCoordinate.stepToNewCoordinate(step.times(stepNumber));
             cellSequence.push(createCell(newCellCenter));
         }
         return cellSequence;

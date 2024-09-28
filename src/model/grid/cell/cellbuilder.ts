@@ -1,5 +1,5 @@
 import { Coordinate } from '../../coordinate';
-import { Vector } from '../../vector';
+import { Vector } from '../../vector/vector';
 import { Cell } from './cell';
 
 export class CellBuilder {
@@ -48,12 +48,10 @@ export class CellBuilder {
         let currentCorner: Coordinate = this._startCorner;
         corners.push(currentCorner);
         for (const step of this._steps) {
-            currentCorner = currentCorner.newRelativeCoordinate(step);
+            currentCorner = currentCorner.stepToNewCoordinate(step);
             corners.push(currentCorner);
         }
         return corners;
     }
-
-
 
 }

@@ -1,7 +1,7 @@
 import { MatrixOperations } from '../../../../service/matrixoperations';
 import { Coordinate } from '../../../coordinate';
-import { leftUnitVector, rightUnitVector, upUnitVector } from '../../../unitvectors';
-import { Vector } from '../../../vector';
+import { Vector } from '../../../vector/vector';
+import { stepRight, stepUp } from '../../../vector/vectorcreator';
 import { Cell } from '../../cell/cell';
 import { CellFactory } from '../../cell/cellfactory';
 import { CellCreator } from '../../cell/celltypealiases';
@@ -31,10 +31,10 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
         const numberOfRows: number = gridProperties.numberOfVerticalEdgeSegments;
         const angle: number = gridProperties.angle;
 
-        const oneStepUp: Vector = upUnitVector.scale(cellWidth).newRotatedVector(angle);
-        const aHalfStepRight: Vector = rightUnitVector.scale(halfCellWidth).newRotatedVector(angle);
-        const oneStepRight: Vector = rightUnitVector.scale(cellWidth).newRotatedVector(angle);
-        const twoStepsRight: Vector = rightUnitVector.scale(doubleCellWidth).newRotatedVector(angle);
+        const oneStepUp: Vector = stepUp(cellWidth).newRotatedVector(angle);
+        const aHalfStepRight: Vector = stepRight(halfCellWidth).newRotatedVector(angle);
+        const oneStepRight: Vector = stepRight(cellWidth).newRotatedVector(angle);
+        const twoStepsRight: Vector = stepRight(doubleCellWidth).newRotatedVector(angle);
 
         const createSquareCell: CellCreator =
             (insertionPoint: Coordinate) => CellFactory.createCell(insertionPoint, cellWidth, 'square', angle);
@@ -52,10 +52,10 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
         for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
             const rowOfCells: Cell[] = [];
             const onEvenRow: boolean = rowIndex % 2 === 0;
-            const rowStartPoint: Coordinate = firstCellCenter.newRelativeCoordinate(oneStepUp.scale(rowIndex));
+            const rowStartPoint: Coordinate = firstCellCenter.stepToNewCoordinate(oneStepUp.times(rowIndex));
             if (onEvenRow) {
                 //rectangular cells
-                const evenRowStartPoint: Coordinate = rowStartPoint.newRelativeCoordinate(aHalfStepRight);
+                const evenRowStartPoint: Coordinate = rowStartPoint.stepToNewCoordinate(aHalfStepRight);
                 const rectangularCells: Cell[] = this.createSequenceOfCells(
                     rowStartPoint,
                     twoStepsRight,
@@ -66,7 +66,7 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
                 //square cell
                 if (numberOfcolumns % 2 === 1) {
                     const lastCellCenter: Coordinate = evenRowStartPoint
-                        .newRelativeCoordinate(twoStepsRight.scale(evenRowNumberOfWideCells));
+                        .stepToNewCoordinate(twoStepsRight.times(evenRowNumberOfWideCells));
                     const squareCell: Cell = createSquareCell(lastCellCenter);
                     rowOfCells.push(squareCell);
                 }
@@ -78,7 +78,7 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
 
                 //rectangular cells
                 const rectangularCellsStartPoint: Coordinate = oddRowStartPoint
-                    .newRelativeCoordinate(oneStepRight);
+                    .stepToNewCoordinate(oneStepRight);
                 const rectangularCells: Cell[] = this.createSequenceOfCells(
                     rectangularCellsStartPoint,
                     twoStepsRight,
@@ -90,7 +90,7 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
                 //square cell
                 if (numberOfcolumns % 2 === 0) {
                     const lastCellCenter: Coordinate = rectangularCellsStartPoint
-                        .newRelativeCoordinate(twoStepsRight.scale(oddRowNumberOfWideCells));
+                        .stepToNewCoordinate(twoStepsRight.times(oddRowNumberOfWideCells));
                     const lastSquareCellInRow: Cell = createSquareCell(lastCellCenter);
                     rowOfCells.push(lastSquareCellInRow);
                 }

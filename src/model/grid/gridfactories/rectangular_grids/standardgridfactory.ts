@@ -1,6 +1,6 @@
 import { Coordinate } from '../../../coordinate';
-import { rightUnitVector, upRightUnitVector, upUnitVector } from '../../../unitvectors';
-import { Vector } from '../../../vector';
+import { Vector } from '../../../vector/vector';
+import { stepRight, stepUp } from '../../../vector/vectorcreator';
 import { Cell } from '../../cell/cell';
 import { CellFactory } from '../../cell/cellfactory';
 import { CellCreator } from '../../cell/celltypealiases';
@@ -25,11 +25,10 @@ export class StandardGridFactory extends GridFactory implements RectangularGridF
     private createCellMatrix(gridProperties: RectangularGridProperties): Cell[][] {
 
         const cellWidth: number = gridProperties.lengthOfEdgeSegments;
+        const cellHeight: number = cellWidth;
 
-        const columnStep: Vector = rightUnitVector.scale(cellWidth)
-            .newRotatedVector(gridProperties.angle);
-        const rowStep: Vector = upUnitVector.scale(cellWidth)
-            .newRotatedVector(gridProperties.angle);
+        const columnStep: Vector = stepRight(cellWidth).newRotatedVector(gridProperties.angle);
+        const rowStep: Vector = stepUp(cellHeight).newRotatedVector(gridProperties.angle);
 
         const firstCellCenter: Coordinate =
             gridProperties.insertionPoint;
@@ -42,7 +41,7 @@ export class StandardGridFactory extends GridFactory implements RectangularGridF
         const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < gridProperties.numberOfHorizontalEdgeSegments; columnIndex++) {
             const columnStartCenter: Coordinate =
-                firstCellCenter.newRelativeCoordinate(columnStep.scale(columnIndex));
+                firstCellCenter.stepToNewCoordinate(columnStep.times(columnIndex));
             const cellSequence: Cell[] =
                 this.createSequenceOfCells(columnStartCenter, rowStep, gridProperties.numberOfVerticalEdgeSegments,
                     createRotatedSquareCell);

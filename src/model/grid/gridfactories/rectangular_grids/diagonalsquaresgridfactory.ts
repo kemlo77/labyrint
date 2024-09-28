@@ -1,7 +1,6 @@
 import { Coordinate } from '../../../coordinate';
-import { downUnitVector, rightUnitVector, upRightUnitVector, upUnitVector }
-    from '../../../unitvectors';
-import { Vector } from '../../../vector';
+import { Vector } from '../../../vector/vector';
+import { stepDown, stepRight, stepUp, stepUpRight } from '../../../vector/vectorcreator';
 import { Cell } from '../../cell/cell';
 import { CellFactory } from '../../cell/cellfactory';
 import { CellCreator } from '../../cell/celltypealiases';
@@ -43,22 +42,18 @@ export class DiagonalSquaresGridFactory extends GridFactory implements Rectangul
         const createSquareCell: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(insertionPoint, cellWidth, 'square', 45 + angle);
 
-        const stepToLeftReferencePoint: Vector = upRightUnitVector.scale(cellWidth)
-            .newRotatedVector(angle);
+        const stepToLeftReferencePoint: Vector = stepUpRight(cellWidth).newRotatedVector(angle);
         const stepToRightReferencePoint: Vector =
-            rightUnitVector.scale(diagonalLength * (gridProperties.numberOfHorizontalEdgeSegments - 1))
+            stepRight(diagonalLength * (gridProperties.numberOfHorizontalEdgeSegments - 1))
                 .newRotatedVector(angle);
-        const columnStep: Vector = rightUnitVector.scale(diagonalLength / 2)
-            .newRotatedVector(angle);
-        const rowStep: Vector = upUnitVector.scale(diagonalLength)
-            .newRotatedVector(angle);
-        const oddColumnExtraStep: Vector = downUnitVector.scale(halfDiagonalLength)
-            .newRotatedVector(angle);
+        const columnStep: Vector = stepRight(diagonalLength / 2).newRotatedVector(angle);
+        const rowStep: Vector = stepUp(diagonalLength).newRotatedVector(angle);
+        const oddColumnExtraStep: Vector = stepDown(halfDiagonalLength).newRotatedVector(angle);
 
         const bottomLeftReferencePoint: Coordinate =
-            gridProperties.insertionPoint.newRelativeCoordinate(stepToLeftReferencePoint);
+            gridProperties.insertionPoint.stepToNewCoordinate(stepToLeftReferencePoint);
         const bottomRightReferencePoint: Coordinate =
-            bottomLeftReferencePoint.newRelativeCoordinate(stepToRightReferencePoint);
+            bottomLeftReferencePoint.stepToNewCoordinate(stepToRightReferencePoint);
 
         const cellColumns: Cell[][] = [];
 
@@ -74,7 +69,7 @@ export class DiagonalSquaresGridFactory extends GridFactory implements Rectangul
             const evenColumn: boolean = columnIndex % 2 === 0;
             const oddColumn: boolean = columnIndex % 2 === 1;
             const columnStartPoint: Coordinate = bottomLeftReferencePoint
-                .newRelativeCoordinate(columnStep.scale(columnIndex));
+                .stepToNewCoordinate(columnStep.times(columnIndex));
 
             if (evenColumn) {
                 //Bottom triangle
@@ -88,7 +83,7 @@ export class DiagonalSquaresGridFactory extends GridFactory implements Rectangul
 
                 //Top triangle
                 const topTriangleCenter: Coordinate = columnStartPoint
-                    .newRelativeCoordinate(rowStep.scale(numberOfRows - 1));
+                    .stepToNewCoordinate(rowStep.times(numberOfRows - 1));
                 const topTriangleCell: Cell = createTopRowTriangle(topTriangleCenter);
                 cellColumn.push(topTriangleCell);
 
@@ -99,7 +94,7 @@ export class DiagonalSquaresGridFactory extends GridFactory implements Rectangul
 
             if (oddColumn) {
                 //Squares
-                const oddColumnStartingPoint: Coordinate = columnStartPoint.newRelativeCoordinate(oddColumnExtraStep);
+                const oddColumnStartingPoint: Coordinate = columnStartPoint.stepToNewCoordinate(oddColumnExtraStep);
                 const sequenceOfSquareCells: Cell[] =
                     this.createSequenceOfCells(oddColumnStartingPoint, rowStep, numberOfRows, createSquareCell);
                 cellColumns.push(sequenceOfSquareCells);

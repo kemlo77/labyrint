@@ -49,13 +49,33 @@ export class TrianglesGridFactory extends GridFactory implements RectangularGrid
         const createRightPointingTriangle: CellCreator = (center: Coordinate) =>
             CellFactory.createCell(center, cellWidth, 'triangular', angle + 270);
         const createLeftPointingBottomTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'left-half-triangular', angle + 270);
+            CellFactory.createCell(
+                center.stepToNewCoordinate(firstCellVerticalAdjustment),
+                cellWidth,
+                'left-half-triangular',
+                angle + 270
+            );
         const createLeftPointingTopTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'right-half-triangular', angle + 270);
+            CellFactory.createCell(
+                center.stepToNewCoordinate(lastCellVerticalAdjustment),
+                cellWidth,
+                'right-half-triangular',
+                angle + 270
+            );
         const createRightPointingBottomTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'right-half-triangular', angle + 90);
+            CellFactory.createCell(
+                center.stepToNewCoordinate(firstCellVerticalAdjustment),
+                cellWidth,
+                'right-half-triangular',
+                angle + 90
+            );
         const createRightPointingTopTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'left-half-triangular', angle + 90);
+            CellFactory.createCell(
+                center.stepToNewCoordinate(lastCellVerticalAdjustment),
+                cellWidth,
+                'left-half-triangular',
+                angle + 90
+            );
 
         const firstCellCenter: Coordinate = gridProperties.insertionPoint
             .stepToNewCoordinate(firstCellHorizontalAdjustment);
@@ -69,37 +89,30 @@ export class TrianglesGridFactory extends GridFactory implements RectangularGrid
                 const onFirstRow: boolean = rowIndex === 0;
                 const onLastRow: boolean = rowIndex === numberOfRows - 1;
 
-                let cellCenter: Coordinate = columnStartCenter.stepToNewCoordinate(rowStep.times(rowIndex));
+
                 if (this.cellPointsRight(rowIndex, columnIndex)) {
+                    const cellCenter: Coordinate = columnStartCenter
+                        .stepToNewCoordinate(rowStep.times(rowIndex).then(rightAdjustmentStep));
                     if (onFirstRow) {
-                        cellCenter = cellCenter.stepToNewCoordinate(rightAdjustmentStep)
-                            .stepToNewCoordinate(firstCellVerticalAdjustment);
                         columnOfCells.push(createRightPointingBottomTriangle(cellCenter));
                         continue;
                     }
                     if (onLastRow) {
-                        cellCenter = cellCenter.stepToNewCoordinate(rightAdjustmentStep)
-                            .stepToNewCoordinate(lastCellVerticalAdjustment);
                         columnOfCells.push(createRightPointingTopTriangle(cellCenter));
                         continue;
                     }
-                    cellCenter = cellCenter.stepToNewCoordinate(rightAdjustmentStep);
                     columnOfCells.push(createLeftPointingTriangle(cellCenter));
                 } else {
-
+                    const cellCenter: Coordinate = columnStartCenter
+                        .stepToNewCoordinate(rowStep.times(rowIndex).then(leftAdjustmentStep));
                     if (onFirstRow) {
-                        cellCenter = cellCenter.stepToNewCoordinate(leftAdjustmentStep)
-                            .stepToNewCoordinate(firstCellVerticalAdjustment);
                         columnOfCells.push(createLeftPointingBottomTriangle(cellCenter));
                         continue;
                     }
                     if (onLastRow) {
-                        cellCenter = cellCenter.stepToNewCoordinate(leftAdjustmentStep)
-                            .stepToNewCoordinate(lastCellVerticalAdjustment);
                         columnOfCells.push(createLeftPointingTopTriangle(cellCenter));
                         continue;
                     }
-                    cellCenter = cellCenter.stepToNewCoordinate(leftAdjustmentStep);
                     columnOfCells.push(createRightPointingTriangle(cellCenter));
                 }
             }

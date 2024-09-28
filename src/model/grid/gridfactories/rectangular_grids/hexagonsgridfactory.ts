@@ -86,13 +86,12 @@ export class HexagonsGridFactory extends GridFactory implements RectangularGridF
             }
 
             if (onOddColumn && onLastColumn) {
-                const oddColumnStartCenter: Coordinate = columnStartCenter.stepToNewCoordinate(oddColumnExtraRowStep)
-                    .stepToNewCoordinate(rightColumnAdjustmentStep);
-                const bottomCellCenter: Coordinate = oddColumnStartCenter.stepToNewCoordinate(negativeRowStep)
-                    .stepToNewCoordinate(quarterRowStep);
+                const oddColumnStartCenter: Coordinate =
+                    columnStartCenter.stepToNewCoordinate(oddColumnExtraRowStep, rightColumnAdjustmentStep);
+                const bottomCellCenter: Coordinate =
+                    oddColumnStartCenter.stepToNewCoordinate(negativeRowStep, quarterRowStep);
                 const topColumnCenter: Coordinate =
-                    oddColumnStartCenter.stepToNewCoordinate(rowStep.times(numberOfRows - 1))
-                        .stepToNewCoordinate(negativeQuarterRowStep);
+                    oddColumnStartCenter.stepToNewCoordinate(rowStep.times(numberOfRows - 1), negativeQuarterRowStep);
 
                 const bottomCell: Cell = createDownRightQuarterCell(bottomCellCenter);
                 const intermediateCellsInColumn: Cell[] =
@@ -111,11 +110,10 @@ export class HexagonsGridFactory extends GridFactory implements RectangularGridF
 
             if (onOddColumn) {
                 const oddColumnStartCenter: Coordinate = columnStartCenter.stepToNewCoordinate(oddColumnExtraRowStep);
-                const bottomCellCenter: Coordinate = oddColumnStartCenter.stepToNewCoordinate(negativeRowStep)
-                    .stepToNewCoordinate(quarterRowStep);
+                const bottomCellCenter: Coordinate =
+                    oddColumnStartCenter.stepToNewCoordinate(negativeRowStep, quarterRowStep);
                 const topColumnCenter: Coordinate =
-                    oddColumnStartCenter.stepToNewCoordinate(rowStep.times(numberOfRows - 1))
-                        .stepToNewCoordinate(negativeQuarterRowStep);
+                    oddColumnStartCenter.stepToNewCoordinate(rowStep.times(numberOfRows - 1), negativeQuarterRowStep);
 
                 const bottomCell: Cell = createBottomHalfCell(bottomCellCenter);
                 const intermediateCellsInColumn: Cell[] =

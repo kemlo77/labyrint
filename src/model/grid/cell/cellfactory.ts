@@ -2,6 +2,7 @@ import { Coordinate } from '../../coordinate';
 import {
     stepDown,
     stepDownLeft,
+    stepInDirection,
     stepLeft,
     stepRight,
     stepUp,
@@ -69,6 +70,50 @@ export class CellFactory {
             return octagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
         }
 
+        if (type === 'hexagonal') {
+            const hexagonalCell: Cell = CellFactory.createHexagonalCell(insertionPoint, width);
+            if (angleInDegrees === 0) {
+                return hexagonalCell;
+            }
+            return hexagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
+        }
+
+        if (type === 'right-half-hexagonal') {
+            const rightHalfHexagonalCell: Cell =
+                CellFactory.createRightHalfHexagonalCell(insertionPoint, width);
+            if (angleInDegrees === 0) {
+                return rightHalfHexagonalCell;
+            }
+            return rightHalfHexagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
+        }
+
+        if (type === 'bottom-half-hexagonal') {
+            const createBottomHalfHexagonalCell: Cell =
+                CellFactory.createBottomHalfHexagonalCell(insertionPoint, width);
+            if (angleInDegrees === 0) {
+                return createBottomHalfHexagonalCell;
+            }
+            return createBottomHalfHexagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
+        }
+
+        if (type === 'bottom-right-quarter-hexagonal') {
+            const bottomRightQuarterHexagonalCell: Cell =
+                CellFactory.createBottomRightQuarterHexagonalCell(insertionPoint, width);
+            if (angleInDegrees === 0) {
+                return bottomRightQuarterHexagonalCell;
+            }
+            return bottomRightQuarterHexagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
+        }
+
+        if (type === 'bottom-left-quarter-hexagonal') {
+            const bottomLeftQuarterHexagonalCell: Cell =
+                CellFactory.createBottomLeftQuarterHexagonalCell(insertionPoint, width);
+            if (angleInDegrees === 0) {
+                return bottomLeftQuarterHexagonalCell;
+            }
+            return bottomLeftQuarterHexagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
+        }
+
         const shapeCorners: Coordinate[] = CellFactory.createCornersForShape(insertionPoint, width, type);
 
         if (angleInDegrees === 0) {
@@ -92,6 +137,21 @@ export class CellFactory {
             .build();
     }
 
+    private static createDoubleSquareRectangleCell(insertionPoint: Coordinate, width: number): Cell {
+        const height: number = width / 2;
+        const center: Coordinate =
+            insertionPoint.stepToNewCoordinate(stepRight(width / 2).then(stepUp(height / 2)));
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(stepRight((width / 2)))
+            .addStepToNextCorner(stepRight((width / 2)))
+            .addStepToNextCorner(stepUp(height))
+            .addStepToNextCorner(stepLeft((width / 2)))
+            .addStepToNextCorner(stepLeft((width / 2)))
+            .defineCenter(center)
+            .build();
+    }
+
     private static createIsoscelesRightTriangleCell(insertionPoint: Coordinate, width: number): Cell {
         const height: number = width;
         const hypotenuseLength: number = Math.sqrt(height * height + width * width);
@@ -104,17 +164,81 @@ export class CellFactory {
             .build();
     }
 
-    private static createDoubleSquareRectangleCell(insertionPoint: Coordinate, width: number): Cell {
-        const height: number = width / 2;
+    private static createHexagonalCell(insertionPoint: Coordinate, sideLength: number): Cell {
+        // width = sideLength * 2;
+        const height: number = sideLength * Math.sqrt(3);
         const center: Coordinate =
-            insertionPoint.stepToNewCoordinate(stepRight(width / 2).then(stepUp(height / 2)));
+            insertionPoint.stepToNewCoordinate(stepRight(sideLength / 2).then(stepUp(height / 2)));
+
         return new CellBuilder()
             .setStartCorner(insertionPoint)
-            .addStepToNextCorner(stepRight((width / 2)))
-            .addStepToNextCorner(stepRight((width / 2)))
-            .addStepToNextCorner(stepUp(height))
-            .addStepToNextCorner(stepLeft((width / 2)))
-            .addStepToNextCorner(stepLeft((width / 2)))
+            .addStepToNextCorner(stepInDirection(0, sideLength))
+            .addStepToNextCorner(stepInDirection(60, sideLength))
+            .addStepToNextCorner(stepInDirection(120, sideLength))
+            .addStepToNextCorner(stepInDirection(180, sideLength))
+            .addStepToNextCorner(stepInDirection(240, sideLength))
+            .defineCenter(center)
+            .build();
+    }
+
+
+    private static createRightHalfHexagonalCell(insertionPoint: Coordinate, sideLength: number): Cell {
+        const width: number = sideLength * 2;
+        const height: number = sideLength * Math.sqrt(3);
+        const center: Coordinate =
+            insertionPoint.stepToNewCoordinate(stepRight(sideLength / 4).then(stepUp(height / 2)));
+
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(stepInDirection(0, sideLength / 2))
+            .addStepToNextCorner(stepInDirection(60, sideLength))
+            .addStepToNextCorner(stepInDirection(120, sideLength))
+            .addStepToNextCorner(stepInDirection(180, sideLength / 2))
+            .defineCenter(center)
+            .build();
+    }
+
+    private static createBottomHalfHexagonalCell(insertionPoint: Coordinate, sideLength: number): Cell {
+        const width: number = sideLength * 2;
+        const height: number = sideLength * Math.sqrt(3);
+        const center: Coordinate =
+            insertionPoint.stepToNewCoordinate(stepRight(sideLength / 2).then(stepUp(height / 4)));
+
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(stepInDirection(0, sideLength))
+            .addStepToNextCorner(stepInDirection(60, sideLength))
+            .addStepToNextCorner(stepInDirection(180, width))
+            .defineCenter(center)
+            .build();
+    }
+
+    private static createBottomRightQuarterHexagonalCell(insertionPoint: Coordinate, sideLength: number): Cell {
+        const width: number = sideLength * 2;
+        const height: number = sideLength * Math.sqrt(3);
+        const center: Coordinate =
+            insertionPoint.stepToNewCoordinate(stepRight(sideLength / 4).then(stepUp(height / 4)));
+
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(stepInDirection(0, sideLength / 2))
+            .addStepToNextCorner(stepInDirection(60, sideLength))
+            .addStepToNextCorner(stepInDirection(180, sideLength))
+            .defineCenter(center)
+            .build();
+    }
+
+    private static createBottomLeftQuarterHexagonalCell(insertionPoint: Coordinate, sideLength: number): Cell {
+        const width: number = sideLength * 2;
+        const height: number = sideLength * Math.sqrt(3);
+        const center: Coordinate =
+            insertionPoint.stepToNewCoordinate(stepRight(sideLength / 4).then(stepUp(height / 4)));
+
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(stepInDirection(0, sideLength / 2))
+            .addStepToNextCorner(stepInDirection(90, height / 2))
+            .addStepToNextCorner(stepInDirection(180, sideLength))
             .defineCenter(center)
             .build();
     }
@@ -182,21 +306,6 @@ export class CellFactory {
         if (type === 'right-half-triangular') {
             return CellFactory.createCornersForRightHalfTriangle(center, width);
         }
-        if (type === 'hexagonal') {
-            return CellFactory.createCornersForHexagon(center, width);
-        }
-        if (type === 'right-half-hexagonal') {
-            return CellFactory.createCornersForRightHalfHexagon(center, width);
-        }
-        if (type === 'bottom-half-hexagonal') {
-            return CellFactory.createCornersForBottomHalfHexagon(center, width);
-        }
-        if (type === 'bottom-right-quarter-hexagonal') {
-            return CellFactory.createCornersForBottomRightQuarterHexagon(center, width);
-        }
-        if (type === 'bottom-left-quarter-hexagonal') {
-            return CellFactory.createCornersForBottomLeftQuarterHexagon(center, width);
-        }
 
         throw new Error('Unknown cell type');
     }
@@ -247,70 +356,5 @@ export class CellFactory {
         return [upperCorner, rightCorner, leftCorner];
     }
 
-    private static createCornersForHexagon(center: Coordinate, width: number): Coordinate[] {
-        const halfWidth: number = width / 2;
-        const quarterHeight: number = width / Math.sqrt(3) / 2;
-        const halfHeight: number = width / Math.sqrt(3);
-
-        const upperRight: Coordinate = new Coordinate(center.x + halfWidth, center.y + quarterHeight);
-        const upperCenter: Coordinate = new Coordinate(center.x, center.y + halfHeight);
-        const upperLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y + quarterHeight);
-        const lowerLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y - quarterHeight);
-        const lowerCenter: Coordinate = new Coordinate(center.x, center.y - halfHeight);
-        const lowerRight: Coordinate = new Coordinate(center.x + halfWidth, center.y - quarterHeight);
-        return [upperRight, upperCenter, upperLeft, lowerLeft, lowerCenter, lowerRight];
-    }
-
-    private static createCornersForRightHalfHexagon(center: Coordinate, width: number): Coordinate[] {
-        const quarterWidth: number = width / 4;
-        const quarterHeight: number = width / Math.sqrt(3) / 2;
-        const halfHeight: number = width / Math.sqrt(3);
-
-        const upperCenter: Coordinate = new Coordinate(center.x - quarterWidth, center.y + halfHeight);
-        const upperRight: Coordinate = new Coordinate(center.x + quarterWidth, center.y + quarterHeight);
-        const lowerRight: Coordinate = new Coordinate(center.x + quarterWidth, center.y - quarterHeight);
-        const lowerCenter: Coordinate = new Coordinate(center.x - quarterWidth, center.y - halfHeight);
-        return [upperRight, upperCenter, lowerCenter, lowerRight];
-    }
-
-    private static createCornersForBottomHalfHexagon(center: Coordinate, width: number): Coordinate[] {
-        const halfWidth: number = width / 2;
-        const quarterHeight: number = width / Math.sqrt(3) / 2;
-        const eightOfHeight: number = quarterHeight / 2;
-
-        const upperRight: Coordinate =
-            new Coordinate(center.x + halfWidth, center.y + eightOfHeight);
-        const upperLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y + eightOfHeight);
-        const lowerRight: Coordinate = new Coordinate(center.x + halfWidth, center.y - eightOfHeight);
-        const lowerLeft: Coordinate = new Coordinate(center.x - halfWidth, center.y - eightOfHeight);
-        const lowerCenter: Coordinate = new Coordinate(center.x, center.y - quarterHeight - eightOfHeight);
-        return [upperRight, upperLeft, lowerLeft, lowerCenter, lowerRight];
-    }
-
-    private static createCornersForBottomRightQuarterHexagon(center: Coordinate, width: number): Coordinate[] {
-        const quarterWidth: number = width / 4;
-        const quarterHeight: number = width / Math.sqrt(3) / 2;
-        const eightOfHeight: number = quarterHeight / 2;
-
-        const upperCenter: Coordinate = new Coordinate(center.x - quarterWidth, center.y + eightOfHeight);
-        const upperRight: Coordinate = new Coordinate(center.x + quarterWidth, center.y + eightOfHeight);
-        const lowerRight: Coordinate = new Coordinate(center.x + quarterWidth, center.y - eightOfHeight);
-        const lowerCenter: Coordinate =
-            new Coordinate(center.x - quarterWidth, center.y - quarterHeight - eightOfHeight);
-        return [upperRight, upperCenter, lowerCenter, lowerRight];
-    }
-
-    private static createCornersForBottomLeftQuarterHexagon(center: Coordinate, width: number): Coordinate[] {
-        const quarterWidth: number = width / 4;
-        const quarterHeight: number = width / Math.sqrt(3) / 2;
-        const eightOfHeight: number = quarterHeight / 2;
-
-        const upperRight: Coordinate = new Coordinate(center.x + quarterWidth, center.y + eightOfHeight);
-        const upperLeft: Coordinate = new Coordinate(center.x - quarterWidth, center.y + eightOfHeight);
-        const lowerLeft: Coordinate = new Coordinate(center.x - quarterWidth, center.y - eightOfHeight);
-        const lowerCenter: Coordinate =
-            new Coordinate(center.x + quarterWidth, center.y - quarterHeight - eightOfHeight);
-        return [upperRight, upperLeft, lowerLeft, lowerCenter];
-    }
 
 }

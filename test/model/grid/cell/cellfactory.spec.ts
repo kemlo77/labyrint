@@ -75,22 +75,23 @@ describe('CellFactory', () => {
     });
 
     it('creating a hexagon cell', () => {
-        const hexagonCenter: Coordinate = new Coordinate(0, 0);
-        const hexagonCell: Cell = CellFactory.createCell(hexagonCenter, 10, 'hexagonal');
+        const insertionPoint: Coordinate = new Coordinate(0, 0);
+        const hexagonCell: Cell = CellFactory.createCell(insertionPoint, 10, 'hexagonal');
         expect(hexagonCell.corners.length).to.equal(6);
-        expect(hexagonCell.center).to.equal(hexagonCenter);
-        expect(hexagonCell.corners[0].x).to.be.closeTo(5, 0.0001);
-        expect(hexagonCell.corners[0].y).to.be.closeTo(2.8867, 0.0001);
-        expect(hexagonCell.corners[1].x).to.be.closeTo(0, 0.0001);
-        expect(hexagonCell.corners[1].y).to.be.closeTo(5.7735, 0.0001);
-        expect(hexagonCell.corners[2].x).to.be.closeTo(-5, 0.0001);
-        expect(hexagonCell.corners[2].y).to.be.closeTo(2.8867, 0.0001);
-        expect(hexagonCell.corners[3].x).to.be.closeTo(-5, 0.0001);
-        expect(hexagonCell.corners[3].y).to.be.closeTo(-2.8867, 0.0001);
+        expect(hexagonCell.center.x).to.be.closeTo(5, 0.0001);
+        expect(hexagonCell.center.y).to.be.closeTo(8.6603, 0.0001);
+        expect(hexagonCell.corners[0].x).to.be.closeTo(0, 0.0001);
+        expect(hexagonCell.corners[0].y).to.be.closeTo(0, 0.0001);
+        expect(hexagonCell.corners[1].x).to.be.closeTo(10, 0.0001);
+        expect(hexagonCell.corners[1].y).to.be.closeTo(0, 0.0001);
+        expect(hexagonCell.corners[2].x).to.be.closeTo(15, 0.0001);
+        expect(hexagonCell.corners[2].y).to.be.closeTo(8.6603, 0.0001);
+        expect(hexagonCell.corners[3].x).to.be.closeTo(10, 0.0001);
+        expect(hexagonCell.corners[3].y).to.be.closeTo(17.3205, 0.0001);
         expect(hexagonCell.corners[4].x).to.be.closeTo(0, 0.0001);
-        expect(hexagonCell.corners[4].y).to.be.closeTo(-5.7735, 0.0001);
-        expect(hexagonCell.corners[5].x).to.be.closeTo(5, 0.0001);
-        expect(hexagonCell.corners[5].y).to.be.closeTo(-2.8867, 0.0001);
+        expect(hexagonCell.corners[4].y).to.be.closeTo(17.3205, 0.0001);
+        expect(hexagonCell.corners[5].x).to.be.closeTo(-5, 0.0001);
+        expect(hexagonCell.corners[5].y).to.be.closeTo(8.6603, 0.0001);
     });
 
     it('creating an octagon cell', () => {

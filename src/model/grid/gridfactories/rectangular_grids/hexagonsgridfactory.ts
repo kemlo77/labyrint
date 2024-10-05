@@ -22,40 +22,79 @@ export class HexagonsGridFactory extends GridFactory implements RectangularGridF
 
     private createCellMatrix(gridProperties: RectangularGridProperties): Cell[][] {
 
-        const cellWidth: number = gridProperties.lengthOfEdgeSegments;
-        const eigthOfCellHeight: number = cellWidth / Math.sqrt(3) / 4;
+        const cellHeight: number = gridProperties.lengthOfEdgeSegments;
+        const cellSideLength: number = cellHeight / Math.sqrt(3);
+
         const numberOfRows: number = gridProperties.numberOfVerticalEdgeSegments;
         const numberOfColumns: number = gridProperties.numberOfHorizontalEdgeSegments;
         const angle: number = gridProperties.angle;
 
-        const columnOffset: number = cellWidth * Math.sqrt(3) / 2;
 
-        const columnStep: Vector = stepRight(columnOffset).newRotatedVector(angle);
-        const leftColumnAdjustmentStep: Vector = stepRight(eigthOfCellHeight).newRotatedVector(angle);
-        const rightColumnAdjustmentStep: Vector = stepLeft(eigthOfCellHeight).newRotatedVector(angle);
-        const oddColumnExtraRowStep: Vector = stepUp(cellWidth / 2).newRotatedVector(angle);
-        const rowStep: Vector = stepUp(cellWidth).newRotatedVector(angle);
-        const quarterRowStep: Vector = stepUp(cellWidth / 4).newRotatedVector(angle);
-        const negativeQuarterRowStep: Vector = stepDown(cellWidth / 4).newRotatedVector(angle);
-        const halfRowStep: Vector = stepUp(cellWidth / 2).newRotatedVector(angle);
-        const negativeRowStep: Vector = stepDown(cellWidth).newRotatedVector(angle);
+        const halfSideLengthRight: Vector = stepRight(cellSideLength / 2).newRotatedVector(angle);
+        const sideLengthRight: Vector = stepRight(cellSideLength).newRotatedVector(angle);
+        const columnStep: Vector = stepRight((cellSideLength * 1.5)).newRotatedVector(angle);
 
-        const createRegularCell: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'hexagonal', angle + 90);
-        const createTopHalfCell: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'right-half-hexagonal', angle + 270);
-        const createBottomHalfCell: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'right-half-hexagonal', angle + 90);
-        const createLeftSideCell: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'bottom-half-hexagonal', angle + 90);
-        const createRightSideCell: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'bottom-half-hexagonal', angle + 270);
-        const createUpRightQuarterCell: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'bottom-right-quarter-hexagonal', angle + 270);
-        const createDownRightQuarterCell: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'bottom-left-quarter-hexagonal', angle + 270);
+        const halfSideLengthToLeft: Vector = stepLeft(cellSideLength / 2).newRotatedVector(angle);
 
-        const firstCellCenter: Coordinate = gridProperties.insertionPoint.stepToNewCoordinate(halfRowStep);
+        const halfCellHeightUp: Vector = stepUp(cellHeight / 2).newRotatedVector(angle);
+        const cellHeightUp: Vector = stepUp(cellHeight).newRotatedVector(angle);
+        const rowStep: Vector = cellHeightUp;
+        const halfRowStep: Vector = halfCellHeightUp;
+
+
+        const createRegularCell: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(
+                insertionPoint,
+                cellSideLength,
+                'hexagonal',
+                angle
+            );
+        const createTopHalfCell: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(
+                insertionPoint,
+                cellSideLength,
+                'bottom-half-hexagonal',
+                angle + 0
+            );
+        const createBottomHalfCell: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(
+                insertionPoint.stepToNewCoordinate(sideLengthRight.then(halfCellHeightUp)),
+                cellSideLength,
+                'bottom-half-hexagonal',
+                angle + 180
+            );
+
+        const createLeftSideCell: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(
+                insertionPoint,
+                cellSideLength,
+                'right-half-hexagonal',
+                angle
+            );
+        const createRightSideCell: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(
+                insertionPoint.stepToNewCoordinate(cellHeightUp.then(halfSideLengthRight)),
+                cellSideLength,
+                'right-half-hexagonal',
+                angle + 180
+            );
+
+        const createBottomRightQuarterCell: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(
+                insertionPoint.stepToNewCoordinate(halfSideLengthRight.then(halfCellHeightUp)),
+                cellSideLength,
+                'bottom-right-quarter-hexagonal',
+                angle + 180
+            );
+        const createUpRightQuarterCell: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(
+                insertionPoint,
+                cellSideLength,
+                'bottom-left-quarter-hexagonal',
+                angle
+            );
+
+        const insertionPoint: Coordinate = gridProperties.insertionPoint;
 
         const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
@@ -64,39 +103,39 @@ export class HexagonsGridFactory extends GridFactory implements RectangularGridF
             const onFirstColumn: boolean = columnIndex === 0;
             const onLastColumn: boolean = columnIndex === numberOfColumns - 1;
 
-            const columnStartCenter: Coordinate = firstCellCenter.stepToNewCoordinate(columnStep.times(columnIndex));
+            const firstcolumnInsertionPoint: Coordinate = insertionPoint;
+            const columnInsertionPoint: Coordinate =
+                insertionPoint.stepToNewCoordinate(columnStep.times(columnIndex).then(halfSideLengthToLeft));
 
 
             if (onFirstColumn) {
-                const firstColumnStartCenter: Coordinate =
-                    columnStartCenter.stepToNewCoordinate(leftColumnAdjustmentStep);
                 const columnOfCells: Cell[] =
-                    this.createSequenceOfCells(firstColumnStartCenter, rowStep, numberOfRows, createLeftSideCell);
+                    this.createSequenceOfCells(firstcolumnInsertionPoint, rowStep, numberOfRows, createLeftSideCell);
                 cellColumns.push(columnOfCells);
                 continue;
             }
 
-            if (onEvenColumn && onLastColumn) {
-                const evenLastColumnStartCenter: Coordinate =
-                    columnStartCenter.stepToNewCoordinate(rightColumnAdjustmentStep);
+            if (onLastColumn && onEvenColumn) {
                 const columnOfCells: Cell[] =
-                    this.createSequenceOfCells(evenLastColumnStartCenter, rowStep, numberOfRows, createRightSideCell);
+                    this.createSequenceOfCells(columnInsertionPoint, rowStep, numberOfRows, createRightSideCell);
                 cellColumns.push(columnOfCells);
                 continue;
             }
 
-            if (onOddColumn && onLastColumn) {
-                const oddColumnStartCenter: Coordinate =
-                    columnStartCenter.stepToNewCoordinate(oddColumnExtraRowStep, rightColumnAdjustmentStep);
-                const bottomCellCenter: Coordinate =
-                    oddColumnStartCenter.stepToNewCoordinate(negativeRowStep, quarterRowStep);
-                const topColumnCenter: Coordinate =
-                    oddColumnStartCenter.stepToNewCoordinate(rowStep.times(numberOfRows - 1), negativeQuarterRowStep);
+            if (onLastColumn && onOddColumn) {
+                const cellColumnInsertionPoint: Coordinate = columnInsertionPoint.stepToNewCoordinate(halfCellHeightUp);
+                const topCellInsertionPoint: Coordinate =
+                    cellColumnInsertionPoint.stepToNewCoordinate(rowStep.times(numberOfRows - 1));
 
-                const bottomCell: Cell = createDownRightQuarterCell(bottomCellCenter);
+                const bottomCell: Cell = createBottomRightQuarterCell(columnInsertionPoint);
                 const intermediateCellsInColumn: Cell[] =
-                    this.createSequenceOfCells(oddColumnStartCenter, rowStep, numberOfRows - 1, createRightSideCell);
-                const topCell: Cell = createUpRightQuarterCell(topColumnCenter);
+                    this.createSequenceOfCells(
+                        cellColumnInsertionPoint,
+                        rowStep,
+                        numberOfRows - 1,
+                        createRightSideCell
+                    );
+                const topCell: Cell = createUpRightQuarterCell(topCellInsertionPoint);
 
                 cellColumns.push([bottomCell, ...intermediateCellsInColumn, topCell]);
                 continue;
@@ -104,21 +143,19 @@ export class HexagonsGridFactory extends GridFactory implements RectangularGridF
 
             if (onEvenColumn) {
                 const columnOfCells: Cell[] =
-                    this.createSequenceOfCells(columnStartCenter, rowStep, numberOfRows, createRegularCell);
+                    this.createSequenceOfCells(columnInsertionPoint, rowStep, numberOfRows, createRegularCell);
                 cellColumns.push(columnOfCells);
             }
 
             if (onOddColumn) {
-                const oddColumnStartCenter: Coordinate = columnStartCenter.stepToNewCoordinate(oddColumnExtraRowStep);
-                const bottomCellCenter: Coordinate =
-                    oddColumnStartCenter.stepToNewCoordinate(negativeRowStep, quarterRowStep);
-                const topColumnCenter: Coordinate =
-                    oddColumnStartCenter.stepToNewCoordinate(rowStep.times(numberOfRows - 1), negativeQuarterRowStep);
+                const cellColumnInsertionPoint: Coordinate = columnInsertionPoint.stepToNewCoordinate(halfRowStep);
+                const topCellInsertionPoint: Coordinate =
+                    cellColumnInsertionPoint.stepToNewCoordinate(rowStep.times(numberOfRows - 1));
 
-                const bottomCell: Cell = createBottomHalfCell(bottomCellCenter);
+                const bottomCell: Cell = createBottomHalfCell(columnInsertionPoint);
                 const intermediateCellsInColumn: Cell[] =
-                    this.createSequenceOfCells(oddColumnStartCenter, rowStep, numberOfRows - 1, createRegularCell);
-                const topCell: Cell = createTopHalfCell(topColumnCenter);
+                    this.createSequenceOfCells(cellColumnInsertionPoint, rowStep, numberOfRows - 1, createRegularCell);
+                const topCell: Cell = createTopHalfCell(topCellInsertionPoint);
 
                 cellColumns.push([bottomCell, ...intermediateCellsInColumn, topCell]);
             }

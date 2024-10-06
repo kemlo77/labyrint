@@ -24,19 +24,15 @@ export class SquareGridFactory extends GridFactory implements RegularShapedGridF
 
     private createCellMatrix(gridProperties: RegularShapedGridProperties): Cell[][] {
 
-        const cellWidth: number = gridProperties.lengthOfEdgeSegments;
-        const diagonalLength: number = cellWidth * Math.SQRT2;
+        const sideLength: number = gridProperties.lengthOfEdgeSegments;
 
-        const stepDirectionToFirstCellInsertionPoint: Vector = stepUpRight(diagonalLength / 2)
-            .newRotatedVector(gridProperties.angle);
-        const columnStep: Vector = stepRight(cellWidth).newRotatedVector(gridProperties.angle);
-        const rowStep: Vector = stepUp(cellWidth).newRotatedVector(gridProperties.angle);
+        const columnStep: Vector = stepRight(sideLength).newRotatedVector(gridProperties.angle);
+        const rowStep: Vector = stepUp(sideLength).newRotatedVector(gridProperties.angle);
 
-        const firstCellInsertionPoint: Coordinate =
-            gridProperties.insertionPoint.stepToNewCoordinate(stepDirectionToFirstCellInsertionPoint);
+        const firstCellInsertionPoint: Coordinate = gridProperties.insertionPoint;
 
         const createRotatedSquareCell: CellCreator = (insertionPoint: Coordinate) =>
-            CellFactory.createCell(insertionPoint, cellWidth, 'square', gridProperties.angle);
+            CellFactory.createCell(insertionPoint, sideLength, 'square', gridProperties.angle);
 
 
         const cellColumns: Cell[][] = [];

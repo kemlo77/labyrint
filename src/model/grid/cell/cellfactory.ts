@@ -20,6 +20,14 @@ export class CellFactory {
 
     static createCell(insertionPoint: Coordinate, width: number, type: string, angleInDegrees: number = 0): Cell {
 
+        if (type === 'equilateral-triangular') {
+            const equilateralTriangleCell: Cell = CellFactory.createEquilateralTriangleCell(insertionPoint, width);
+            if (angleInDegrees === 0) {
+                return equilateralTriangleCell;
+            }
+            return equilateralTriangleCell.rotateAroundCenter(angleInDegrees, insertionPoint);
+        }
+
         //TODO: byt namn på center till insertionPoint
         if (type === 'square') {
             const squareCell: Cell = CellFactory.createSquareCell(insertionPoint, width);
@@ -123,6 +131,20 @@ export class CellFactory {
         const rotatedCorners: Coordinate[] = shapeCorners
             .map(corner => corner.rotateAroundCenter(angleInDegrees, insertionPoint));
         return new Cell(insertionPoint, rotatedCorners);
+    }
+
+    private static createEquilateralTriangleCell(insertionPoint: Coordinate, width: number): Cell {
+        const height: number = width * Math.sqrt(3) / 2;
+        const thirdHeight: number = height / 3;
+        const halfWidth: number = width / 2;
+        const sideLength: number = width;
+        const center: Coordinate = insertionPoint.stepToNewCoordinate(stepRight(halfWidth).then(stepUp(thirdHeight)));
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(stepRight(sideLength))
+            .addStepToNextCorner(stepInDirection(120, sideLength))
+            .defineCenter(center)
+            .build();
     }
 
     private static createSquareCell(insertionPoint: Coordinate, width: number): Cell {
@@ -294,9 +316,6 @@ export class CellFactory {
     }
 
     private static createCornersForShape(center: Coordinate, width: number, type: string): Coordinate[] {
-        if (type === 'equilateral-triangular') {
-            return CellFactory.createCornersForEquilateralTriangle(center, width);
-        }
         if (type === 'triangular') {
             return CellFactory.createCornersForTriangle(center, width);
         }
@@ -344,17 +363,5 @@ export class CellFactory {
         const corner: Coordinate = new Coordinate(center.x - sixthOfWidth, center.y - thirdHeight);
         return [upperCorner, rightCorner, corner];
     }
-
-    private static createCornersForEquilateralTriangle(center: Coordinate, width: number): Coordinate[] {
-        const height: number = width * Math.sqrt(3) / 2;
-        const thirdHeight: number = height / 3;
-        const halfWidth: number = width / 2;
-
-        const upperCorner: Coordinate = new Coordinate(center.x, center.y + thirdHeight * 2);
-        const rightCorner: Coordinate = new Coordinate(center.x + halfWidth, center.y - thirdHeight);
-        const leftCorner: Coordinate = new Coordinate(center.x - halfWidth, center.y - thirdHeight);
-        return [upperCorner, rightCorner, leftCorner];
-    }
-
 
 }

@@ -1,6 +1,6 @@
 import { Coordinate } from '../../../coordinate';
 import { Vector } from '../../../vector/vector';
-import { stepRight, stepUp } from '../../../vector/vectorcreator';
+import { stepDown, stepLeft, stepRight, stepUp } from '../../../vector/vectorcreator';
 import { Cell } from '../../cell/cell';
 import { CellFactory } from '../../cell/cellfactory';
 import { CellCreator } from '../../cell/celltypealiases';
@@ -22,39 +22,39 @@ export class TriangularGridFactory extends GridFactory implements RegularShapedG
     }
 
     private createCellMatrix(gridProperties: RegularShapedGridProperties): Cell[][] {
+        const firstInsertionPoint: Coordinate = gridProperties.insertionPoint;
         const angle: number = gridProperties.angle;
         const cellWidth: number = gridProperties.lengthOfEdgeSegments;
-        const createTriangleWithPointyTop: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'equilateral-triangular', angle);
-        const createTriangleWithPointyBottom: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'equilateral-triangular', angle + 180);
+        const cellHeight: number = cellWidth * Math.sqrt(3) / 2;
 
-        const triangleHeight: number = cellWidth * Math.sqrt(3) / 2;
-        const rowStep: Vector = stepUp(triangleHeight).newRotatedVector(angle);
-        const columnStep: Vector = stepRight(cellWidth / 2).newRotatedVector(angle);
-        const evenTriangleAdjustment: Vector = stepUp(triangleHeight / 3).newRotatedVector(angle);
-        const oddTriangleAdjustment: Vector = stepUp(triangleHeight * 2 / 3).newRotatedVector(angle);
+        const stepTriangleHeightUp: Vector = stepUp(cellHeight).newRotatedVector(angle);
+        const stepHalfWidthRight: Vector = stepRight(cellWidth / 2).newRotatedVector(angle);
 
-        const firstCellCornerPosition: Coordinate = gridProperties.insertionPoint;
+        const createTriangleWithPointyTop: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(insertionPoint, cellWidth, 'equilateral-triangular', angle);
+        const createTriangleWithPointyBottom: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(insertionPoint, cellWidth, 'equilateral-triangular', angle + 60);
+
+
         const cellRows: Cell[][] = [];
 
         for (let rowIndex: number = 0; rowIndex < gridProperties.numberOfEdgeSegments; rowIndex++) {
-            const rowStartCenter: Coordinate =
-                firstCellCornerPosition
-                    .stepToNewCoordinate(columnStep)
-                    .stepToNewCoordinate(rowStep.times(rowIndex))
-                    .stepToNewCoordinate(columnStep.times(rowIndex));
-            const cellRow: Cell[] = [];
+            const rowStartCenter: Coordinate = firstInsertionPoint
+                .stepToNewCoordinate(stepTriangleHeightUp.times(rowIndex))
+                .stepToNewCoordinate(stepHalfWidthRight.times(rowIndex));
             const trianglesInRow: number = 2 * (gridProperties.numberOfEdgeSegments - rowIndex) - 1;
+
+            const cellRow: Cell[] = [];
             for (let columnIndex: number = 0; columnIndex < trianglesInRow; columnIndex++) {
                 const evenColumn: boolean = columnIndex % 2 === 0;
-                let cellCenter: Coordinate = rowStartCenter.stepToNewCoordinate(columnStep.times(columnIndex));
+                const cellInsertionPoint: Coordinate =
+                    rowStartCenter.stepToNewCoordinate(stepHalfWidthRight.times(columnIndex));
                 if (evenColumn) {
-                    cellCenter = cellCenter.stepToNewCoordinate(evenTriangleAdjustment);
-                    cellRow.push(createTriangleWithPointyTop(cellCenter));
+                    cellRow.push(createTriangleWithPointyTop(cellInsertionPoint));
                 } else {
-                    cellCenter = cellCenter.stepToNewCoordinate(oddTriangleAdjustment);
-                    cellRow.push(createTriangleWithPointyBottom(cellCenter));
+                    const adjustedInsertionPoint: Coordinate =
+                        cellInsertionPoint.stepToNewCoordinate(stepHalfWidthRight);
+                    cellRow.push(createTriangleWithPointyBottom(adjustedInsertionPoint));
                 }
             }
 

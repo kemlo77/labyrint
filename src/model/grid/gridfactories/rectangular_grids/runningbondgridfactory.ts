@@ -42,7 +42,7 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
             (insertionPoint: Coordinate) =>
                 CellFactory.createCell(insertionPoint, cellWidth * 2, 'double-square-rectangle', 0 + angle);
 
-        const firstCellCenter: Coordinate = gridProperties.insertionPoint;
+        const firstCellInsertionPoint: Coordinate = gridProperties.insertionPoint;
 
         const cellRows: Cell[][] = [];
         const evenRowNumberOfWideCells: number = Math.floor(numberOfcolumns / 2);
@@ -52,12 +52,13 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
         for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
             const rowOfCells: Cell[] = [];
             const onEvenRow: boolean = rowIndex % 2 === 0;
-            const rowStartPoint: Coordinate = firstCellCenter.stepToNewCoordinate(oneStepUp.times(rowIndex));
+            const rowInsertionPoint: Coordinate =
+                firstCellInsertionPoint.stepToNewCoordinate(oneStepUp.times(rowIndex));
             if (onEvenRow) {
                 //rectangular cells
-                const evenRowStartPoint: Coordinate = rowStartPoint.stepToNewCoordinate(aHalfStepRight);
+                const evenRowStartPoint: Coordinate = rowInsertionPoint.stepToNewCoordinate(aHalfStepRight);
                 const rectangularCells: Cell[] = this.createSequenceOfCells(
-                    rowStartPoint,
+                    rowInsertionPoint,
                     twoStepsRight,
                     evenRowNumberOfWideCells,
                     createRectangularCell
@@ -65,22 +66,22 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
                 rowOfCells.push(...rectangularCells);
                 //square cell
                 if (numberOfcolumns % 2 === 1) {
-                    const lastCellCenter: Coordinate = evenRowStartPoint
+                    const lastCellInsertionPoint: Coordinate = evenRowStartPoint
                         .stepToNewCoordinate(twoStepsRight.times(evenRowNumberOfWideCells));
-                    const squareCell: Cell = createSquareCell(lastCellCenter);
+                    const squareCell: Cell = createSquareCell(lastCellInsertionPoint);
                     rowOfCells.push(squareCell);
                 }
             } else {
                 //square cell
-                const oddRowStartPoint: Coordinate = rowStartPoint;
+                const oddRowStartPoint: Coordinate = rowInsertionPoint;
                 const firstSquareCellInRow: Cell = createSquareCell(oddRowStartPoint);
                 rowOfCells.push(firstSquareCellInRow);
 
                 //rectangular cells
-                const rectangularCellsStartPoint: Coordinate = oddRowStartPoint
+                const rectangularCellsInsertionPoint: Coordinate = oddRowStartPoint
                     .stepToNewCoordinate(oneStepRight);
                 const rectangularCells: Cell[] = this.createSequenceOfCells(
-                    rectangularCellsStartPoint,
+                    rectangularCellsInsertionPoint,
                     twoStepsRight,
                     oddRowNumberOfWideCells,
                     createRectangularCell
@@ -89,9 +90,9 @@ export class RunningBondGridFactory extends GridFactory implements RectangularGr
 
                 //square cell
                 if (numberOfcolumns % 2 === 0) {
-                    const lastCellCenter: Coordinate = rectangularCellsStartPoint
+                    const lastCellInsertionPoint: Coordinate = rectangularCellsInsertionPoint
                         .stepToNewCoordinate(twoStepsRight.times(oddRowNumberOfWideCells));
-                    const lastSquareCellInRow: Cell = createSquareCell(lastCellCenter);
+                    const lastSquareCellInRow: Cell = createSquareCell(lastCellInsertionPoint);
                     rowOfCells.push(lastSquareCellInRow);
                 }
             }

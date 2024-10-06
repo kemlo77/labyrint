@@ -30,7 +30,7 @@ export class StandardGridFactory extends GridFactory implements RectangularGridF
         const columnStep: Vector = stepRight(cellWidth).newRotatedVector(gridProperties.angle);
         const rowStep: Vector = stepUp(cellHeight).newRotatedVector(gridProperties.angle);
 
-        const firstCellCenter: Coordinate =
+        const firstCellInsertionPoint: Coordinate =
             gridProperties.insertionPoint;
 
         const createRotatedSquareCell: CellCreator =
@@ -40,10 +40,10 @@ export class StandardGridFactory extends GridFactory implements RectangularGridF
 
         const cellColumns: Cell[][] = [];
         for (let columnIndex: number = 0; columnIndex < gridProperties.numberOfHorizontalEdgeSegments; columnIndex++) {
-            const columnStartCenter: Coordinate =
-                firstCellCenter.stepToNewCoordinate(columnStep.times(columnIndex));
+            const columnInsertionPoint: Coordinate =
+                firstCellInsertionPoint.stepToNewCoordinate(columnStep.times(columnIndex));
             const cellSequence: Cell[] =
-                this.createSequenceOfCells(columnStartCenter, rowStep, gridProperties.numberOfVerticalEdgeSegments,
+                this.createSequenceOfCells(columnInsertionPoint, rowStep, gridProperties.numberOfVerticalEdgeSegments,
                     createRotatedSquareCell);
             cellColumns.push(cellSequence);
         }

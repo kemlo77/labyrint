@@ -27,22 +27,23 @@ export class SquareGridFactory extends GridFactory implements RegularShapedGridF
         const cellWidth: number = gridProperties.lengthOfEdgeSegments;
         const diagonalLength: number = cellWidth * Math.SQRT2;
 
-        const stepDirectionToFirstCellCenter: Vector = stepUpRight(diagonalLength / 2)
+        const stepDirectionToFirstCellInsertionPoint: Vector = stepUpRight(diagonalLength / 2)
             .newRotatedVector(gridProperties.angle);
         const columnStep: Vector = stepRight(cellWidth).newRotatedVector(gridProperties.angle);
         const rowStep: Vector = stepUp(cellWidth).newRotatedVector(gridProperties.angle);
 
-        const firstCellCenter: Coordinate =
-            gridProperties.insertionPoint.stepToNewCoordinate(stepDirectionToFirstCellCenter);
+        const firstCellInsertionPoint: Coordinate =
+            gridProperties.insertionPoint.stepToNewCoordinate(stepDirectionToFirstCellInsertionPoint);
 
-        const createRotatedSquareCell: CellCreator =
-            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', gridProperties.angle);
+        const createRotatedSquareCell: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(insertionPoint, cellWidth, 'square', gridProperties.angle);
 
 
         const cellColumns: Cell[][] = [];
         const segmentsPerSide: number = gridProperties.numberOfEdgeSegments;
         for (let columnIndex: number = 0; columnIndex < segmentsPerSide; columnIndex++) {
-            const columnStartCenter: Coordinate = firstCellCenter.stepToNewCoordinate(columnStep.times(columnIndex));
+            const columnStartCenter: Coordinate =
+                firstCellInsertionPoint.stepToNewCoordinate(columnStep.times(columnIndex));
             const cellSequence: Cell[] =
                 this.createSequenceOfCells(columnStartCenter, rowStep, segmentsPerSide, createRotatedSquareCell);
             cellColumns.push(cellSequence);

@@ -19,118 +19,40 @@ export class CellFactory {
     }
 
     static createCell(insertionPoint: Coordinate, width: number, type: string, angleInDegrees: number = 0): Cell {
-
-        if (type === 'equilateral-triangular') {
-            const equilateralTriangleCell: Cell = CellFactory.createEquilateralTriangleCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return equilateralTriangleCell;
-            }
-            return equilateralTriangleCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        //TODO: byt namn på center till insertionPoint
-        if (type === 'square') {
-            const squareCell: Cell = CellFactory.createSquareCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return squareCell;
-            }
-
-            return squareCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        if (type === 'isosceles-right-triangular') {
-            const triangularCell: Cell = CellFactory.createIsoscelesRightTriangleCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return triangularCell;
-            }
-            return triangularCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        if (type === 'double-square-rectangle') {
-            const doubleSquareRectangleCell: Cell = CellFactory.createDoubleSquareRectangleCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return doubleSquareRectangleCell;
-            }
-            return doubleSquareRectangleCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        if (type === 'chamfered-square') {
-            const chamferedSquareCell: Cell = CellFactory.createChamferedSquareCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return chamferedSquareCell;
-            }
-            return chamferedSquareCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        if (type === 'semi-octagonal-semi-square') {
-            const semiOctSemiSquareCell: Cell = CellFactory.createSemiOctagonalSemiSquareCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return semiOctSemiSquareCell;
-            }
-            return semiOctSemiSquareCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        if (type === 'octagonal') {
-            const octagonalCell: Cell = CellFactory.createOctagonalCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return octagonalCell;
-            }
-            return octagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        if (type === 'hexagonal') {
-            const hexagonalCell: Cell = CellFactory.createHexagonalCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return hexagonalCell;
-            }
-            return hexagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        if (type === 'right-half-hexagonal') {
-            const rightHalfHexagonalCell: Cell =
-                CellFactory.createRightHalfHexagonalCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return rightHalfHexagonalCell;
-            }
-            return rightHalfHexagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        if (type === 'bottom-half-hexagonal') {
-            const createBottomHalfHexagonalCell: Cell =
-                CellFactory.createBottomHalfHexagonalCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return createBottomHalfHexagonalCell;
-            }
-            return createBottomHalfHexagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        if (type === 'bottom-right-quarter-hexagonal') {
-            const bottomRightQuarterHexagonalCell: Cell =
-                CellFactory.createBottomRightQuarterHexagonalCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return bottomRightQuarterHexagonalCell;
-            }
-            return bottomRightQuarterHexagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        if (type === 'bottom-left-quarter-hexagonal') {
-            const bottomLeftQuarterHexagonalCell: Cell =
-                CellFactory.createBottomLeftQuarterHexagonalCell(insertionPoint, width);
-            if (angleInDegrees === 0) {
-                return bottomLeftQuarterHexagonalCell;
-            }
-            return bottomLeftQuarterHexagonalCell.rotateAroundCenter(angleInDegrees, insertionPoint);
-        }
-
-        const shapeCorners: Coordinate[] = CellFactory.createCornersForShape(insertionPoint, width, type);
+        const createdCell: Cell = CellFactory.createCellByType(insertionPoint, width, type);
 
         if (angleInDegrees === 0) {
-            return new Cell(insertionPoint, shapeCorners);
+            return createdCell;
         }
 
-        const rotatedCorners: Coordinate[] = shapeCorners
-            .map(corner => corner.rotateAroundCenter(angleInDegrees, insertionPoint));
-        return new Cell(insertionPoint, rotatedCorners);
+        return createdCell.rotateAroundCenter(angleInDegrees, insertionPoint);
+    }
+
+    private static createCellByType(insertionPoint: Coordinate, width: number, type: string): Cell {
+
+        switch (type) {
+            case 'equilateral-triangular': return CellFactory.createEquilateralTriangleCell(insertionPoint, width);
+            case 'triangular': return CellFactory.createTriangleCell(insertionPoint, width);
+            case 'left-half-triangular': return CellFactory.createLeftHalfTriangleCell(insertionPoint, width);
+            case 'right-half-triangular': return CellFactory.createRightHalfTriangleCell(insertionPoint, width);
+            case 'square': return CellFactory.createSquareCell(insertionPoint, width);
+            case 'isosceles-right-triangular': 
+                return CellFactory.createIsoscelesRightTriangleCell(insertionPoint, width);
+            case 'double-square-rectangle': return CellFactory.createDoubleSquareRectangleCell(insertionPoint, width);
+            case 'chamfered-square': return CellFactory.createChamferedSquareCell(insertionPoint, width);
+            case 'semi-octagonal-semi-square': 
+                return CellFactory.createSemiOctagonalSemiSquareCell(insertionPoint, width);
+            case 'octagonal': return CellFactory.createOctagonalCell(insertionPoint, width);
+            case 'hexagonal': return CellFactory.createHexagonalCell(insertionPoint, width);
+            case 'right-half-hexagonal': return CellFactory.createRightHalfHexagonalCell(insertionPoint, width);
+            case 'bottom-half-hexagonal': return CellFactory.createBottomHalfHexagonalCell(insertionPoint, width);
+            case 'bottom-right-quarter-hexagonal': 
+                return CellFactory.createBottomRightQuarterHexagonalCell(insertionPoint, width);
+            case 'bottom-left-quarter-hexagonal': 
+                return CellFactory.createBottomLeftQuarterHexagonalCell(insertionPoint, width);
+            default: throw new Error('Unknown cell type');
+        }
+
     }
 
     private static createEquilateralTriangleCell(insertionPoint: Coordinate, width: number): Cell {
@@ -143,6 +65,50 @@ export class CellFactory {
             .setStartCorner(insertionPoint)
             .addStepToNextCorner(stepRight(sideLength))
             .addStepToNextCorner(stepInDirection(120, sideLength))
+            .defineCenter(center)
+            .build();
+    }
+
+    //Triangle that has same width and height
+    private static createTriangleCell(insertionPoint: Coordinate, width: number): Cell {
+        const height: number = width;
+        const thirdHeight: number = height / 3;
+        const halfWidth: number = width / 2;
+        const center: Coordinate = insertionPoint.stepToNewCoordinate(stepRight(halfWidth).then(stepUp(thirdHeight)));
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(stepRight(width))
+            .addStepToNextCorner(stepUp(height).then(stepLeft(width/2)))
+            .defineCenter(center)
+            .build();
+    }
+
+    private static createLeftHalfTriangleCell(insertionPoint: Coordinate, width: number): Cell {
+        const height: number = width;
+        const thirdHeight: number = height / 3;
+        const halfWidth: number = width / 2;
+        const sixthOfWidth: number = width / 6;
+        const center: Coordinate = 
+            insertionPoint.stepToNewCoordinate(stepRight(sixthOfWidth).then(stepUp(thirdHeight)));
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(stepRight(halfWidth))
+            .addStepToNextCorner(stepUp(height))
+            .defineCenter(center)
+            .build();
+    }
+
+    private static createRightHalfTriangleCell(insertionPoint: Coordinate, width: number): Cell {
+        const height: number = width;
+        const thirdHeight: number = height / 3;
+        const halfWidth: number = width / 2;
+        const thirdOfWidth: number = width / 3;
+        const center: Coordinate = 
+            insertionPoint.stepToNewCoordinate(stepRight(thirdOfWidth).then(stepUp(thirdHeight)));
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(stepRight(halfWidth))
+            .addStepToNextCorner(stepUp(height).then(stepLeft(halfWidth)))
             .defineCenter(center)
             .build();
     }
@@ -202,7 +168,6 @@ export class CellFactory {
             .defineCenter(center)
             .build();
     }
-
 
     private static createRightHalfHexagonalCell(insertionPoint: Coordinate, sideLength: number): Cell {
         const width: number = sideLength * 2;
@@ -296,7 +261,6 @@ export class CellFactory {
             .build();
     }
 
-
     private static createOctagonalCell(insertionPoint: Coordinate, width: number): Cell {
         const height: number = width;
         const sideLength: number = width / (1 + Math.SQRT2);
@@ -313,55 +277,6 @@ export class CellFactory {
             .addStepToNextCorner(stepDown(sideLength))
             .defineCenter(center)
             .build();
-    }
-
-    private static createCornersForShape(center: Coordinate, width: number, type: string): Coordinate[] {
-        if (type === 'triangular') {
-            return CellFactory.createCornersForTriangle(center, width);
-        }
-        if (type === 'left-half-triangular') {
-            return CellFactory.createCornersForLeftHalfTriangle(center, width);
-        }
-        if (type === 'right-half-triangular') {
-            return CellFactory.createCornersForRightHalfTriangle(center, width);
-        }
-
-        throw new Error('Unknown cell type');
-    }
-
-    private static createCornersForTriangle(center: Coordinate, width: number): Coordinate[] {
-        const height: number = width;
-        const thirdHeight: number = height / 3;
-        const halfWidth: number = width / 2;
-
-        const upperCorner: Coordinate = new Coordinate(center.x, center.y + thirdHeight * 2);
-        const rightCorner: Coordinate = new Coordinate(center.x + halfWidth, center.y - thirdHeight);
-        const leftCorner: Coordinate = new Coordinate(center.x - halfWidth, center.y - thirdHeight);
-        return [upperCorner, rightCorner, leftCorner];
-    }
-
-    private static createCornersForLeftHalfTriangle(center: Coordinate, width: number): Coordinate[] {
-        const height: number = width;
-        const thirdHeight: number = height / 3;
-        const halfWidth: number = width / 2;
-        const sixthOfWidth: number = width / 6;
-
-        const upperCorner: Coordinate = new Coordinate(center.x + sixthOfWidth, center.y + thirdHeight * 2);
-        const corner: Coordinate = new Coordinate(center.x + sixthOfWidth, center.y - thirdHeight);
-        const leftCorner: Coordinate = new Coordinate(center.x - halfWidth + sixthOfWidth, center.y - thirdHeight);
-        return [upperCorner, corner, leftCorner];
-    }
-
-    private static createCornersForRightHalfTriangle(center: Coordinate, width: number): Coordinate[] {
-        const height: number = width;
-        const thirdHeight: number = height / 3;
-        const halfWidth: number = width / 2;
-        const sixthOfWidth: number = width / 6;
-
-        const upperCorner: Coordinate = new Coordinate(center.x - sixthOfWidth, center.y + thirdHeight * 2);
-        const rightCorner: Coordinate = new Coordinate(center.x + halfWidth - sixthOfWidth, center.y - thirdHeight);
-        const corner: Coordinate = new Coordinate(center.x - sixthOfWidth, center.y - thirdHeight);
-        return [upperCorner, rightCorner, corner];
     }
 
 }

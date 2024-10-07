@@ -1,6 +1,6 @@
 import { Coordinate } from '../../../coordinate';
 import { Vector } from '../../../vector/vector';
-import { stepDown, stepLeft, stepRight, stepUp } from '../../../vector/vectorcreator';
+import { stepRight, stepUp } from '../../../vector/vectorcreator';
 import { Cell } from '../../cell/cell';
 import { CellFactory } from '../../cell/cellfactory';
 import { CellCreator } from '../../cell/celltypealiases';
@@ -28,7 +28,8 @@ export class TriangularGridFactory extends GridFactory implements RegularShapedG
         const cellHeight: number = cellWidth * Math.sqrt(3) / 2;
 
         const stepTriangleHeightUp: Vector = stepUp(cellHeight).newRotatedVector(angle);
-        const stepHalfWidthRight: Vector = stepRight(cellWidth / 2).newRotatedVector(angle);
+        const stepHalfCellWidthRight: Vector = stepRight(cellWidth / 2).newRotatedVector(angle);
+        const stepCellWidthRight: Vector = stepRight(cellWidth).newRotatedVector(angle);
 
         const createTriangleWithPointyTop: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(insertionPoint, cellWidth, 'equilateral-triangular', angle);
@@ -39,28 +40,44 @@ export class TriangularGridFactory extends GridFactory implements RegularShapedG
         const cellRows: Cell[][] = [];
 
         for (let rowIndex: number = 0; rowIndex < gridProperties.numberOfEdgeSegments; rowIndex++) {
-            const rowStartCenter: Coordinate = firstInsertionPoint
+            const rowInsertionPoint: Coordinate = firstInsertionPoint
                 .stepToNewCoordinate(stepTriangleHeightUp.times(rowIndex))
-                .stepToNewCoordinate(stepHalfWidthRight.times(rowIndex));
-            const trianglesInRow: number = 2 * (gridProperties.numberOfEdgeSegments - rowIndex) - 1;
+                .stepToNewCoordinate(stepHalfCellWidthRight.times(rowIndex));
+            const numberOfPointyTopTriangles: number = gridProperties.numberOfEdgeSegments - rowIndex;
 
-            const cellRow: Cell[] = [];
-            for (let columnIndex: number = 0; columnIndex < trianglesInRow; columnIndex++) {
-                const evenColumn: boolean = columnIndex % 2 === 0;
-                const cellInsertionPoint: Coordinate =
-                    rowStartCenter.stepToNewCoordinate(stepHalfWidthRight.times(columnIndex));
-                if (evenColumn) {
-                    cellRow.push(createTriangleWithPointyTop(cellInsertionPoint));
-                } else {
-                    const adjustedInsertionPoint: Coordinate =
-                        cellInsertionPoint.stepToNewCoordinate(stepHalfWidthRight);
-                    cellRow.push(createTriangleWithPointyBottom(adjustedInsertionPoint));
-                }
-            }
+            const cellRow: Cell[] = this.createRowOfTriangles(
+                rowInsertionPoint, 
+                stepCellWidthRight, 
+                numberOfPointyTopTriangles, 
+                createTriangleWithPointyTop, 
+                createTriangleWithPointyBottom
+            );
 
             cellRows.push(cellRow);
         }
         return cellRows;
+    }
+
+    private createRowOfTriangles(
+        insertionPoint: Coordinate, 
+        stepToNextInsertionPoint: Vector, 
+        numberOfEvenTriangles: number, 
+        createEvenTriangle: CellCreator,
+        createOddTriangle: CellCreator
+    ): Cell[] {
+        const cellRow: Cell[] = [];
+        for (let columnIndex: number = 0; columnIndex < numberOfEvenTriangles; columnIndex++) {
+            const notFirstColumn: boolean = columnIndex > 0;
+            const cellInsertionPoint: Coordinate =
+            insertionPoint.stepToNewCoordinate(stepToNextInsertionPoint.times(columnIndex));
+
+            if (notFirstColumn) {
+                cellRow.push(createOddTriangle(cellInsertionPoint));
+            }
+            cellRow.push(createEvenTriangle(cellInsertionPoint));
+            
+        }
+        return cellRow;
     }
 
 

@@ -45,9 +45,19 @@ export class TrianglesGridFactory extends GridFactory implements RectangularGrid
         const lastCellVerticalAdjustment: Vector = stepDown(cellWidth / 6).newRotatedVector(angle);
 
         const createLeftPointingTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'triangular', angle + 90);
+            CellFactory.createCell(
+                center.stepToNewCoordinate(stepRight(cellHeight / 3).then(stepDown(cellWidth / 2))), 
+                cellWidth, 
+                'triangular', 
+                angle + 90
+            );
         const createRightPointingTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(center, cellWidth, 'triangular', angle + 270);
+            CellFactory.createCell(
+                center.stepToNewCoordinate(stepLeft(cellHeight / 3).then(stepUp(cellWidth /2))), 
+                cellWidth, 
+                'triangular', 
+                angle + 270
+            );
         const createLeftPointingBottomTriangle: CellCreator = (center: Coordinate) =>
             CellFactory.createCell(
                 center.stepToNewCoordinate(firstCellVerticalAdjustment),

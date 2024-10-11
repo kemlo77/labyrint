@@ -45,11 +45,11 @@ export class TriangularGridFactory extends GridFactory implements RegularShapedG
                 .stepToNewCoordinate(stepHalfCellWidthRight.times(rowIndex));
             const numberOfPointyTopTriangles: number = gridProperties.numberOfEdgeSegments - rowIndex;
 
-            const cellRow: Cell[] = this.createRowOfTriangles(
-                rowInsertionPoint, 
-                stepCellWidthRight, 
-                numberOfPointyTopTriangles, 
-                createTriangleWithPointyTop, 
+            const cellRow: Cell[] = this.createPointyTopFirstRowOfTriangles(
+                rowInsertionPoint,
+                stepCellWidthRight,
+                numberOfPointyTopTriangles,
+                createTriangleWithPointyTop,
                 createTriangleWithPointyBottom
             );
 
@@ -57,29 +57,6 @@ export class TriangularGridFactory extends GridFactory implements RegularShapedG
         }
         return cellRows;
     }
-
-    private createRowOfTriangles(
-        insertionPoint: Coordinate, 
-        stepToNextInsertionPoint: Vector, 
-        numberOfEvenTriangles: number, 
-        createEvenTriangle: CellCreator,
-        createOddTriangle: CellCreator
-    ): Cell[] {
-        const cellRow: Cell[] = [];
-        for (let columnIndex: number = 0; columnIndex < numberOfEvenTriangles; columnIndex++) {
-            const notFirstColumn: boolean = columnIndex > 0;
-            const cellInsertionPoint: Coordinate =
-            insertionPoint.stepToNewCoordinate(stepToNextInsertionPoint.times(columnIndex));
-
-            if (notFirstColumn) {
-                cellRow.push(createOddTriangle(cellInsertionPoint));
-            }
-            cellRow.push(createEvenTriangle(cellInsertionPoint));
-            
-        }
-        return cellRow;
-    }
-
 
 
     private establishNeighbourRelationsInMatrix(cellGrid: Cell[][]): void {

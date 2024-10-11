@@ -20,6 +20,51 @@ export abstract class GridFactory {
         return cellSequence;
     }
 
+    protected createPointyTopFirstRowOfTriangles(
+        insertionPoint: Coordinate,
+        stepToNextInsertionPoint: Vector,
+        numberOfPointyTopTriangles: number,
+        createPointyTopTriangle: CellCreator,
+        createPointyBottomTriangle: CellCreator
+    ): Cell[] {
+        const cellRow: Cell[] = [];
+        for (let index: number = 0; index < numberOfPointyTopTriangles; index++) {
+            const notFirstTriangle: boolean = index > 0;
+            const cellInsertionPoint: Coordinate =
+                insertionPoint.stepToNewCoordinate(stepToNextInsertionPoint.times(index));
+
+            if (notFirstTriangle) {
+                cellRow.push(createPointyBottomTriangle(cellInsertionPoint));
+            }
+            cellRow.push(createPointyTopTriangle(cellInsertionPoint));
+
+        }
+        return cellRow;
+    }
+
+    protected createPointyBottomFirstRowOfTriangles(
+        insertionPoint: Coordinate,
+        stepToNextInsertionPoint: Vector,
+        numberOfPointyBottomTriangles: number,
+        createPointyTopTriangle: CellCreator,
+        createPointyBottomTriangle: CellCreator
+    ): Cell[] {
+        const cellRow: Cell[] = [];
+        for (let index: number = 0; index < numberOfPointyBottomTriangles; index++) {
+            const notLastTriangle: boolean = index < numberOfPointyBottomTriangles - 1;
+            const cellInsertionPoint: Coordinate =
+                insertionPoint.stepToNewCoordinate(stepToNextInsertionPoint.times(index));
+
+
+            cellRow.push(createPointyTopTriangle(cellInsertionPoint));
+            if (notLastTriangle) {
+                cellRow.push(createPointyBottomTriangle(cellInsertionPoint));
+            }
+
+        }
+        return cellRow;
+    }
+
     protected establishNeighbourRelationsInRows(cellMatrix: Cell[][]): void {
         const transposedCellMatrix: Cell[][] = MatrixOperations.transpose(cellMatrix);
         for (const column of transposedCellMatrix) {

@@ -21,12 +21,12 @@ describe('TrianglesGridFactory', () => {
     });
 
     it('verifying neighbour count', () => {
-        const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 3, 2, 10);
+        const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 3, 3, 10);
         const cellMatrix: Cell[][] = triangularGridFactory['createCellMatrix'](gridProperties);
         triangularGridFactory['establishNeighbourRelationsInMatrix'](cellMatrix);
-        expect(cellMatrix[0].map(cell => cell.neighbours.length)).to.deep.equal([2, 2, 3, 2, 2]);
-        expect(cellMatrix[1].map(cell => cell.neighbours.length)).to.deep.equal([2, 3, 3, 3, 2]);
-        expect(cellMatrix[2].map(cell => cell.neighbours.length)).to.deep.equal([1, 3, 2, 3, 1]);
+        expect(cellMatrix[0].map(cell => cell.neighbours.length)).to.deep.equal([2, 2, 3, 2, 3, 2, 2]);
+        expect(cellMatrix[1].map(cell => cell.neighbours.length)).to.deep.equal([2, 3, 3, 3, 3, 3, 2]);
+        expect(cellMatrix[2].map(cell => cell.neighbours.length)).to.deep.equal([1, 3, 2, 3, 2, 3, 1]);
     });
 
 });

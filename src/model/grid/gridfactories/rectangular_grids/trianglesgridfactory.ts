@@ -1,6 +1,6 @@
 import { Coordinate } from '../../../coordinate';
 import { Vector } from '../../../vector/vector';
-import { stepDown, stepLeft, stepRight, stepUp } from '../../../vector/vectorcreator';
+import { stepRight, stepUp } from '../../../vector/vectorcreator';
 import { Cell } from '../../cell/cell';
 import { CellFactory } from '../../cell/cellfactory';
 import { CellCreator } from '../../cell/celltypealiases';
@@ -30,134 +30,121 @@ export class TrianglesGridFactory extends GridFactory implements RectangularGrid
     private createCellMatrix(gridProperties: RectangularGridProperties): Cell[][] {
 
         const cellWidth: number = gridProperties.lengthOfEdgeSegments;
-        const numberOfRows: number = gridProperties.numberOfVerticalEdgeSegments * 2 + 1;
+        const numberOfRows: number = gridProperties.numberOfVerticalEdgeSegments;
         const numberOfColumns: number = gridProperties.numberOfHorizontalEdgeSegments;
+        const insertionPoint: Coordinate = gridProperties.insertionPoint;
         const angle: number = gridProperties.angle;
 
         const cellHeight: number = cellWidth;
 
-        const columnStep: Vector = stepRight(cellHeight).newRotatedVector(angle);
-        const rowStep: Vector = stepUp(cellWidth / 2).newRotatedVector(angle);
-        const leftAdjustmentStep: Vector = stepLeft(cellHeight / 6).newRotatedVector(angle);
-        const rightAdjustmentStep: Vector = stepRight(cellHeight / 6).newRotatedVector(angle);
-        const firstCellVerticalAdjustment: Vector = stepUp(cellWidth / 6).newRotatedVector(angle);
-        const firstCellHorizontalAdjustment: Vector = stepRight(cellHeight / 2).newRotatedVector(angle);
-        const lastCellVerticalAdjustment: Vector = stepDown(cellWidth / 6).newRotatedVector(angle);
+        const stepRightHalfCellWidth: Vector = stepRight(cellWidth / 2).newRotatedVector(angle);
+        const stepRightCellWidth: Vector = stepRight(cellWidth).newRotatedVector(angle);
+        const stepUpCellHeight: Vector = stepUp(cellHeight).newRotatedVector(angle);
 
-        const createLeftPointingTriangle: CellCreator = (center: Coordinate) =>
+        const createTriangleWithPointyTop: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(
-                center.stepToNewCoordinate(stepRight(cellHeight / 3).then(stepDown(cellWidth / 2))), 
-                cellWidth, 
-                'triangular', 
-                angle + 90
-            );
-        const createRightPointingTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(
-                center.stepToNewCoordinate(stepLeft(cellHeight / 3).then(stepUp(cellWidth /2))), 
-                cellWidth, 
-                'triangular', 
-                angle + 270
-            );
-        const createLeftPointingBottomTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(
-                center.stepToNewCoordinate(firstCellVerticalAdjustment),
+                insertionPoint,
                 cellWidth,
-                'left-half-triangular',
-                angle + 270
+                'triangular',
+                angle
             );
-        const createLeftPointingTopTriangle: CellCreator = (center: Coordinate) =>
+        const createTriangleWithPointyBottom: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(
-                center.stepToNewCoordinate(lastCellVerticalAdjustment),
+                insertionPoint.stepToNewCoordinate(stepRightHalfCellWidth.then(stepUpCellHeight)),
+                cellWidth,
+                'triangular',
+                angle + 180
+            );
+        const createLeftHalfPointyTopTriangle: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(
+                insertionPoint,
                 cellWidth,
                 'right-half-triangular',
-                angle + 270
+                angle
             );
-        const createRightPointingBottomTriangle: CellCreator = (center: Coordinate) =>
+        const createRightHalfPointyTopTriangle: CellCreator = (insertionPoint: Coordinate) =>
             CellFactory.createCell(
-                center.stepToNewCoordinate(firstCellVerticalAdjustment),
-                cellWidth,
-                'right-half-triangular',
-                angle + 90
-            );
-        const createRightPointingTopTriangle: CellCreator = (center: Coordinate) =>
-            CellFactory.createCell(
-                center.stepToNewCoordinate(lastCellVerticalAdjustment),
+                insertionPoint.stepToNewCoordinate(stepRightHalfCellWidth),
                 cellWidth,
                 'left-half-triangular',
-                angle + 90
+                angle
+            );
+        const createLeftHalfPointyBottomTriangle: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(
+                insertionPoint.stepToNewCoordinate(stepRightHalfCellWidth.then(stepUpCellHeight)),
+                cellWidth,
+                'left-half-triangular',
+                angle + 180
+            );
+        const createRightHalfPointyBottomTriangle: CellCreator = (insertionPoint: Coordinate) =>
+            CellFactory.createCell(
+                insertionPoint.stepToNewCoordinate(stepUpCellHeight),
+                cellWidth,
+                'right-half-triangular',
+                angle + 180
             );
 
-        const firstCellCenter: Coordinate = gridProperties.insertionPoint
-            .stepToNewCoordinate(firstCellHorizontalAdjustment);
-
-        const cellColumns: Cell[][] = [];
-
-        for (let columnIndex: number = 0; columnIndex < numberOfColumns; columnIndex++) {
-            const columnStartCenter: Coordinate = firstCellCenter.stepToNewCoordinate(columnStep.times(columnIndex));
-            const columnOfCells: Cell[] = [];
-            for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
-                const onFirstRow: boolean = rowIndex === 0;
-                const onLastRow: boolean = rowIndex === numberOfRows - 1;
 
 
-                if (this.cellPointsRight(rowIndex, columnIndex)) {
-                    const cellCenter: Coordinate = columnStartCenter
-                        .stepToNewCoordinate(rowStep.times(rowIndex).then(rightAdjustmentStep));
-                    if (onFirstRow) {
-                        columnOfCells.push(createRightPointingBottomTriangle(cellCenter));
-                        continue;
-                    }
-                    if (onLastRow) {
-                        columnOfCells.push(createRightPointingTopTriangle(cellCenter));
-                        continue;
-                    }
-                    columnOfCells.push(createLeftPointingTriangle(cellCenter));
-                } else {
-                    const cellCenter: Coordinate = columnStartCenter
-                        .stepToNewCoordinate(rowStep.times(rowIndex).then(leftAdjustmentStep));
-                    if (onFirstRow) {
-                        columnOfCells.push(createLeftPointingBottomTriangle(cellCenter));
-                        continue;
-                    }
-                    if (onLastRow) {
-                        columnOfCells.push(createLeftPointingTopTriangle(cellCenter));
-                        continue;
-                    }
-                    columnOfCells.push(createRightPointingTriangle(cellCenter));
-                }
+        const cellRows: Cell[][] = [];
+
+        for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
+            const rowInsertionPoint: Coordinate = insertionPoint.stepToNewCoordinate(stepUpCellHeight.times(rowIndex));
+            const evenRow: boolean = rowIndex % 2 === 0;
+
+            if (evenRow) {
+                const firstCell: Cell = createLeftHalfPointyBottomTriangle(rowInsertionPoint);
+                const cellRow: Cell[] = this.createPointyTopFirstRowOfTriangles(
+                    rowInsertionPoint,
+                    stepRightCellWidth,
+                    numberOfColumns,
+                    createTriangleWithPointyTop,
+                    createTriangleWithPointyBottom
+                );
+                const lastCell: Cell = createRightHalfPointyBottomTriangle(
+                    rowInsertionPoint.stepToNewCoordinate(stepRightCellWidth.times(numberOfColumns))
+                );
+                cellRows.push([firstCell, ...cellRow, lastCell]);
+            } else {
+                const firstCell: Cell = createLeftHalfPointyTopTriangle(rowInsertionPoint);
+                const cellRow: Cell[] = this.createPointyBottomFirstRowOfTriangles(
+                    rowInsertionPoint.stepToNewCoordinate(stepRightHalfCellWidth),
+                    stepRightCellWidth,
+                    numberOfColumns,
+                    createTriangleWithPointyBottom,
+                    createTriangleWithPointyTop
+                );
+                const lastCell: Cell = createRightHalfPointyTopTriangle(
+                    rowInsertionPoint.stepToNewCoordinate(stepRightCellWidth.times(numberOfColumns - 1))
+                );
+                cellRows.push([firstCell, ...cellRow, lastCell]);
             }
 
-            cellColumns.push(columnOfCells);
+
         }
 
-        return cellColumns;
-    }
-
-    private cellPointsRight(columnIndex: number, rowIndex: number): boolean {
-        const evenRowIndex: boolean = rowIndex % 2 == 0;
-        const evenColumnIndex: boolean = columnIndex % 2 == 0;
-        return (evenRowIndex && evenColumnIndex) || (!evenRowIndex && !evenColumnIndex);
+        return cellRows;
     }
 
     private establishNeighbourRelationsInMatrix(grid: Cell[][]): void {
-        this.establishNeighbourRelationsInColumns(grid);
-        this.establishSomeNeighbourRelationsBetweenColumns(grid);
+        grid.forEach(cellRow => this.establishNeighbourRelationsInSequence(cellRow));
+
+        this.establishSomeNeighbourRelationsBetweenRows(grid);
     }
 
+    private establishSomeNeighbourRelationsBetweenRows(grid: Cell[][]): void {
+        for (let rowIndex: number = 0; rowIndex < grid.length; rowIndex++) {
+            for (let columnIndex: number = 0; columnIndex < grid[rowIndex].length; columnIndex++) {
 
-    private establishSomeNeighbourRelationsBetweenColumns(grid: Cell[][]): void {
-        for (let columnIndex: number = 0; columnIndex < grid.length; columnIndex++) {
-            for (let rowIndex: number = 0; rowIndex < grid[columnIndex].length; rowIndex++) {
-
-                const onLastColumn: boolean = columnIndex === grid.length - 1;
-                if (onLastColumn) {
+                const onLastRow: boolean = rowIndex === grid.length - 1;
+                if (onLastRow) {
                     continue;
                 }
 
-                const currentCell: Cell = grid[columnIndex][rowIndex];
-                const neighbourCellToTheRight: Cell = grid[columnIndex + 1][rowIndex];
-                if (currentCell.hasCommonBorderWith(neighbourCellToTheRight)) {
-                    currentCell.establishNeighbourRelationTo(neighbourCellToTheRight);
+                const currentCell: Cell = grid[rowIndex][columnIndex];
+                const neighbourCellAbove: Cell = grid[rowIndex + 1][columnIndex];
+                if (currentCell.hasCommonBorderWith(neighbourCellAbove)) {
+                    currentCell.establishNeighbourRelationTo(neighbourCellAbove);
                 }
             }
         }

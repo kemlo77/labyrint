@@ -32,23 +32,28 @@ export class CellFactory {
 
         switch (type) {
             case 'equilateral-triangular': return CellFactory.createEquilateralTriangleCell(insertionPoint, width);
+
             case 'triangular': return CellFactory.createTriangleCell(insertionPoint, width);
             case 'left-half-triangular': return CellFactory.createLeftHalfTriangleCell(insertionPoint, width);
             case 'right-half-triangular': return CellFactory.createRightHalfTriangleCell(insertionPoint, width);
+
             case 'square': return CellFactory.createSquareCell(insertionPoint, width);
-            case 'isosceles-right-triangular': 
+            case 'isosceles-right-triangular':
                 return CellFactory.createIsoscelesRightTriangleCell(insertionPoint, width);
+
             case 'double-square-rectangle': return CellFactory.createDoubleSquareRectangleCell(insertionPoint, width);
-            case 'chamfered-square': return CellFactory.createChamferedSquareCell(insertionPoint, width);
-            case 'semi-octagonal-semi-square': 
-                return CellFactory.createSemiOctagonalSemiSquareCell(insertionPoint, width);
+
             case 'octagonal': return CellFactory.createOctagonalCell(insertionPoint, width);
+            case 'chamfered-square': return CellFactory.createChamferedSquareCell(insertionPoint, width);
+            case 'semi-octagonal-semi-square':
+                return CellFactory.createSemiOctagonalSemiSquareCell(insertionPoint, width);
+
             case 'hexagonal': return CellFactory.createHexagonalCell(insertionPoint, width);
             case 'right-half-hexagonal': return CellFactory.createRightHalfHexagonalCell(insertionPoint, width);
             case 'bottom-half-hexagonal': return CellFactory.createBottomHalfHexagonalCell(insertionPoint, width);
-            case 'bottom-right-quarter-hexagonal': 
+            case 'bottom-right-quarter-hexagonal':
                 return CellFactory.createBottomRightQuarterHexagonalCell(insertionPoint, width);
-            case 'bottom-left-quarter-hexagonal': 
+            case 'bottom-left-quarter-hexagonal':
                 return CellFactory.createBottomLeftQuarterHexagonalCell(insertionPoint, width);
             default: throw new Error('Unknown cell type');
         }
@@ -78,7 +83,7 @@ export class CellFactory {
         return new CellBuilder()
             .setStartCorner(insertionPoint)
             .addStepToNextCorner(stepRight(width))
-            .addStepToNextCorner(stepUp(height).then(stepLeft(width/2)))
+            .addStepToNextCorner(stepUp(height).then(stepLeft(width / 2)))
             .defineCenter(center)
             .build();
     }
@@ -88,7 +93,7 @@ export class CellFactory {
         const thirdHeight: number = height / 3;
         const halfWidth: number = width / 2;
         const sixthOfWidth: number = width / 6;
-        const center: Coordinate = 
+        const center: Coordinate =
             insertionPoint.stepToNewCoordinate(stepRight(sixthOfWidth).then(stepUp(thirdHeight)));
         return new CellBuilder()
             .setStartCorner(insertionPoint)
@@ -103,7 +108,7 @@ export class CellFactory {
         const thirdHeight: number = height / 3;
         const halfWidth: number = width / 2;
         const thirdOfWidth: number = width / 3;
-        const center: Coordinate = 
+        const center: Coordinate =
             insertionPoint.stepToNewCoordinate(stepRight(thirdOfWidth).then(stepUp(thirdHeight)));
         return new CellBuilder()
             .setStartCorner(insertionPoint)

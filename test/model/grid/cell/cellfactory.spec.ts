@@ -11,16 +11,17 @@ describe('CellFactory', () => {
     });
 
     it('creating an equilateral triangle cell', () => {
-        const triangleCenter: Coordinate = new Coordinate(0, 0);
-        const triangleCell: Cell = CellFactory.createCell(triangleCenter, 15, 'equilateral-triangular');
+        const insertionPoint: Coordinate = new Coordinate(0, 0);
+        const triangleCell: Cell = CellFactory.createCell(insertionPoint, 15, 'equilateral-triangular');
         expect(triangleCell.corners.length).to.equal(3);
-        expect(triangleCell.center).to.equal(triangleCenter);
+        expect(triangleCell.center.x).to.be.closeTo(7.5, 0.0001);
+        expect(triangleCell.center.y).to.be.closeTo(4.3301, 0.0001);
         expect(triangleCell.corners[0].x).to.be.closeTo(0, 0.0001);
-        expect(triangleCell.corners[0].y).to.be.closeTo(8.6602, 0.0001);
-        expect(triangleCell.corners[1].x).to.be.closeTo(7.5, 0.0001);
-        expect(triangleCell.corners[1].y).to.be.closeTo(-4.3301, 0.0001);
-        expect(triangleCell.corners[2].x).to.be.closeTo(-7.5, 0.0001);
-        expect(triangleCell.corners[2].y).to.be.closeTo(-4.3301, 0.0001);
+        expect(triangleCell.corners[0].y).to.be.closeTo(0, 0.0001);
+        expect(triangleCell.corners[1].x).to.be.closeTo(15, 0.0001);
+        expect(triangleCell.corners[1].y).to.be.closeTo(0, 0.0001);
+        expect(triangleCell.corners[2].x).to.be.closeTo(7.5, 0.0001);
+        expect(triangleCell.corners[2].y).to.be.closeTo(12.9904, 0.0001);
     });
 
     it('creating a square cell', () => {

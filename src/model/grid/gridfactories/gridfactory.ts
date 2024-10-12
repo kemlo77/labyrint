@@ -45,22 +45,20 @@ export abstract class GridFactory {
     protected createPointyBottomFirstRowOfTriangles(
         insertionPoint: Coordinate,
         stepToNextInsertionPoint: Vector,
-        numberOfPointyBottomTriangles: number,
+        numberOfPointyTopTriangles: number,
         createPointyTopTriangle: CellCreator,
         createPointyBottomTriangle: CellCreator
     ): Cell[] {
         const cellRow: Cell[] = [];
-        for (let index: number = 0; index < numberOfPointyBottomTriangles; index++) {
-            const notLastTriangle: boolean = index < numberOfPointyBottomTriangles - 1;
+        for (let index: number = 0; index < numberOfPointyTopTriangles + 1; index++) {
+            const notLastTriangle: boolean = index < numberOfPointyTopTriangles;
             const cellInsertionPoint: Coordinate =
                 insertionPoint.stepToNewCoordinate(stepToNextInsertionPoint.times(index));
 
-
-            cellRow.push(createPointyTopTriangle(cellInsertionPoint));
+            cellRow.push(createPointyBottomTriangle(cellInsertionPoint));
             if (notLastTriangle) {
-                cellRow.push(createPointyBottomTriangle(cellInsertionPoint));
+                cellRow.push(createPointyTopTriangle(cellInsertionPoint));
             }
-
         }
         return cellRow;
     }

@@ -110,9 +110,10 @@ export class TrianglesGridFactory extends GridFactory implements RectangularGrid
                 const cellRow: Cell[] = this.createPointyBottomFirstRowOfTriangles(
                     rowInsertionPoint.stepToNewCoordinate(stepRightHalfCellWidth),
                     stepRightCellWidth,
-                    numberOfColumns,
-                    createTriangleWithPointyBottom,
-                    createTriangleWithPointyTop
+                    numberOfColumns - 1,
+                    createTriangleWithPointyTop,
+                    createTriangleWithPointyBottom
+
                 );
                 const lastCell: Cell = createRightHalfPointyTopTriangle(
                     rowInsertionPoint.stepToNewCoordinate(stepRightCellWidth.times(numberOfColumns - 1))

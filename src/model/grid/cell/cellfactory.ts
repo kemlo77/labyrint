@@ -55,6 +55,7 @@ export class CellFactory {
                 return CellFactory.createBottomRightQuarterHexagonalCell(insertionPoint, width);
             case 'bottom-left-quarter-hexagonal':
                 return CellFactory.createBottomLeftQuarterHexagonalCell(insertionPoint, width);
+            case 'rhombus': return CellFactory.createRhombusCell(insertionPoint, width);
             default: throw new Error('Unknown cell type');
         }
 
@@ -280,6 +281,19 @@ export class CellFactory {
             .addStepToNextCorner(stepLeft(sideLength))
             .addStepToNextCorner(stepDownLeft(sideLength))
             .addStepToNextCorner(stepDown(sideLength))
+            .defineCenter(center)
+            .build();
+    }
+
+    private static createRhombusCell(insertionPoint: Coordinate, width: number): Cell {
+        const sideLength: number = width;
+        const center: Coordinate = 
+            insertionPoint.stepToNewCoordinate(stepRight(sideLength).then(stepInDirection(120, sideLength /2)));
+        return new CellBuilder()
+            .setStartCorner(insertionPoint)
+            .addStepToNextCorner(stepRight(sideLength))
+            .addStepToNextCorner(stepInDirection(60, sideLength))
+            .addStepToNextCorner(stepLeft(sideLength))
             .defineCenter(center)
             .build();
     }

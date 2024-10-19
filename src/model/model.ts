@@ -16,6 +16,7 @@ export class Model implements Subject {
 
     changeGridType(gridType: string): void {
         this._grid = GridSupplier.getGrid(gridType);
+        this._solutionTrail = [];
         this.notifyObservers();
     }
 
@@ -49,6 +50,7 @@ export class Model implements Subject {
             return;
         }
         this._grid.resetGrid();
+        this._grid.startCell.visited = true;
         this._solutionTrail = this._algorithm.generateMaze(this._grid);
         this.notifyObservers();
     }

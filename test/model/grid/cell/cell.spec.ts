@@ -6,33 +6,43 @@ import { Segment } from '../../../../src/model/segment';
 
 describe('Cell', () => {
 
-    let squareCell1: Cell;
-    let squareCell2: Cell;
-    let squareCell3: Cell;
+    let leftCell: Cell;
+    let middleCell: Cell;
+    let rightCell: Cell;
+    let upperCell: Cell;
+    let lowerCell: Cell;
 
     beforeEach(() => {
-        const center1: Coordinate = new Coordinate(5, 5);
-        squareCell1 = CellFactory.createCell(center1, 10, 'square');
-        const center2: Coordinate = new Coordinate(15, 5);
-        squareCell2 = CellFactory.createCell(center2, 10, 'square');
-        const center3: Coordinate = new Coordinate(25, 5);
-        squareCell3 = CellFactory.createCell(center3, 10, 'square');
+        const insertionPoint1: Coordinate = new Coordinate(5, 5);
+        leftCell = CellFactory.createCell(insertionPoint1, 10, 'square');
+
+        const insertionPoint2: Coordinate = new Coordinate(15, 5);
+        middleCell = CellFactory.createCell(insertionPoint2, 10, 'square');
+
+        const insertionPoint3: Coordinate = new Coordinate(25, 5);
+        rightCell = CellFactory.createCell(insertionPoint3, 10, 'square');
+
+        const insertionPoint4: Coordinate = new Coordinate(15, 15);
+        upperCell = CellFactory.createCell(insertionPoint4, 10, 'square');
+
+        const insertionPoint5: Coordinate = new Coordinate(15, -5);
+        lowerCell = CellFactory.createCell(insertionPoint5, 10, 'square');
     });
 
     it('establishing neighbour relation between two cells', () => {
-        squareCell1.establishNeighbourRelationTo(squareCell2);
-        expect(squareCell1.neighbours.length).to.equal(1);
+        leftCell.establishNeighbourRelationTo(middleCell);
+        expect(leftCell.neighbours.length).to.equal(1);
     });
 
     it('trying to establish neighbour relation twice', () => {
-        squareCell1.establishNeighbourRelationTo(squareCell2);
-        squareCell1.establishNeighbourRelationTo(squareCell2);
-        expect(squareCell1.neighbours.length).to.equal(1);
+        leftCell.establishNeighbourRelationTo(middleCell);
+        leftCell.establishNeighbourRelationTo(middleCell);
+        expect(leftCell.neighbours.length).to.equal(1);
     });
 
     it('visiting a cell', () => {
-        squareCell1.visited = true;
-        expect(squareCell1.visited).to.equal(true);
+        leftCell.visited = true;
+        expect(leftCell.visited).to.equal(true);
     });
 
     it('interconnecting two cells', () => {
@@ -92,57 +102,69 @@ describe('Cell', () => {
     });
 
     it('should have correct coordinates', () => {
-        expect(squareCell1.center.x).to.equal(5);
-        expect(squareCell1.center.y).to.equal(5);
+        expect(leftCell.center.x).to.equal(10);
+        expect(leftCell.center.y).to.equal(10);
     });
 
     it('should have correct corners', () => {
-        const corners: Coordinate[] = squareCell1.corners;
-        expect(corners[0].equals(new Coordinate(10, 10))).to.equal(true);
-        expect(corners[1].equals(new Coordinate(0, 10))).to.equal(true);
-        expect(corners[2].equals(new Coordinate(0, 0))).to.equal(true);
-        expect(corners[3].equals(new Coordinate(10, 0))).to.equal(true);
+        const corners: Coordinate[] = leftCell.corners;
+        expect(corners[0].equals(new Coordinate(5, 5))).to.equal(true);
+        expect(corners[1].equals(new Coordinate(15, 5))).to.equal(true);
+        expect(corners[2].equals(new Coordinate(15, 15))).to.equal(true);
+        expect(corners[3].equals(new Coordinate(5, 15))).to.equal(true);
     });
 
     it('should have 4 borders when no neighbours', () => {
-        const borders: Segment[] = squareCell1.closedBorders;
+        const borders: Segment[] = leftCell.closedBorders;
         expect(borders.length).to.equal(4);
     });
 
     it('should have 3 borders when one neighbour', () => {
-        squareCell1.establishNeighbourRelationTo(squareCell2);
-        squareCell1.establishConnectionTo(squareCell2);
-        expect(squareCell1.closedBorders.length).to.equal(3);
-        expect(squareCell2.closedBorders.length).to.equal(3);
+        leftCell.establishNeighbourRelationTo(middleCell);
+        leftCell.establishConnectionTo(middleCell);
+        expect(leftCell.closedBorders.length).to.equal(3);
+        expect(middleCell.closedBorders.length).to.equal(3);
     });
 
     it('should have 2 closed borders when two neighbours', () => {
-        squareCell1.establishNeighbourRelationTo(squareCell2);
-        squareCell1.establishNeighbourRelationTo(squareCell3);
-        squareCell2.establishConnectionTo(squareCell1);
-        squareCell2.establishConnectionTo(squareCell3);
+        leftCell.establishNeighbourRelationTo(middleCell);
+        leftCell.establishNeighbourRelationTo(rightCell);
+        middleCell.establishConnectionTo(leftCell);
+        middleCell.establishConnectionTo(rightCell);
 
-        expect(squareCell1.closedBorders.length).to.equal(3);
-        expect(squareCell2.closedBorders.length).to.equal(2);
-        expect(squareCell3.closedBorders.length).to.equal(3);
+        expect(leftCell.closedBorders.length).to.equal(3);
+        expect(middleCell.closedBorders.length).to.equal(2);
+        expect(rightCell.closedBorders.length).to.equal(3);
     });
 
     it('should have common border with neighbour', () => {
-        expect(squareCell1.hasCommonBorderWith(squareCell2)).to.equal(true);
+        expect(leftCell.hasCommonBorderWith(middleCell)).to.equal(true);
     });
 
     it('should not have common border with non-neighbour', () => {
-        expect(squareCell1.hasCommonBorderWith(squareCell3)).to.equal(false);
+        expect(leftCell.hasCommonBorderWith(rightCell)).to.equal(false);
     });
 
     it('should have common corners with neighbour', () => {
-        const commonCorners: Coordinate[] = squareCell1.commonCornersWith(squareCell2);
+        const commonCorners: Coordinate[] = leftCell.commonCornersWith(middleCell);
         expect(commonCorners.length).to.equal(2);
     });
 
     it('should not have common corners with non-neighbour', () => {
-        const commonCorners: Coordinate[] = squareCell1.commonCornersWith(squareCell3);
+        const commonCorners: Coordinate[] = leftCell.commonCornersWith(rightCell);
         expect(commonCorners.length).to.equal(0);
+    });
+
+    it('should have room for more neighbours', () => {
+        expect(middleCell.hasRoomForMoreNeighbours).to.equal(true);
+        middleCell.establishNeighbourRelationTo(leftCell);
+        expect(middleCell.hasRoomForMoreNeighbours).to.equal(true);
+        middleCell.establishNeighbourRelationTo(rightCell);
+        expect(middleCell.hasRoomForMoreNeighbours).to.equal(true);
+        middleCell.establishNeighbourRelationTo(upperCell);
+        expect(middleCell.hasRoomForMoreNeighbours).to.equal(true);
+        middleCell.establishNeighbourRelationTo(lowerCell);
+        expect(middleCell.hasRoomForMoreNeighbours).to.equal(false);
     });
 
 });

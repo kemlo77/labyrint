@@ -1,12 +1,20 @@
 import { Grid } from './grid';
-import { HexagonalGridFactory } from './gridfactories/hexagonalgridfactory';
-import { OctagonalGridFactory } from './gridfactories/octagonalgridfactory';
-import { SquareGridFactory } from './gridfactories/squaregridfactory';
-import { DiagonalSquareGridFactory } from './gridfactories/diagonalsquaregridfactory';
-import { TriangularGridFactory } from './gridfactories/triangulargridfactory';
-import { RunningBondGridFactory } from './gridfactories/runningbondgridfactory';
+import { HexagonsGridFactory } from './gridfactories/rectangular_grids/hexagonsgridfactory';
+import { OctagonsGridFactory } from './gridfactories/rectangular_grids/octagonsgridfactory';
+import { StandardGridFactory } from './gridfactories/rectangular_grids/standardgridfactory';
+import { DiagonalSquaresGridFactory } from './gridfactories/rectangular_grids/diagonalsquaresgridfactory';
+import { TrianglesGridFactory } from './gridfactories/rectangular_grids/trianglesgridfactory';
+import { RunningBondGridFactory } from './gridfactories/rectangular_grids/runningbondgridfactory';
 import { Coordinate } from '../coordinate';
-import { GridProperties } from './gridfactories/gridproperties';
+import { RectangularGridProperties } from './gridfactories/rectangular_grids/rectangulargridproperties';
+import { SwedishFlagGridFactory } from './gridfactories/complex_grids/swedishflaggridfactory';
+import { ComplexGridProperties } from './gridfactories/complex_grids/complexgridproperties';
+import { RegularShapedGridProperties } from './gridfactories/regular_shaped_grids/regularshapedgridproperties';
+import { TriangularGridFactory }
+    from './gridfactories/regular_shaped_grids/triangulargridfactory';
+import { SquareGridFactory } from './gridfactories/regular_shaped_grids/squaregridfactory';
+import { HexagonalGridFactory } from './gridfactories/regular_shaped_grids/hexagonalgridfactory';
+import { stepRight } from '../vector/vectorcreator';
 
 export class GridSupplier {
 
@@ -20,45 +28,70 @@ export class GridSupplier {
         const testInsertionPoint: Coordinate = new Coordinate(0, 0);
 
         if (gridType === 'test-grid') {
-            const gridProperties: GridProperties = new GridProperties(testInsertionPoint, 3, 3, 10);
-            return new SquareGridFactory().createGrid(gridProperties);
-        }
-
-        if (gridType === 'square') {
-            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
-            return new SquareGridFactory().createGrid(gridProperties);
-        }
-
-        if (gridType === 'tiltedSquare') {
-            const specialInsertionPoint: Coordinate = new Coordinate(15, 30 * 15 * Math.SQRT2 / 2 + 15);
-            const gridProperties: GridProperties = new GridProperties(specialInsertionPoint, 30, 30, 15, -45);
-            return new SquareGridFactory().createGrid(gridProperties);
-        }
-
-        if (gridType === 'runningBond') {
-            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
-            return new RunningBondGridFactory().createGrid(gridProperties);
-        }
-
-        if (gridType === 'hexagonal') {
-            const gridProperties: GridProperties = new GridProperties(insertionPoint, 40, 21, 30);
-            return new HexagonalGridFactory().createGrid(gridProperties);
+            const gridProperties: RectangularGridProperties =
+                new RectangularGridProperties(testInsertionPoint, 3, 3, 10);
+            return new StandardGridFactory().createGrid(gridProperties);
         }
 
         if (gridType === 'triangular') {
-            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
+            const gridProperties: RegularShapedGridProperties =
+                new RegularShapedGridProperties(insertionPoint, 24, 30);
             return new TriangularGridFactory().createGrid(gridProperties);
         }
 
-        if (gridType === 'octagonal') {
-            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
-            return new OctagonalGridFactory().createGrid(gridProperties);
+        if (gridType === 'square') {
+            const gridProperties: RegularShapedGridProperties =
+                new RegularShapedGridProperties(insertionPoint, 20, 30);
+            return new SquareGridFactory().createGrid(gridProperties);
         }
 
-        if (gridType === 'diagonalSquare') {
-            const gridProperties: GridProperties = new GridProperties(insertionPoint, 34, 21, 30);
-            return new DiagonalSquareGridFactory().createGrid(gridProperties);
+        if (gridType === 'hexagonal') {
+            const numberOfEdgeSegments: number = 12;
+            const lengthOfEdgeSegments: number = 30;
+            const adjustedInsertionPoint: Coordinate =
+                insertionPoint.stepToNewCoordinate(stepRight(numberOfEdgeSegments * lengthOfEdgeSegments / 2));
+            const gridProperties: RegularShapedGridProperties =
+                new RegularShapedGridProperties(adjustedInsertionPoint, numberOfEdgeSegments, lengthOfEdgeSegments);
+            return new HexagonalGridFactory().createGrid(gridProperties);
         }
+
+
+        if (gridType === 'standard') {
+            const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 34, 21, 30);
+            return new StandardGridFactory().createGrid(gridProperties);
+        }
+
+        if (gridType === 'runningBond') {
+            const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 34, 21, 30);
+            return new RunningBondGridFactory().createGrid(gridProperties);
+        }
+
+        if (gridType === 'hexagons') {
+            const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 40, 21, 30);
+            return new HexagonsGridFactory().createGrid(gridProperties);
+        }
+
+        if (gridType === 'triangles') {
+            const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 34, 21, 30);
+            return new TrianglesGridFactory().createGrid(gridProperties);
+        }
+
+        if (gridType === 'octagons') {
+            const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 34, 21, 30);
+            return new OctagonsGridFactory().createGrid(gridProperties);
+        }
+
+        if (gridType === 'diagonalSquares') {
+            const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 34, 21, 30);
+            return new DiagonalSquaresGridFactory().createGrid(gridProperties);
+        }
+
+
+        if (gridType === 'swedishFlag') {
+            const gridProperties: ComplexGridProperties = new ComplexGridProperties(insertionPoint, 20, 0);
+            return new SwedishFlagGridFactory().createGrid(gridProperties);
+        }
+
 
         throw new Error('Invalid grid type');
 

@@ -1,18 +1,19 @@
-import { MatrixOperations } from '../../../service/matrixoperations';
-import { Coordinate } from '../../coordinate';
-import { leftUnitVector, rightUnitVector, upUnitVector } from '../../unitvectors';
-import { Vector } from '../../vector';
-import { Cell } from '../cell/cell';
-import { CellFactory } from '../cell/cellfactory';
-import { CellCreator } from '../cell/celltypealiases';
-import { Grid } from '../grid';
-import { FramedGridFactory } from './framedgridfactory';
-import { GridProperties } from './gridproperties';
+import { MatrixOperations } from '../../../../service/matrixoperations';
+import { Coordinate } from '../../../coordinate';
+import { Vector } from '../../../vector/vector';
+import { stepRight, stepUp } from '../../../vector/vectorcreator';
+import { Cell } from '../../cell/cell';
+import { CellFactory } from '../../cell/cellfactory';
+import { CellCreator } from '../../cell/celltypealiases';
+import { Grid } from '../../grid';
+import { GridFactory } from '../gridfactory';
+import { RectangularGridFactory } from './rectangulargridfactory.interface';
+import { RectangularGridProperties } from './rectangulargridproperties';
 
-export class RunningBondGridFactory extends FramedGridFactory {
+export class RunningBondGridFactory extends GridFactory implements RectangularGridFactory {
 
 
-    createGrid(gridProperties: GridProperties): Grid {
+    createGrid(gridProperties: RectangularGridProperties): Grid {
         const cellMatrix: Cell[][] = this.createCellGrid(gridProperties);
         this.establishNeighbourRelationsInMatrix(cellMatrix);
         const startCell: Cell = cellMatrix[0][0];
@@ -21,30 +22,27 @@ export class RunningBondGridFactory extends FramedGridFactory {
         return new Grid(cells, startCell, endCell);
     }
 
-    private createCellGrid(gridProperties: GridProperties): Cell[][] {
+    private createCellGrid(gridProperties: RectangularGridProperties): Cell[][] {
 
-        const cellWidth: number = gridProperties.edgeSegmentLength;
+        const cellWidth: number = gridProperties.lengthOfEdgeSegments;
         const halfCellWidth: number = cellWidth / 2;
         const doubleCellWidth: number = cellWidth * 2;
-        const numberOfcolumns: number = gridProperties.horizontalEdgeSegments;
-        const numberOfRows: number = gridProperties.verticalEdgeSegments;
+        const numberOfcolumns: number = gridProperties.numberOfHorizontalEdgeSegments;
+        const numberOfRows: number = gridProperties.numberOfVerticalEdgeSegments;
         const angle: number = gridProperties.angle;
 
-        const oneStepUp: Vector = upUnitVector.scale(cellWidth).newRotatedVector(angle);
-        const aHalfStepUp: Vector = upUnitVector.scale(halfCellWidth).newRotatedVector(angle);
-        const aHalfStepLeft: Vector = leftUnitVector.scale(halfCellWidth).newRotatedVector(angle);
-        const aHalfStepRight: Vector = rightUnitVector.scale(halfCellWidth).newRotatedVector(angle);
-        const oneStepRight: Vector = rightUnitVector.scale(cellWidth).newRotatedVector(angle);
-        const twoStepsRight: Vector = rightUnitVector.scale(doubleCellWidth).newRotatedVector(angle);
+        const oneStepUp: Vector = stepUp(cellWidth).newRotatedVector(angle);
+        const aHalfStepRight: Vector = stepRight(halfCellWidth).newRotatedVector(angle);
+        const oneStepRight: Vector = stepRight(cellWidth).newRotatedVector(angle);
+        const twoStepsRight: Vector = stepRight(doubleCellWidth).newRotatedVector(angle);
 
         const createSquareCell: CellCreator =
-            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'square', angle);
+            (insertionPoint: Coordinate) => CellFactory.createCell(insertionPoint, cellWidth, 'square', angle);
         const createRectangularCell: CellCreator =
-            (center: Coordinate) => CellFactory.createCell(center, cellWidth, 'double-square-rectangle', 90 + angle);
+            (insertionPoint: Coordinate) =>
+                CellFactory.createCell(insertionPoint, cellWidth * 2, 'double-square-rectangle', 0 + angle);
 
-        const firstCellCenter: Coordinate = gridProperties.insertionPoint
-            .newRelativeCoordinate(aHalfStepUp)
-            .newRelativeCoordinate(aHalfStepRight);
+        const firstCellInsertionPoint: Coordinate = gridProperties.insertionPoint;
 
         const cellRows: Cell[][] = [];
         const evenRowNumberOfWideCells: number = Math.floor(numberOfcolumns / 2);
@@ -54,12 +52,13 @@ export class RunningBondGridFactory extends FramedGridFactory {
         for (let rowIndex: number = 0; rowIndex < numberOfRows; rowIndex++) {
             const rowOfCells: Cell[] = [];
             const onEvenRow: boolean = rowIndex % 2 === 0;
-            const rowStartPoint: Coordinate = firstCellCenter.newRelativeCoordinate(oneStepUp.scale(rowIndex));
+            const rowInsertionPoint: Coordinate =
+                firstCellInsertionPoint.stepToNewCoordinate(oneStepUp.times(rowIndex));
             if (onEvenRow) {
                 //rectangular cells
-                const evenRowStartPoint: Coordinate = rowStartPoint.newRelativeCoordinate(aHalfStepRight);
+                const evenRowStartPoint: Coordinate = rowInsertionPoint.stepToNewCoordinate(aHalfStepRight);
                 const rectangularCells: Cell[] = this.createSequenceOfCells(
-                    evenRowStartPoint,
+                    rowInsertionPoint,
                     twoStepsRight,
                     evenRowNumberOfWideCells,
                     createRectangularCell
@@ -67,24 +66,22 @@ export class RunningBondGridFactory extends FramedGridFactory {
                 rowOfCells.push(...rectangularCells);
                 //square cell
                 if (numberOfcolumns % 2 === 1) {
-                    const lastCellCenter: Coordinate = evenRowStartPoint
-                        .newRelativeCoordinate(twoStepsRight.scale(evenRowNumberOfWideCells))
-                        .newRelativeCoordinate(aHalfStepLeft);
-                    const squareCell: Cell = createSquareCell(lastCellCenter);
+                    const lastCellInsertionPoint: Coordinate = evenRowStartPoint
+                        .stepToNewCoordinate(twoStepsRight.times(evenRowNumberOfWideCells));
+                    const squareCell: Cell = createSquareCell(lastCellInsertionPoint);
                     rowOfCells.push(squareCell);
                 }
             } else {
                 //square cell
-                const oddRowStartPoint: Coordinate = rowStartPoint;
+                const oddRowStartPoint: Coordinate = rowInsertionPoint;
                 const firstSquareCellInRow: Cell = createSquareCell(oddRowStartPoint);
                 rowOfCells.push(firstSquareCellInRow);
 
                 //rectangular cells
-                const rectangularCellsStartPoint: Coordinate = oddRowStartPoint
-                    .newRelativeCoordinate(aHalfStepRight)
-                    .newRelativeCoordinate(oneStepRight);
+                const rectangularCellsInsertionPoint: Coordinate = oddRowStartPoint
+                    .stepToNewCoordinate(oneStepRight);
                 const rectangularCells: Cell[] = this.createSequenceOfCells(
-                    rectangularCellsStartPoint,
+                    rectangularCellsInsertionPoint,
                     twoStepsRight,
                     oddRowNumberOfWideCells,
                     createRectangularCell
@@ -93,10 +90,9 @@ export class RunningBondGridFactory extends FramedGridFactory {
 
                 //square cell
                 if (numberOfcolumns % 2 === 0) {
-                    const lastCellCenter: Coordinate = rectangularCellsStartPoint
-                        .newRelativeCoordinate(twoStepsRight.scale(oddRowNumberOfWideCells))
-                        .newRelativeCoordinate(aHalfStepLeft);
-                    const lastSquareCellInRow: Cell = createSquareCell(lastCellCenter);
+                    const lastCellInsertionPoint: Coordinate = rectangularCellsInsertionPoint
+                        .stepToNewCoordinate(twoStepsRight.times(oddRowNumberOfWideCells));
+                    const lastSquareCellInRow: Cell = createSquareCell(lastCellInsertionPoint);
                     rowOfCells.push(lastSquareCellInRow);
                 }
             }

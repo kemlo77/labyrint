@@ -9,7 +9,6 @@ export class Grid {
     constructor(interconnectedCells: Cell[], startCell: Cell, endCell: Cell) {
         this._cells = interconnectedCells;
         this._startCell = startCell;
-        this._startCell.visited = true;
         this._endCell = endCell;
     }
 
@@ -23,6 +22,10 @@ export class Grid {
 
     get allCells(): Cell[] {
         return [...this._cells];
+    }
+
+    private get allCellsWithRoomForMoreNeighbours(): Cell[] {
+        return this.allCells.filter(cell => cell.hasRoomForMoreNeighbours);
     }
 
     get allDisconnectedCells(): Cell[] {
@@ -44,7 +47,6 @@ export class Grid {
 
     private resetVisitedStatusOnCells(): void {
         this.allCells.forEach(cell => cell.visited = false);
-        this.startCell.visited = true;
     }
 
     private removeEstablishedConnectionsInCells(): void {
@@ -59,6 +61,33 @@ export class Grid {
             .forEach(cell => {
                 cell.removeConnectionsToCell();
             });
+    }
+
+    public establishNeighbourRelationsWith(grid: Grid): void {
+        for (const cell of this.allCellsWithRoomForMoreNeighbours) {
+            for (const otherCell of grid.allCellsWithRoomForMoreNeighbours) {
+                if (!otherCell.hasRoomForMoreNeighbours) {
+                    continue;
+                }
+
+                if (!cell.hasRoomForMoreNeighbours) {
+                    break;
+                }
+
+                if ( cell.hasCommonBorderWith(otherCell)) {
+                    cell.establishNeighbourRelationTo(otherCell);
+                }
+            }
+        }
+    }
+
+    public mergeWith(grid: Grid): Grid {
+        this.establishNeighbourRelationsWith(grid);
+        return new Grid(
+            [
+                ...this.allCells,
+                ...grid.allCells
+            ], this.startCell, grid.endCell);
     }
 
 }

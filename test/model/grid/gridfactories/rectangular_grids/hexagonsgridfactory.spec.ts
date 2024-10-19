@@ -1,15 +1,17 @@
 import { expect } from 'chai';
-import { HexagonalGridFactory } from '../../../../src/model/grid/gridfactories/hexagonalgridfactory';
-import { Grid } from '../../../../src/model/grid/grid';
-import { Cell } from '../../../../src/model/grid/cell/cell';
-import { Coordinate } from '../../../../src/model/coordinate';
-import { GridProperties } from '../../../../src/model/grid/gridfactories/gridproperties';
+import { HexagonsGridFactory }
+    from '../../../../../src/model/grid/gridfactories/rectangular_grids/hexagonsgridfactory';
+import { Grid } from '../../../../../src/model/grid/grid';
+import { Cell } from '../../../../../src/model/grid/cell/cell';
+import { Coordinate } from '../../../../../src/model/coordinate';
+import { RectangularGridProperties }
+    from '../../../../../src/model/grid/gridfactories/rectangular_grids/rectangulargridproperties';
 
-describe('HexagonalGridFactory', () => {
+describe('HexagonsGridFactory', () => {
 
     const insertionPoint: Coordinate = new Coordinate(0, 0);
-    const hexagonalgridfactory: HexagonalGridFactory = new HexagonalGridFactory();
-    const gridProperties: GridProperties = new GridProperties(insertionPoint, 5, 5, 10);
+    const hexagonalgridfactory: HexagonsGridFactory = new HexagonsGridFactory();
+    const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 5, 5, 10);
 
 
 
@@ -27,7 +29,7 @@ describe('HexagonalGridFactory', () => {
 
     it('numberOfVisitedCells', () => {
         const rectGrid: Grid = hexagonalgridfactory.createGrid(gridProperties);
-        expect(rectGrid.numberOfVisitedCells).to.equal(1);
+        expect(rectGrid.numberOfVisitedCells).to.equal(0);
     });
 
     it('totalNumberOfCells', () => {

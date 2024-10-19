@@ -1,15 +1,17 @@
 import { expect } from 'chai';
-import { OctagonalGridFactory } from '../../../../src/model/grid/gridfactories/octagonalgridfactory';
-import { Cell } from '../../../../src/model/grid/cell/cell';
-import { GridProperties } from '../../../../src/model/grid/gridfactories/gridproperties';
-import { Coordinate } from '../../../../src/model/coordinate';
+import { OctagonsGridFactory }
+    from '../../../../../src/model/grid/gridfactories/rectangular_grids/octagonsgridfactory';
+import { Cell } from '../../../../../src/model/grid/cell/cell';
+import { RectangularGridProperties }
+    from '../../../../../src/model/grid/gridfactories/rectangular_grids/rectangulargridproperties';
+import { Coordinate } from '../../../../../src/model/coordinate';
 
-describe('OctagonalGridFactory', () => {
+describe('OctagonsGridFactory', () => {
 
     it('Verifying neighbour count', () => {
-        const octagonalGridFactory: OctagonalGridFactory = new OctagonalGridFactory();
+        const octagonalGridFactory: OctagonsGridFactory = new OctagonsGridFactory();
         const insertionPoint: Coordinate = new Coordinate(0, 0);
-        const gridProperties: GridProperties = new GridProperties(insertionPoint, 3, 3, 10);
+        const gridProperties: RectangularGridProperties = new RectangularGridProperties(insertionPoint, 3, 3, 10);
         const cellMatrix: Cell[][] = octagonalGridFactory['createCellGrid'](gridProperties);
         octagonalGridFactory['establishNeighbourRelationsInGrid'](cellMatrix);
 

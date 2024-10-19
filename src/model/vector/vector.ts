@@ -1,4 +1,4 @@
-import { Coordinate } from './coordinate';
+import { Coordinate } from '../coordinate';
 
 export class Vector {
 
@@ -10,8 +10,14 @@ export class Vector {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
-    scale(factor: number): Vector {
+    //scaling vectors
+    times(factor: number): Vector {
         return new Vector(this.x * factor, this.y * factor);
+    }
+
+    //adding vectors
+    then(otherVector: Vector): Vector {
+        return new Vector(this.x + otherVector.x, this.y + otherVector.y);
     }
 
 

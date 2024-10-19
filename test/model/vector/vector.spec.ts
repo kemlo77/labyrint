@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Vector } from '../../src/model/vector';
+import { Vector } from '../../../src/model/vector/vector';
 
 describe('Vector', () => {
 

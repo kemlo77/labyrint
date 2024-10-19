@@ -1,4 +1,4 @@
-import { Vector } from './vector';
+import { Vector } from './vector/vector';
 
 export class Coordinate {
 
@@ -35,14 +35,22 @@ export class Coordinate {
         return rotated.translate(center.x, center.y);
     }
 
-    newRelativeCoordinate(stepVector: Vector): Coordinate {
-        const xCoordinate: number = this.x + stepVector.x;
-        const yCoordinate: number = this.y + stepVector.y;
+    stepToNewCoordinate(...steps: Vector[]): Coordinate {
+        let xCoordinate: number = this.x;
+        let yCoordinate: number = this.y;
+        for (const step of steps) {
+            xCoordinate += step.x;
+            yCoordinate += step.y;
+        }
         return new Coordinate(xCoordinate, yCoordinate);
     }
 
     equals(coordinate: Coordinate): boolean {
         return this.x === coordinate.x && this.y === coordinate.y;
+    }
+
+    clone(): Coordinate {
+        return new Coordinate(this.x, this.y);
     }
 
 }

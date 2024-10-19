@@ -15,7 +15,8 @@ import { TriangularGridFactory }
 import { SquareGridFactory } from './gridfactories/regular_shaped_grids/squaregridfactory';
 import { HexagonalGridFactory } from './gridfactories/regular_shaped_grids/hexagonalgridfactory';
 import { stepRight } from '../vector/vectorcreator';
-import { RhombilleGridFactory as RhomboidGridFactory } from './gridfactories/regular_shaped_grids/rhomboidgridfactory';
+import { RhomboidGridFactory as RhomboidGridFactory } from './gridfactories/regular_shaped_grids/rhomboidgridfactory';
+import { StarGridFactory } from './gridfactories/complex_grids/stargridfactory';
 
 export class GridSupplier {
 
@@ -95,6 +96,12 @@ export class GridSupplier {
         if (gridType === 'swedishFlag') {
             const gridProperties: ComplexGridProperties = new ComplexGridProperties(insertionPoint, 20, 0);
             return new SwedishFlagGridFactory().createGrid(gridProperties);
+        }
+
+        if (gridType === 'starGrid') {
+            const adjustedInsertionPoint: Coordinate = new Coordinate(320, 320);
+            const gridProperties: ComplexGridProperties = new ComplexGridProperties(adjustedInsertionPoint, 20);
+            return new StarGridFactory().createGrid(gridProperties);
         }
 
 

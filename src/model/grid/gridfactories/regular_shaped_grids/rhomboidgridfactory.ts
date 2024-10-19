@@ -10,7 +10,7 @@ import { RegularShapedGridFactory } from './regularshapedgridfactory.interface';
 import { RegularShapedGridProperties } from './regularshapedgridproperties';
 
 
-export class RhombilleGridFactory extends GridFactory implements RegularShapedGridFactory {
+export class RhomboidGridFactory extends GridFactory implements RegularShapedGridFactory {
 
     createGrid(gridProperties: RegularShapedGridProperties): Grid {
         const cellGrid: Cell[][] = this.createCellMatrix(gridProperties);
